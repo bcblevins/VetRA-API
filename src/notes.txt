@@ -1,0 +1,12 @@
+NEW WAY TO MAP THINGS
+
+getAllOfThing() {
+    jdbcTemplate.query("Select blah blah", this::mapRowToStudent);
+}
+mapRowToStudent(ResultSet rs, int rowNum) throws SQLException {
+    //Normal mapping stuff
+}
+
+query for list
+
+query for object for a single

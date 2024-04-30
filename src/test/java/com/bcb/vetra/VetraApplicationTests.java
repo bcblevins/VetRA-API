@@ -1,4 +1,4 @@
-package com.bcb.vetra;
+package com.bcb.Vetra;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

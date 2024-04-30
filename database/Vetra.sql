@@ -1,3 +1,11 @@
+drop table if exists prescription;
+drop table if exists result;
+drop table if exists test;
+drop table if exists patient;
+drop table if exists person;
+drop table if exists medication;
+drop table if exists parameter;
+
 CREATE TABLE "patient" (
   "patient_id" serial PRIMARY KEY,
   "chart_number" varchar(8) UNIQUE,
@@ -18,8 +26,10 @@ CREATE TABLE "person" (
 
 CREATE TABLE "test" (
   "test_id" serial PRIMARY KEY,
+  "name" varchar(50),
   "patient_id" int,
-  "time_stamp" timestamp
+  "time_stamp" timestamp,
+  "doctor_notes" varchar(500)
 );
 
 CREATE TABLE "result" (
