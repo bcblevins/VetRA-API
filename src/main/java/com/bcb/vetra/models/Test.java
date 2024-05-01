@@ -16,9 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Test {
+    private int id;
     private String name;
+    private String patientID;
     private List<TestParameter> parameters;
     private String doctorNotes;
     private LocalDateTime timestamp;
-
 }

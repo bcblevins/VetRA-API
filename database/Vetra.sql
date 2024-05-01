@@ -35,13 +35,12 @@ CREATE TABLE "test" (
 CREATE TABLE "result" (
   "result_id" serial PRIMARY KEY,
   "test_id" int,
-  "parameter_id" int,
+  "parameter_name" int,
   "result_value" varchar(20)
 );
 
 CREATE TABLE "parameter" (
-  "parameter_id" serial PRIMARY KEY,
-  "name" varchar(20),
+  "name" varchar(20) PRIMARY KEY,
   "range_low" numeric,
   "range_high" numeric,
   "unit" varchar(20),
@@ -69,7 +68,7 @@ ALTER TABLE "test" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient
 
 ALTER TABLE "result" ADD FOREIGN KEY ("test_id") REFERENCES "test" ("test_id");
 
-ALTER TABLE "result" ADD FOREIGN KEY ("parameter_id") REFERENCES "parameter" ("parameter_id");
+ALTER TABLE "result" ADD FOREIGN KEY ("parameter_name") REFERENCES "parameter" ("name");
 
 ALTER TABLE "prescription" ADD FOREIGN KEY ("medication_id") REFERENCES "medication" ("medication_id");
 

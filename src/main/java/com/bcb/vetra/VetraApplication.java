@@ -1,4 +1,4 @@
-package com.bcb.Vetra;
+package com.bcb.vetra;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
