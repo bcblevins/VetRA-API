@@ -1,13 +1,5 @@
-drop table if exists prescription;
-drop table if exists result;
-drop table if exists test;
-drop table if exists patient;
-drop table if exists person;
-drop table if exists medication;
-drop table if exists parameter;
-
 CREATE TABLE "patient" (
-  "patient_id" serial PRIMARY KEY,
+  "patient_id" SERIAL PRIMARY KEY,
   "chart_number" varchar(8) UNIQUE,
   "first_name" varchar(20),
   "last_name" varchar(20),
@@ -18,24 +10,25 @@ CREATE TABLE "patient" (
 );
 
 CREATE TABLE "person" (
-  "person_id" serial PRIMARY KEY,
+  "person_id" SERIAL PRIMARY KEY,
   "first_name" varchar(20),
   "last_name" varchar(20),
   "is_doctor" boolean
 );
 
 CREATE TABLE "test" (
-  "test_id" serial PRIMARY KEY,
+  "test_id" SERIAL PRIMARY KEY,
   "name" varchar(50),
-  "patient_id" int,
   "time_stamp" timestamp,
-  "doctor_notes" varchar(500)
+  "doctor_notes" varchar(500),
+  "patient_id" int,
+  "doctor_id" int
 );
 
 CREATE TABLE "result" (
-  "result_id" serial PRIMARY KEY,
+  "result_id" SERIAL PRIMARY KEY,
   "test_id" int,
-  "parameter_name" int,
+  "parameter_name" varchar(20),
   "result_value" varchar(20)
 );
 
@@ -44,23 +37,25 @@ CREATE TABLE "parameter" (
   "range_low" numeric,
   "range_high" numeric,
   "unit" varchar(20),
-  "normal_result" varchar(20),
+  "qualitative_normal" varchar(20),
   "is_qualitative" boolean
 );
 
 CREATE TABLE "medication" (
-  "medication_id" serial PRIMARY KEY,
-  "name" varchar(20) UNIQUE
+  "name" varchar(20) PRIMARY KEY
 );
 
 CREATE TABLE "prescription" (
-  "prescription_id" serial PRIMARY KEY,
+  "prescription_id" SERIAL PRIMARY KEY,
   "quantity" varchar(10),
   "instructions" varchar(50),
+  "isActive" boolean DEFAULT true,
   "patient_id" int,
-  "medication_id" int,
+  "medication_name" int,
   "doctor_id" int
 );
+
+ALTER TABLE "test" ADD FOREIGN KEY ("doctor_id") REFERENCES "person" ("person_id");
 
 ALTER TABLE "patient" ADD FOREIGN KEY ("owner_id") REFERENCES "person" ("person_id");
 
@@ -70,7 +65,7 @@ ALTER TABLE "result" ADD FOREIGN KEY ("test_id") REFERENCES "test" ("test_id");
 
 ALTER TABLE "result" ADD FOREIGN KEY ("parameter_name") REFERENCES "parameter" ("name");
 
-ALTER TABLE "prescription" ADD FOREIGN KEY ("medication_id") REFERENCES "medication" ("medication_id");
+ALTER TABLE "prescription" ADD FOREIGN KEY ("medication_name") REFERENCES "medication" ("name");
 
 ALTER TABLE "prescription" ADD FOREIGN KEY ("doctor_id") REFERENCES "person" ("person_id");
 

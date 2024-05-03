@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Model class for patient record.
@@ -23,5 +24,4 @@ public class Patient {
     private String species;
     private String sex;
     private int ownerID;
-
 }

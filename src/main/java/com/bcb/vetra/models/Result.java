@@ -1,22 +1,19 @@
 package com.bcb.vetra.models;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 /**
- * Model class for doctors and pet owners.
+ * Model class for a single result from a test.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
-    private int id;
-    private String firstName;
-    private String lastName;
-    private boolean isDoctor;
+public class Result {
+    private int resultID;
+    private int testID;
+    private String parameterName;
+    private String resultValue;
 }

@@ -12,9 +12,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestParameter {
+public class Parameter {
     private String name;
-    private String result;
     private String rangeLow;
     private String rangeHigh;
     private String unit;
