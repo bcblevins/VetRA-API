@@ -14,10 +14,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Prescription {
     private int id;
+    private String name;
     private String quantity;
     private String instructions;
     private boolean isActive;
     private int patientId;
-    private String name;
     private int doctorId;
 }

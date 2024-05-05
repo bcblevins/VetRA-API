@@ -3,12 +3,13 @@ package com.bcb.vetra.daos;
 import com.bcb.vetra.models.Parameter;
 import com.bcb.vetra.models.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
+@Component
 public class ParameterDao {
     private final JdbcTemplate jdbcTemplate;
     public ParameterDao(DataSource dataSource) {this.jdbcTemplate = new JdbcTemplate(dataSource);}

@@ -5,12 +5,13 @@ import com.bcb.vetra.models.Person;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
+@Component
 public class PersonDao {
     private final JdbcTemplate jdbcTemplate;
 
@@ -28,7 +29,7 @@ public class PersonDao {
         }
     }
     public Person createPerson(Person person) {
-        String sql = "INSERT INTO person (first_name, last_name, is_doctor) VALUES (?,?,?)";
+        String sql = "INSERT INTO person (first_name, last_name, is_doctor) VALUES (?,?,?) RETURNING person_id;";
         Integer id = jdbcTemplate.queryForObject(sql, Integer.class, person.getFirstName(), person.getLastName(), person.isDoctor());
         return getPersonById(id);
     }
@@ -42,9 +43,9 @@ public class PersonDao {
             return getPersonById(person.getId());
         }
     }
-    public boolean deletePerson(Person person) {
+    public boolean deletePerson(int id) {
         String sql = "DELETE FROM person WHERE person_id = ?";
-        return jdbcTemplate.update(sql, person.getId()) > 0;
+        return jdbcTemplate.update(sql, id) > 0;
     }
     private Person mapToPerson(ResultSet resultSet, int rowNumber) throws SQLException{
         return new Person(
