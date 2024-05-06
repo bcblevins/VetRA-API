@@ -2,7 +2,6 @@ package com.bcb.vetra.daos;
 
 import com.bcb.vetra.exception.DaoException;
 import com.bcb.vetra.models.Patient;
-import com.bcb.vetra.models.Person;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -50,12 +49,12 @@ public class PatientDao {
                 patient.getSpecies(),
                 patient.getSex(),
                 patient.getOwnerID(),
-                patient.getId()
+                patient.getPatientId()
         );
         if (rowsAffected == 0) {
             throw new DaoException("Zero rows affected, expected at least one.");
         } else {
-            return getPatientById(patient.getId());
+            return getPatientById(patient.getPatientId());
         }
     }
     public boolean delete(int id) {
