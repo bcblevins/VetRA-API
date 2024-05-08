@@ -2,6 +2,8 @@ package com.bcb.vetra.daos;
 
 import com.bcb.vetra.exception.DaoException;
 import com.bcb.vetra.models.Test;
+import com.bcb.vetra.viewmodels.TestParameterResults;
+import jdk.jshell.spi.ExecutionControl;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,10 @@ public class TestDao {
     }
     public List<Test> getTestsForPatient(int patientId) {
         return jdbcTemplate.query("SELECT * FROM test WHERE patient_id = ?", this::mapToTest, patientId);
+    }
+    //TODO: Implement this method
+    public List<TestParameterResults> getTestParameterResultsForPatient(int patientId) {
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
     public Test create(Test test) {
         Integer id = jdbcTemplate.queryForObject(

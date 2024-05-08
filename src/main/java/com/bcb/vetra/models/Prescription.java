@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Prescription {
-    private int id;
+    private int prescriptionId;
     private String name;
     private String quantity;
     private String instructions;

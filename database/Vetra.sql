@@ -1,3 +1,11 @@
+drop table if exists prescription;
+drop table if exists result;
+drop table if exists parameter;
+drop table if exists test;
+drop table if exists medication;
+drop table if exists patient;
+drop table if exists person;
+
 CREATE TABLE "patient" (
   "patient_id" SERIAL PRIMARY KEY,
   "chart_number" varchar(8) UNIQUE,
@@ -38,7 +46,7 @@ CREATE TABLE "parameter" (
   "range_high" numeric,
   "unit" varchar(20),
   "qualitative_normal" varchar(20),
-  "is_qualitative" boolean
+  "is_qualitative" boolean default false
 );
 
 CREATE TABLE "medication" (
@@ -51,7 +59,7 @@ CREATE TABLE "prescription" (
   "instructions" varchar(50),
   "isActive" boolean DEFAULT true,
   "patient_id" int,
-  "medication_name" int,
+  "medication_name" varchar(20),
   "doctor_id" int
 );
 
@@ -70,3 +78,28 @@ ALTER TABLE "prescription" ADD FOREIGN KEY ("medication_name") REFERENCES "medic
 ALTER TABLE "prescription" ADD FOREIGN KEY ("doctor_id") REFERENCES "person" ("person_id");
 
 ALTER TABLE "prescription" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id");
+
+INSERT INTO parameter (name, range_low, range_high, unit) values
+	('WBC', 4, 15.5, '10^3/mcL'),
+	('RBC', 4.8, 9.3, '10^6/mcL'),
+	('HGB', 12.1, 20.3, 'g/dl'),
+	('HCT', 36, 60, '%'),
+	('MCV', 58, 79, 'fL'),
+	('PLT', 170, 400, '10^3/mcL');
+	
+insert into person (first_name, last_name, is_doctor) values
+('Beau', 'Blevins', false),
+('Chris', 'Kelly', true);
+
+insert into patient (chart_number, first_name, last_name, birthday, species, sex, owner_id) values ('000000', 'Charlie', 'Blevins', '2015-03-14', 'Canine', 'SF', 1);
+
+insert into test (name, time_stamp, doctor_notes, patient_id, doctor_id)
+values ('CBC', '2024-02-20', 'Charlie''s labwork looks great!', 1, 2);
+
+insert into result (test_id, parameter_name, result_value)values 	
+	(1, 'WBC', 9.3),
+	(1, 'RBC', 8.0),
+	(1, 'HGB', 20.3),
+	(1, 'HCT', 54.0),
+	(1, 'MCV', 67.0),
+	(1, 'PLT', 330.0);

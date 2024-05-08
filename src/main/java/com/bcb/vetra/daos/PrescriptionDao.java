@@ -49,12 +49,12 @@ public class PrescriptionDao {
                 prescription.isActive(),
                 prescription.getPatientId(),
                 prescription.getDoctorId(),
-                prescription.getId()
+                prescription.getPrescriptionId()
         );
         if (rowsAffected == 0) {
             throw new DaoException("Zero rows affected, expected at least one.");
         } else {
-            return getPrescriptionById(prescription.getId());
+            return getPrescriptionById(prescription.getPrescriptionId());
         }
     }
     public boolean delete(int id) {
