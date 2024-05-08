@@ -1,7 +1,5 @@
 package com.bcb.vetra.viewmodels;
 
-import com.bcb.vetra.models.Parameter;
-import com.bcb.vetra.models.Result;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,13 +12,15 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestParameterResults {
-    private int id;
+public class TestWithDetails {
+    private int testId;
     private String name;
     private int patientID;
     private int doctorID;
-    private List<Parameter> parameters;
-    private List<Result> results;
+    private List<ParameterWithResult> results;
     private String doctorNotes;
     private LocalDateTime timestamp;
+    public void addToResults(ParameterWithResult result) {
+        results.add(result);
+    }
 }

@@ -1,23 +1,22 @@
-package com.bcb.vetra.models;
+package com.bcb.vetra.viewmodels;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Model class representing a single result for a Test, including parameter information.
- */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Parameter {
+public class ParameterWithResult {
+    private int resultID;
+    private int testID;
     private String name;
+    private String resultValue;
     private String rangeLow;
     private String rangeHigh;
     private String unit;
     private String qualitativeNormal;
     private boolean isQualitative;
-
 }
