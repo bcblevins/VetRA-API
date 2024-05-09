@@ -15,7 +15,7 @@ public class OwnerController {
     public OwnerController(PersonDao personDao) {this.personDao = personDao;}
     @RequestMapping(method = RequestMethod.GET)
     public List<Person> getAll() {
-        return personDao.getPersons();
+        return personDao.getOwners();
     }
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public Person get(@PathVariable int id) {

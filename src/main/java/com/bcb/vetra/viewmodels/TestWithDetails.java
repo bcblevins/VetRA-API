@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -21,6 +22,9 @@ public class TestWithDetails {
     private String doctorNotes;
     private LocalDateTime timestamp;
     public void addToResults(ParameterWithResult result) {
+        if (this.results == null) {
+            this.results = new ArrayList<>();
+        }
         results.add(result);
     }
 }

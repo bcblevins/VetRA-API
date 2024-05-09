@@ -32,7 +32,7 @@ public class TestDao {
 
     public List<TestWithDetails> getTestWithDetailsForPatient(int patientId) {
         List<TestWithDetails> testsForPatient = new ArrayList<>();
-        String sql = "select test.*, parameter.name, result.result_value, parameter.range_low, parameter.range_high, parameter.unit, parameter.qualitative_normal, parameter.is_qualitative\n" +
+        String sql = "select test.*, parameter.name, result.result_id, result.result_value, parameter.range_low, parameter.range_high, parameter.unit, parameter.qualitative_normal, parameter.is_qualitative\n" +
                 "from test\n" +
                 "join result on result.test_id = test.test_id\n" +
                 "join parameter on parameter.name = result.parameter_name " +
@@ -42,18 +42,21 @@ public class TestDao {
 
         int currentTestId;
         int previousTestId = -1;
-        TestWithDetails currentTest = new TestWithDetails();
+        TestWithDetails currentTest = null;
 
         while (results.next()) {
             currentTestId = results.getInt("test_id");
             if (currentTestId != previousTestId) {
-                testsForPatient.add(currentTest);
+                if (currentTest != null) {
+                    testsForPatient.add(currentTest);
+                }
                 currentTest = new TestWithDetails();
                 currentTest.setTestId(currentTestId);
                 currentTest.setName(results.getString("name"));
                 currentTest.setPatientID(results.getInt("patient_id"));
                 currentTest.setDoctorID(results.getInt("doctor_id"));
                 currentTest.setDoctorNotes(results.getString("doctor_notes"));
+                currentTest.setTimestamp(results.getTimestamp("time_stamp").toLocalDateTime());
             }
             currentTest.addToResults(new ParameterWithResult(
                     results.getInt("result_id"),
@@ -68,16 +71,18 @@ public class TestDao {
             ));
             previousTestId = currentTestId;
         }
-
+        if (currentTest != null) {
+            testsForPatient.add(currentTest);
+        }
         return testsForPatient;
     }
 
     public TestWithDetails getTestWithDetailsByTestId(int testId) {
-        String sql = "select test.*, parameter.name, result.result_value, parameter.range_low, parameter.range_high, parameter.unit, parameter.qualitative_normal, parameter.is_qualitative\n" +
+        String sql = "select test.*, parameter.name, result.result_id, result.result_value, parameter.range_low, parameter.range_high, parameter.unit, parameter.qualitative_normal, parameter.is_qualitative\n" +
                 "from test\n" +
                 "join result on result.test_id = test.test_id\n" +
                 "join parameter on parameter.name = result.parameter_name " +
-                "where test_id = ?;";
+                "where test.test_id = ?;";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, testId);
 
@@ -93,6 +98,7 @@ public class TestDao {
                 currentTest.setPatientID(results.getInt("patient_id"));
                 currentTest.setDoctorID(results.getInt("doctor_id"));
                 currentTest.setDoctorNotes(results.getString("doctor_notes"));
+                currentTest.setTimestamp(results.getTimestamp("time_stamp").toLocalDateTime());
             }
             currentTest.addToResults(new ParameterWithResult(
                     results.getInt("result_id"),

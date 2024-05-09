@@ -21,6 +21,9 @@ public class PersonDao {
     public List<Person> getPersons() {
         return jdbcTemplate.query("SELECT * FROM person", this::mapToPerson);
     }
+    public List<Person> getOwners() {
+        return jdbcTemplate.query("SELECT * FROM person WHERE is_doctor = false;", this::mapToPerson);
+    }
     public Person getPersonById(int id) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM person WHERE person_id = ?", this::mapToPerson, id);

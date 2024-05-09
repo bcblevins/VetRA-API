@@ -50,14 +50,15 @@ CREATE TABLE "parameter" (
 );
 
 CREATE TABLE "medication" (
-  "name" varchar(20) PRIMARY KEY
+  "name" varchar(50) PRIMARY KEY,
+  "unit" varchar(50) not null
 );
 
 CREATE TABLE "prescription" (
   "prescription_id" SERIAL PRIMARY KEY,
-  "quantity" varchar(10),
-  "instructions" varchar(50),
-  "isActive" boolean DEFAULT true,
+  "quantity" numeric,
+  "instructions" varchar(300),
+  "is_active" boolean DEFAULT true,
   "patient_id" int,
   "medication_name" varchar(20),
   "doctor_id" int
@@ -91,15 +92,26 @@ insert into person (first_name, last_name, is_doctor) values
 ('Beau', 'Blevins', false),
 ('Chris', 'Kelly', true);
 
-insert into patient (chart_number, first_name, last_name, birthday, species, sex, owner_id) values ('000000', 'Charlie', 'Blevins', '2015-03-14', 'Canine', 'SF', 1);
+insert into patient (chart_number, first_name, last_name, birthday, species, sex, owner_id) values 
+('000000', 'Charlie', 'Blevins', '2015-03-14', 'Canine', 'SF', 1),
+('000001', 'Sunny', 'Blevins', '2016-02-20', 'Feline', 'CM', 1);
 
 insert into test (name, time_stamp, doctor_notes, patient_id, doctor_id)
 values ('CBC', '2024-02-20', 'Charlie''s labwork looks great!', 1, 2);
 
-insert into result (test_id, parameter_name, result_value)values 	
+insert into result (test_id, parameter_name, result_value) values 	
 	(1, 'WBC', 9.3),
 	(1, 'RBC', 8.0),
 	(1, 'HGB', 20.3),
 	(1, 'HCT', 54.0),
 	(1, 'MCV', 67.0),
 	(1, 'PLT', 330.0);
+	
+insert into medication (name, unit) values 
+	('Trazodone 50mg', 'tablets'),
+	('Gabapentin 100mg', 'capsules');
+	
+insert into prescription (quantity, instructions, is_active, patient_id, medication_name, doctor_id) values
+	(10, 'Give 1/2 tablet by mouth 3 hours prior to thunderstorms to reduce anxiety.', true, 1, 'Trazodone 50mg', 2),
+	(30, 'Give 1/2 to 1 capsule by mouth twice daily or as needed to reduce anxiety.', true, 2, 'Gabapentin 100mg', 2);
+	

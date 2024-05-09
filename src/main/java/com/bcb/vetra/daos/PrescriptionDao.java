@@ -1,8 +1,8 @@
 package com.bcb.vetra.daos;
 
 import com.bcb.vetra.exception.DaoException;
-import com.bcb.vetra.models.Patient;
 import com.bcb.vetra.models.Prescription;
+import com.bcb.vetra.viewmodels.PrescriptionWithMedication;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -15,18 +15,38 @@ import java.util.List;
 public class PrescriptionDao {
     private final JdbcTemplate jdbcTemplate;
     public PrescriptionDao(DataSource dataSource) {this.jdbcTemplate = new JdbcTemplate(dataSource);}
-    public Prescription getPrescriptionById(int id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM prescription WHERE prescription_id = ?", this::mapToPrescription, id);
+    public PrescriptionWithMedication getPrescriptionWithMedicationById(int id) {
+        return jdbcTemplate.queryForObject(
+                "SELECT prescription.*, medication.unit " +
+                        "FROM prescription " +
+                        "JOIN medication ON medication.name = prescription.medication_name " +
+                        "WHERE prescription.prescription_id = ?;",
+                this::mapToPrescriptionWithMedication,
+                id
+        );
     }
-    public List<Prescription> getPrescriptionsByPatientId(int id) {
-        return jdbcTemplate.query("SELECT * FROM prescription WHERE patient_id = ?", this::mapToPrescription, id);
+
+    public List<PrescriptionWithMedication> getPrescriptionsByPatientId(int id) {
+        return jdbcTemplate.query(
+                "SELECT prescription.*, medication.unit " +
+                        "FROM prescription " +
+                        "JOIN medication ON medication.name = prescription.medication_name " +
+                        "WHERE prescription.patient_id = ?",
+                this::mapToPrescriptionWithMedication,
+                id
+        );
     }
-    public List<Prescription> getAllPrescriptions() {
-        return jdbcTemplate.query("SELECT * FROM prescription", this::mapToPrescription);
+    public List<PrescriptionWithMedication> getAllPrescriptions() {
+        return jdbcTemplate.query(
+                "SELECT prescription.*, medication.unit " +
+                        "FROM prescription " +
+                        "JOIN medication ON medication.name = prescription.medication_name",
+                this::mapToPrescriptionWithMedication);
     }
-    public Prescription create(Prescription prescription) {
+    public PrescriptionWithMedication create(PrescriptionWithMedication prescription) {
+        insertMedicationIfDoesNotExist(prescription);
         Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO prescription (name, quantity, instructions, is_active, patient_id, doctor_id) " +
+                "INSERT INTO prescription (medication_name, quantity, instructions, is_active, patient_id, doctor_id) " +
                         "VALUES (?,?,?,?,?,?) " +
                         "RETURNING prescription_id;",
                 Integer.class,
@@ -37,11 +57,11 @@ public class PrescriptionDao {
                 prescription.getPatientId(),
                 prescription.getDoctorId()
         );
-        return getPrescriptionById(id);
+        return getPrescriptionWithMedicationById(id);
     }
-    public Prescription update(Prescription prescription) {
+    public PrescriptionWithMedication update(PrescriptionWithMedication prescription) {
         int rowsAffected = jdbcTemplate.update(
-                "UPDATE prescription SET name = ?, quantity = ?, instructions = ?, is_active = ?, patient_id = ?, doctor_id = ? " +
+                "UPDATE prescription SET medication_name = ?, quantity = ?, instructions = ?, is_active = ?, patient_id = ?, doctor_id = ? " +
                         "WHERE prescription_id = ?;",
                 prescription.getName(),
                 prescription.getQuantity(),
@@ -54,20 +74,55 @@ public class PrescriptionDao {
         if (rowsAffected == 0) {
             throw new DaoException("Zero rows affected, expected at least one.");
         } else {
-            return getPrescriptionById(prescription.getPrescriptionId());
+            return getPrescriptionWithMedicationById(prescription.getPrescriptionId());
         }
     }
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM prescription WHERE prescription_id = ?", id) > 0;
     }
-    private Prescription mapToPrescription(ResultSet resultSet, int rowNumber) throws SQLException {
-        return new Prescription(
+    //----------------------
+    // Helper methods
+    //----------------------
+    private PrescriptionWithMedication mapToPrescriptionWithMedication(ResultSet resultSet, int rowNumber) throws SQLException {
+        return new PrescriptionWithMedication(
                 resultSet.getInt("prescription_id"),
-                resultSet.getString("name"),
-                resultSet.getString("quantity"),
+                resultSet.getString("medication_name"),
+                resultSet.getInt("quantity"),
+                resultSet.getString("unit"),
                 resultSet.getString("instructions"),
                 resultSet.getBoolean("is_active"),
                 resultSet.getInt("patient_id"),
                 resultSet.getInt("doctor_id")
                 );
-    }}
+    }
+
+    private Prescription mapToPrescription(ResultSet resultSet, int rowNumber) throws SQLException {
+        return new Prescription(
+                resultSet.getInt("prescription_id"),
+                resultSet.getString("name"),
+                resultSet.getInt("quantity"),
+                resultSet.getString("instructions"),
+                resultSet.getBoolean("is_active"),
+                resultSet.getInt("patient_id"),
+                resultSet.getInt("doctor_id")
+        );
+    }
+
+    public boolean insertMedicationIfDoesNotExist(PrescriptionWithMedication medication) {
+        boolean exists = 0 < jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM medication WHERE name = ?",
+                Integer.class,
+                medication.getName()
+        );
+        if (!exists) {
+            jdbcTemplate.update(
+                    "INSERT INTO medication (name, unit) VALUES (?, ?)",
+                    medication.getName(),
+                    medication.getUnit()
+            );
+            return true;
+        }
+        return false;
+    }
+
+}
