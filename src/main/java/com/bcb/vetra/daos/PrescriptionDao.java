@@ -11,6 +11,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Data Access Object for the Prescription model, also gets info from medication table.
+ */
 @Component
 public class PrescriptionDao {
     private final JdbcTemplate jdbcTemplate;

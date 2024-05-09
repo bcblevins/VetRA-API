@@ -11,6 +11,9 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+/**
+ * Data Access Object for the Person model.
+ */
 @Component
 public class PersonDao {
     private final JdbcTemplate jdbcTemplate;

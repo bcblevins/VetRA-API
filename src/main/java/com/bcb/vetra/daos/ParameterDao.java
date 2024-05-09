@@ -9,6 +9,10 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+/**
+ * Data Access Object for the Parameter model.
+ */
 @Component
 public class ParameterDao {
     private final JdbcTemplate jdbcTemplate;

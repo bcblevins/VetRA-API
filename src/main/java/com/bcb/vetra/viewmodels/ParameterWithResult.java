@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * View Model class for a single parameter with its result.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

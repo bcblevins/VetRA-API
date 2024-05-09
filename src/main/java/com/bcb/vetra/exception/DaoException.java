@@ -1,5 +1,8 @@
 package com.bcb.vetra.exception;
 
+/**
+ * General purpose exception class for DAO operations.
+ */
 public class DaoException extends RuntimeException{
 
     public DaoException() {

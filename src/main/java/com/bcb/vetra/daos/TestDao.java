@@ -14,6 +14,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object for the Test model.
+ */
 @Component
 public class TestDao {
     private final JdbcTemplate jdbcTemplate;

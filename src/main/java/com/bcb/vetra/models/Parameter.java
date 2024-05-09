@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Model class representing a single result for a Test, including parameter information.
+ * Model class representing a single parameter for a Test.
  */
 @Getter
 @Setter

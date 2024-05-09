@@ -8,7 +8,9 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * View Model class for a test, including all results and parameters.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

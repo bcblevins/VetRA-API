@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-//TODO: This class don't work :(
-
+/**
+ * Controller class for the TestWithDetails view model.
+ */
 @RestController
 @RequestMapping(path = "/owners")
-public class TestController {
+public class TestWithDetailsController {
     private TestDao testDao;
-    public TestController(TestDao testDao) {
+    public TestWithDetailsController(TestDao testDao) {
         this.testDao = testDao;
     }
     @RequestMapping(path = "/{id}/patients/{patientId}/tests", method = RequestMethod.GET)

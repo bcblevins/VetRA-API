@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for the Prescription model. Also manipulates the medication table as needed for handling prescription requests.
+ */
 @RestController
 @RequestMapping(path = "/owners")
 public class PrescriptionController {

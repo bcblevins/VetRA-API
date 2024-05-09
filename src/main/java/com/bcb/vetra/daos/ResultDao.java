@@ -10,6 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Data Access Object for the Result model.
+ */
 @Component
 public class ResultDao {
     private final JdbcTemplate jdbcTemplate;

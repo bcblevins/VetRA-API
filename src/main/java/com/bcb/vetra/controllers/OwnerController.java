@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+/**
+ * Controller class for the person model, only meant to retrieve persons that !isDoctor.
+ */
 @RestController
 @RequestMapping(path = "/owners")
 public class OwnerController {

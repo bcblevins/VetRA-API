@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 /**
- * Model class for diagnostic tests
+ * Model class for diagnostic tests. Meant to include only top level test information.
  */
 @Getter
 @Setter

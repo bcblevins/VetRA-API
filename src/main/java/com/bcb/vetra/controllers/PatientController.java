@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for the Patient model.
+ */
 @RestController
 @RequestMapping(path="/owners")
 public class PatientController {
