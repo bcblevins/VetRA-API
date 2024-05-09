@@ -23,7 +23,7 @@ public class PatientController {
     }
     @RequestMapping(path = "/{id}/patients/{patientId}", method = RequestMethod.GET)
     public Patient get(@PathVariable int id, @PathVariable int patientId) {
-        return patientDao.getPatientById(patientId);
+        return patientDao.getPatientByIdAndOwner(patientId, id);
     }
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/{id}/patients", method = RequestMethod.POST)
@@ -32,11 +32,12 @@ public class PatientController {
     }
     @RequestMapping(path = "/{id}/patients/{patientId}", method = RequestMethod.PUT)
     public Patient update(@PathVariable int id, @PathVariable int patientId, @RequestBody Patient patient) {
-        return patientDao.update(patient);
+        patient.setPatientId(patientId);
+        return patientDao.updatePatientOfOwner(patient, id);
     }
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(path = "/{id}/patients/{patientId}", method = RequestMethod.DELETE)
     public void delete(@PathVariable int id, @PathVariable int patientId) {
-        patientDao.delete(patientId);
+        patientDao.deletePatientOfOwner(patientId, id);
     }
 }

@@ -83,6 +83,15 @@ public class PrescriptionDao {
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM prescription WHERE prescription_id = ?", id) > 0;
     }
+    /**
+     * Deletes a prescription of a patient.
+     * @param id id of prescription
+     * @param patientId
+     * @return boolean indicating success
+     */
+    public boolean deletePrescriptionOfPet(int id, int patientId) {
+        return jdbcTemplate.update("DELETE FROM prescription WHERE prescription_id = ? AND patient_id = ?", id, patientId) > 0;
+    }
     //----------------------
     // Helper methods
     //----------------------

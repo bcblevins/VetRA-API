@@ -4,7 +4,6 @@ import com.bcb.vetra.exception.DaoException;
 import com.bcb.vetra.models.Person;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -27,9 +26,19 @@ public class PersonDao {
     public List<Person> getOwners() {
         return jdbcTemplate.query("SELECT * FROM person WHERE is_doctor = false;", this::mapToPerson);
     }
-    public Person getPersonById(int id) {
+    public List<Person> getDoctors() {
+        return jdbcTemplate.query("SELECT * FROM person WHERE is_doctor = true;", this::mapToPerson);
+    }
+    public Person getOwnerById(int id) {
         try {
-            return jdbcTemplate.queryForObject("SELECT * FROM person WHERE person_id = ?", this::mapToPerson, id);
+            return jdbcTemplate.queryForObject("SELECT * FROM person WHERE person_id = ? AND is_doctor = false;", this::mapToPerson, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+    public Person getDoctorById(int id) {
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM person WHERE person_id = ? AND is_doctor = true;", this::mapToPerson, id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -37,7 +46,7 @@ public class PersonDao {
     public Person createPerson(Person person) {
         String sql = "INSERT INTO person (first_name, last_name, is_doctor) VALUES (?,?,?) RETURNING person_id;";
         Integer id = jdbcTemplate.queryForObject(sql, Integer.class, person.getFirstName(), person.getLastName(), person.isDoctor());
-        return getPersonById(id);
+        return getOwnerById(id);
     }
     public Person updatePerson(Person person) {
         String sql = "UPDATE person SET first_name = ?, last_name = ?, is_doctor= ? " +
@@ -46,11 +55,15 @@ public class PersonDao {
         if (rowsAffected == 0) {
             throw new DaoException("Zero rows affected, excpected at least one.");
         } else {
-            return getPersonById(person.getId());
+            return getOwnerById(person.getId());
         }
     }
-    public boolean deletePerson(int id) {
-        String sql = "DELETE FROM person WHERE person_id = ?";
+    public boolean deleteOwner(int id) {
+        String sql = "DELETE FROM person WHERE person_id = ? AND is_doctor = false;";
+        return jdbcTemplate.update(sql, id) > 0;
+    }
+    public boolean deleteDoctor(int id) {
+        String sql = "DELETE FROM person WHERE person_id = ? AND is_doctor = true;";
         return jdbcTemplate.update(sql, id) > 0;
     }
     private Person mapToPerson(ResultSet resultSet, int rowNumber) throws SQLException{

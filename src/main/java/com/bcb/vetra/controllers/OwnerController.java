@@ -21,11 +21,12 @@ public class OwnerController {
     }
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public Person get(@PathVariable int id) {
-        return personDao.getPersonById(id);
+        return personDao.getOwnerById(id);
     }
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST)
     public Person create(@Valid @RequestBody Person person) {
+        person.setDoctor(false);
         return personDao.createPerson(person);
     }
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
@@ -35,6 +36,6 @@ public class OwnerController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable int id) {
-        personDao.deletePerson(id);
+        personDao.deleteOwner(id);
     }
 }

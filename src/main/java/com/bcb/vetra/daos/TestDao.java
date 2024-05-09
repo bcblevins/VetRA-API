@@ -33,6 +33,11 @@ public class TestDao {
         return jdbcTemplate.query("SELECT * FROM test WHERE patient_id = ?", this::mapToTest, patientId);
     }
 
+    /**
+     * Gets all tests for a patient with all parameters and results.
+     * @param patientId
+     * @return List of TestWithDetails
+     */
     public List<TestWithDetails> getTestWithDetailsForPatient(int patientId) {
         List<TestWithDetails> testsForPatient = new ArrayList<>();
         String sql = "select test.*, parameter.name, result.result_id, result.result_value, parameter.range_low, parameter.range_high, parameter.unit, parameter.qualitative_normal, parameter.is_qualitative\n" +
@@ -79,6 +84,11 @@ public class TestDao {
         }
         return testsForPatient;
     }
+    /**
+     * Gets a test with all parameters and results by its id.
+     * @param testId
+     * @return TestWithDetails
+     */
 
     public TestWithDetails getTestWithDetailsByTestId(int testId) {
         String sql = "select test.*, parameter.name, result.result_id, result.result_value, parameter.range_low, parameter.range_high, parameter.unit, parameter.qualitative_normal, parameter.is_qualitative\n" +
@@ -159,6 +169,25 @@ public class TestDao {
         return jdbcTemplate.update("DELETE FROM test WHERE test_id = ?", id) > 0;
     }
 
+    /**
+     * Deletes a test of a patient.
+     * @param id id of test
+     * @param patientId
+     * @return boolean indicating success
+     */
+    public boolean deleteTestOfPatient(int id, int patientId) {
+        return jdbcTemplate.update("DELETE FROM test WHERE test_id = ? AND patient_id = ?", id, patientId) > 0;
+    }
+
+    //----------------------
+    // Helper methods
+    //----------------------
+    /**
+     * Maps a ResultSet row to a Test object.
+     * @param resultSet
+     * @param rowNumber
+     * @return Test object
+     */
     public Test mapToTest(ResultSet resultSet, int rowNumber) throws SQLException {
         return new Test(
                 resultSet.getInt("test_id"),

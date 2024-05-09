@@ -20,6 +20,9 @@ public class PatientDao {
     public Patient getPatientById(int id){
         return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ?", this::mapToPatient, id);
     }
+    public Patient getPatientByIdAndOwner(int patientId, int id){
+        return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ? AND owner_id = ?;", this::mapToPatient, patientId, id);
+    }
     public List<Patient> getPatientsByOwnerId(int id) {
         return jdbcTemplate.query("SELECT * FROM patient WHERE owner_id = ?", this::mapToPatient, id);
     }
@@ -61,8 +64,32 @@ public class PatientDao {
             return getPatientById(patient.getPatientId());
         }
     }
+
+    public Patient updatePatientOfOwner(Patient patient, int ownerId) {
+        int rowsAffected = jdbcTemplate.update(
+                "UPDATE patient SET chart_number = ?, first_name = ?, last_name = ?, birthday = ?, species = ?, sex = ?, owner_id = ? " +
+                        "WHERE patient_id = ? AND owner_id = ?;",
+                patient.getChartNumber(),
+                patient.getFirstName(),
+                patient.getLastName(),
+                patient.getBirthday(),
+                patient.getSpecies(),
+                patient.getSex(),
+                patient.getOwnerID(),
+                patient.getPatientId(),
+                ownerId
+        );
+        if (rowsAffected == 0) {
+            throw new DaoException("Zero rows affected, expected at least one.");
+        } else {
+            return getPatientById(patient.getPatientId());
+        }
+    }
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM patient WHERE patient_id = ?;", id) > 1;
+    }
+    public boolean deletePatientOfOwner(int id, int ownerId) {
+        return jdbcTemplate.update("DELETE FROM patient WHERE patient_id = ? AND owner_id =;", id, ownerId) > 1;
     }
     private Patient mapToPatient(ResultSet resultSet, int rowNumber) throws SQLException {
         return new Patient(

@@ -32,7 +32,7 @@ public class TestWithDetailsController {
 
     @RequestMapping(path = "/{id}/patients/{patientId}/tests/{testId}", method = RequestMethod.DELETE)
     public void delete(@PathVariable int id, @PathVariable int patientId, @PathVariable int testId) {
-        testDao.delete(testId);
+        testDao.deleteTestOfPatient(testId, patientId);
     }
 
 }

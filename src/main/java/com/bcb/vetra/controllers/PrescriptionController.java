@@ -29,6 +29,7 @@ public class PrescriptionController {
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/{id}/patients/{patientId}/prescriptions", method = RequestMethod.POST)
     public PrescriptionWithMedication create(@PathVariable int id, @PathVariable int patientId, @RequestBody PrescriptionWithMedication prescription) {
+        prescription.setPrescriptionId(patientId);
         return prescriptionDao.create(prescription);
     }
     @RequestMapping(path = "/{id}/patients/{patientId}/prescriptions/{prescriptionId}", method = RequestMethod.PUT)
@@ -39,6 +40,6 @@ public class PrescriptionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(path = "/{id}/patients/{patientId}/prescriptions/{prescriptionId}", method = RequestMethod.DELETE)
     public void delete(@PathVariable int id, @PathVariable int patientId, @PathVariable int prescriptionId) {
-        prescriptionDao.delete(prescriptionId);
+        prescriptionDao.deletePrescriptionOfPet(prescriptionId, patientId);
     }
 }
