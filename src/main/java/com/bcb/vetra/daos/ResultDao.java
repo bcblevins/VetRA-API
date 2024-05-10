@@ -21,7 +21,7 @@ public class ResultDao {
         return jdbcTemplate.queryForObject("SELECT * FROM result WHERE result_id = ?", this::mapToResult, id);
     }
     public List<Result> getResultsForTest(int testId) {
-        return jdbcTemplate.query("SELECT * FROM result WHERE test_id = ?", this::mapToResult, testId);
+        return jdbcTemplate.query("SELECT * FROM result WHERE test_id = ? ORDER BY result_id", this::mapToResult, testId);
     }
     public Result create(Result result) {
         Integer id = jdbcTemplate.queryForObject(

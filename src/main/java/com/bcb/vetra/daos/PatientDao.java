@@ -20,14 +20,20 @@ public class PatientDao {
     public Patient getPatientById(int id){
         return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ?", this::mapToPatient, id);
     }
+    /**
+     * Gets a patient by ID from specific owner.
+     * @param patientId
+     * @param id owner id
+     * @return Patient
+     */
     public Patient getPatientByIdAndOwner(int patientId, int id){
         return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ? AND owner_id = ?;", this::mapToPatient, patientId, id);
     }
     public List<Patient> getPatientsByOwnerId(int id) {
-        return jdbcTemplate.query("SELECT * FROM patient WHERE owner_id = ?", this::mapToPatient, id);
+        return jdbcTemplate.query("SELECT * FROM patient WHERE owner_id = ? ORDER BY first_name;", this::mapToPatient, id);
     }
     public List<Patient> getAllPatients() {
-        return jdbcTemplate.query("SELECT * FROM patient", this::mapToPatient);
+        return jdbcTemplate.query("SELECT * FROM patient ORDER BY first_name", this::mapToPatient);
     }
     public Patient create(Patient patient) {
         Integer id = jdbcTemplate.queryForObject(

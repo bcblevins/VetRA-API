@@ -24,10 +24,10 @@ public class PersonDao {
         return jdbcTemplate.query("SELECT * FROM person", this::mapToPerson);
     }
     public List<Person> getOwners() {
-        return jdbcTemplate.query("SELECT * FROM person WHERE is_doctor = false;", this::mapToPerson);
+        return jdbcTemplate.query("SELECT * FROM person WHERE is_doctor = false ORDER BY last_name;", this::mapToPerson);
     }
     public List<Person> getDoctors() {
-        return jdbcTemplate.query("SELECT * FROM person WHERE is_doctor = true;", this::mapToPerson);
+        return jdbcTemplate.query("SELECT * FROM person WHERE is_doctor = true ORDER BY last_name;", this::mapToPerson);
     }
     public Person getOwnerById(int id) {
         try {

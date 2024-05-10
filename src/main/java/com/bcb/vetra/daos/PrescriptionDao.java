@@ -34,7 +34,8 @@ public class PrescriptionDao {
                 "SELECT prescription.*, medication.unit " +
                         "FROM prescription " +
                         "JOIN medication ON medication.name = prescription.medication_name " +
-                        "WHERE prescription.patient_id = ?",
+                        "WHERE prescription.patient_id = ? " +
+                        "ORDER BY prescription.medication_name;",
                 this::mapToPrescriptionWithMedication,
                 id
         );
@@ -43,7 +44,8 @@ public class PrescriptionDao {
         return jdbcTemplate.query(
                 "SELECT prescription.*, medication.unit " +
                         "FROM prescription " +
-                        "JOIN medication ON medication.name = prescription.medication_name",
+                        "JOIN medication ON medication.name = prescription.medication_name " +
+                        "ORDER BY prescription.medication_name;",
                 this::mapToPrescriptionWithMedication);
     }
     public PrescriptionWithMedication create(PrescriptionWithMedication prescription) {

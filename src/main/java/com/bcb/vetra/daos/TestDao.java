@@ -44,7 +44,8 @@ public class TestDao {
                 "from test\n" +
                 "join result on result.test_id = test.test_id\n" +
                 "join parameter on parameter.name = result.parameter_name " +
-                "where patient_id = ?;";
+                "where patient_id = ? " +
+                "order by test_id;";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, patientId);
 
