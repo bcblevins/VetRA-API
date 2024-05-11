@@ -50,6 +50,7 @@ CREATE TABLE "prescription" (
   "prescription_id" SERIAL PRIMARY KEY,
   "quantity" numeric,
   "instructions" varchar(300),
+  "refills" int,
   "is_active" boolean DEFAULT true,
   "patient_id" int,
   "medication_name" varchar(20),
@@ -60,13 +61,26 @@ CREATE TABLE "message" (
   "message_id" serial PRIMARY KEY,
   "subject" varchar(50),
   "body" varchar(1000),
-  "is_med_request" boolean,
-  "patient_id" int
+  "person_id" int
 );
 
-CREATE TABLE "message_prescription" (
+CREATE TABLE "message_test" (
   "message_id" int,
-  "prescription_id" int
+  "test_id" int,
+  PRIMARY KEY ("message_id", "test_id")
+);
+
+CREATE TABLE "message_patient" (
+    "message_id" int,
+    "patient_id" int,
+    PRIMARY KEY ("message_id", "patient_id")
+);
+
+CREATE TABLE "refill_request" (
+  "refill_request_id" SERIAL PRIMARY KEY,
+  "prescription_id" int,
+  "status" varchar(20) DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'APPROVED', 'DENIED'))
+  "request_date" timestamp default current_timestamp,
 );
 
 ALTER TABLE "test" ADD FOREIGN KEY ("doctor_id") REFERENCES "person" ("person_id");

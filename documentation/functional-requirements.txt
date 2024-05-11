@@ -1,0 +1,32 @@
+- I should be able to be able to view all owners.
+- I should be able to view one owner.
+- I should be able to view all doctors.
+- I should be able to view one doctor.
+- I should be able to view all pets for a specific owner.
+- I should be able to view one pet for a specific owner.
+- I should be able to view all tests for a specific pet.
+- I should be able to view one test for a specific pet.
+- I should be able to view all prescriptions for a specific pet.
+- I should be able to view one prescription for a specific pet.
+
+- I should be able to create a new owner.
+- I should be able to create a new doctor.
+- I should be able to create a new pet for a specific owner.
+- I should be able to create a new prescription for a specific pet.
+
+- I should be able to update an owner.
+- I should be able to update a doctor.
+- I should be able to update a pet for a specific owner.
+- I should be able to update a prescription for a specific pet.
+
+- I should be able to delete an owner.
+- I should be able to delete a doctor.
+- I should be able to delete a pet for a specific owner.
+- I should be able to delete a prescription for a specific pet.
+- I should be able to delete a test for a specific pet.
+
+- I should be able to send messages to a specific doctor.
+- I should be able to view messages in context of a test or prescription.
+- I should be able to send messages to owners in the context of a test or prescription.
+- I should be able to request a prescription refill.
+- I should be able to approve a prescription refill.

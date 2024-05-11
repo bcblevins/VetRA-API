@@ -1,0 +1,27 @@
+GET /owners - get all owners
+GET /owners/:id - get owner by id
+POST /owners - create owner
+PUT /owners/:id - update owner by id
+DELETE /owners/:id - delete owner by id
+
+GET /doctors - get all doctors
+GET /doctors/:id - get doctor by id
+POST /doctors - create doctor
+PUT /doctors/:id - update doctor by id
+DELETE /doctors/:id - delete doctor by id
+
+GET owners/:id/pets - get all pets for owner
+GET owners/:id/pets/:petId - get pet by id for owner
+POST owners/:id/pets - create pet for owner
+PUT owners/:id/pets/:petId - update pet by id for owner
+DELETE owners/:id/pets/:petId - delete pet by id for owner
+
+GET owners/:id/pets/:petId/tests - get all tests for pet
+GET owners/:id/pets/:petId/tests/:testId - get test by id for pet
+DELETE owners/:id/pets/:petId/tests/:testId - delete test by id for pet
+
+GET owners/:id/pets/:petId/prescriptions - get all prescriptions for pet
+GET owners/:id/pets/:petId/prescriptions/:prescriptionId - get prescription by id for pet
+POST owners/:id/pets/:petId/prescriptions - create prescription for pet
+PUT owners/:id/pets/:petId/prescriptions/:prescriptionId - update prescription by id for pet
+DELETE owners/:id/pets/:petId/prescriptions/:prescriptionId - delete prescription by id for pet
