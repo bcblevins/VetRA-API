@@ -36,6 +36,17 @@ public class UserController {
     public User updatePassword(@Valid @RequestBody User user, @PathVariable String username) {
         return userDao.updatePassword(user);
     }
+    @PostMapping(path = "/{username}/roles")
+    public User addRole(@PathVariable String username, @Valid @RequestBody String role) {
+        return userDao.addRole(username, role.toUpperCase());
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(path = "/{username}/roles/{role}")
+    public void deleteRole(@PathVariable String username, @PathVariable String role) {
+        userDao.deleteRole(username, role.toUpperCase());
+    }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "/{username}")
     public void delete(@PathVariable String username) {

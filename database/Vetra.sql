@@ -5,7 +5,7 @@ drop table if exists test cascade;
 drop table if exists medication cascade;
 drop table if exists patient cascade;
 drop table if exists "user" cascade;
-drop table if exists "roles" cascade;
+drop table if exists "role" cascade;
 drop table if exists "message" cascade;
 drop table if exists "message_test" cascade;
 drop table if exists "message_patient" cascade;
@@ -31,9 +31,9 @@ CREATE TABLE "user" (
   "last_name" varchar(20)
 );
 
-CREATE TABLE "roles" (
+CREATE TABLE "role" (
   "username" varchar(30),
-  "roles" varchar(250)
+  "role" varchar(250)
 );
 
 CREATE TABLE "test" (
