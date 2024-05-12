@@ -23,14 +23,14 @@ public class PatientDao {
     /**
      * Gets a patient by ID from specific owner.
      * @param patientId
-     * @param id owner id
+     * @param username owner id
      * @return Patient
      */
-    public Patient getPatientByIdAndOwner(int patientId, int id){
-        return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ? AND owner_id = ?;", this::mapToPatient, patientId, id);
+    public Patient getPatientByIdAndOwner(int patientId, String username){
+        return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ? AND username = ?;", this::mapToPatient, patientId, username);
     }
-    public List<Patient> getPatientsByOwnerId(int id) {
-        return jdbcTemplate.query("SELECT * FROM patient WHERE owner_id = ? ORDER BY first_name;", this::mapToPatient, id);
+    public List<Patient> getPatientsByOwnerId(String username) {
+        return jdbcTemplate.query("SELECT * FROM patient WHERE username = ? ORDER BY first_name;", this::mapToPatient, username);
     }
     public List<Patient> getAllPatients() {
         return jdbcTemplate.query("SELECT * FROM patient ORDER BY first_name", this::mapToPatient);
@@ -71,10 +71,10 @@ public class PatientDao {
         }
     }
 
-    public Patient updatePatientOfOwner(Patient patient, int ownerId) {
+    public Patient updatePatientOfOwner(Patient patient, String username) {
         int rowsAffected = jdbcTemplate.update(
                 "UPDATE patient SET chart_number = ?, first_name = ?, last_name = ?, birthday = ?, species = ?, sex = ?, owner_id = ? " +
-                        "WHERE patient_id = ? AND owner_id = ?;",
+                        "WHERE patient_id = ? AND username = ?;",
                 patient.getChartNumber(),
                 patient.getFirstName(),
                 patient.getLastName(),
@@ -83,7 +83,7 @@ public class PatientDao {
                 patient.getSex(),
                 patient.getOwnerID(),
                 patient.getPatientId(),
-                ownerId
+                username
         );
         if (rowsAffected == 0) {
             throw new DaoException("Zero rows affected, expected at least one.");
@@ -94,8 +94,8 @@ public class PatientDao {
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM patient WHERE patient_id = ?;", id) > 1;
     }
-    public boolean deletePatientOfOwner(int id, int ownerId) {
-        return jdbcTemplate.update("DELETE FROM patient WHERE patient_id = ? AND owner_id =;", id, ownerId) > 1;
+    public boolean deletePatient(int id) {
+        return jdbcTemplate.update("DELETE FROM patient WHERE patient_id = ?", id) > 1;
     }
     private Patient mapToPatient(ResultSet resultSet, int rowNumber) throws SQLException {
         return new Patient(

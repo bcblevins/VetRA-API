@@ -11,33 +11,33 @@ import java.util.List;
  * Controller class for the Patient model.
  */
 @RestController
-@RequestMapping(path="/owners")
+@RequestMapping(path="/users")
 public class PatientController {
     private PatientDao patientDao;
     public PatientController(PatientDao patientDao) {
         this.patientDao = patientDao;
     }
-    @RequestMapping(path = "/{id}/patients", method = RequestMethod.GET)
-    public List<Patient> getAll(@PathVariable int id) {
-        return patientDao.getPatientsByOwnerId(id);
+    @RequestMapping(path = "/{username}/patients", method = RequestMethod.GET)
+    public List<Patient> getAll(@PathVariable String username) {
+        return patientDao.getPatientsByOwnerId(username);
     }
-    @RequestMapping(path = "/{id}/patients/{patientId}", method = RequestMethod.GET)
-    public Patient get(@PathVariable int id, @PathVariable int patientId) {
-        return patientDao.getPatientByIdAndOwner(patientId, id);
+    @RequestMapping(path = "/{username}/patients/{patientId}", method = RequestMethod.GET)
+    public Patient get(@PathVariable String username, @PathVariable int patientId) {
+        return patientDao.getPatientByIdAndOwner(patientId, username);
     }
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(path = "/{id}/patients", method = RequestMethod.POST)
-    public Patient create(@PathVariable int id, @RequestBody Patient patient) {
+    @RequestMapping(path = "/{username}/patients", method = RequestMethod.POST)
+    public Patient create(@PathVariable String username, @RequestBody Patient patient) {
         return patientDao.create(patient);
     }
-    @RequestMapping(path = "/{id}/patients/{patientId}", method = RequestMethod.PUT)
-    public Patient update(@PathVariable int id, @PathVariable int patientId, @RequestBody Patient patient) {
+    @RequestMapping(path = "/{username}/patients/{patientId}", method = RequestMethod.PUT)
+    public Patient update(@PathVariable String username, @PathVariable int patientId, @RequestBody Patient patient) {
         patient.setPatientId(patientId);
-        return patientDao.updatePatientOfOwner(patient, id);
+        return patientDao.updatePatientOfOwner(patient, username);
     }
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @RequestMapping(path = "/{id}/patients/{patientId}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable int id, @PathVariable int patientId) {
-        patientDao.deletePatientOfOwner(patientId, id);
+    @RequestMapping(path = "/{username}/patients/{patientId}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable String username, @PathVariable int patientId) {
+        patientDao.deletePatient(patientId);
     }
 }

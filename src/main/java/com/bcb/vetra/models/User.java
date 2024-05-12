@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 /**
  * Model class for doctors and pet owners.
  */
@@ -15,11 +13,13 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
-    private int id;
-    @NotBlank(message = "Person must have a first name.")
+public class User {
+    @NotBlank(message = "User must have a username.")
+    private String username;
+    @NotBlank(message = "User must have a password.")
+    private String password;
+    @NotBlank(message = "User must have a first name.")
     private String firstName;
-    @NotBlank(message = "Person must have a last name.")
+    @NotBlank(message = "User must have a last name.")
     private String lastName;
-    private boolean isDoctor;
 }
