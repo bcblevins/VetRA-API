@@ -1,27 +1,47 @@
-GET /owners - get all owners
-GET /owners/:id - get owner by id
-POST /owners - create owner
-PUT /owners/:id - update owner by id
-DELETE /owners/:id - delete owner by id
+GET /patients - get all patients 
+GET /patients/:patientId - get patient by patientId
+POST /patients - create a patient
+PUT /patients/:patientId - update patient by patientId
+DELETE /patients/:patientId - delete patient by patientId
 
-GET /doctors - get all doctors
-GET /doctors/:id - get doctor by id
-POST /doctors - create doctor
-PUT /doctors/:id - update doctor by id
-DELETE /doctors/:id - delete doctor by id
+GET /patients/:patientId/messages - get all messages about a patient
+GET /patients/:patientId/messages/:messageId - get message by messageId about a patient
+POST /patients/:patientId/messages - create a message about a patient
+PUT /patients/:patientId/messages/:messageId - update message by messageId about a patient
+DELETE /patients/:patientId/messages/:messageId - delete message by messageId about a patient
 
-GET owners/:id/pets - get all pets for owner
-GET owners/:id/pets/:petId - get pet by id for owner
-POST owners/:id/pets - create pet for owner
-PUT owners/:id/pets/:petId - update pet by id for owner
-DELETE owners/:id/pets/:petId - delete pet by id for owner
+GET /patients/:patientId/tests - get all tests of patient 
+GET /patients/:patientId/tests/:testId - get test by testId of patient
+DELETE /patients/:patientId/tests/:testId - delete test by testId of patient
 
-GET owners/:id/pets/:petId/tests - get all tests for pet
-GET owners/:id/pets/:petId/tests/:testId - get test by id for pet
-DELETE owners/:id/pets/:petId/tests/:testId - delete test by id for pet
+GET /patients/:patientId/tests/:testId/messages - get all messages of test of patient 
+GET /patients/:patientId/tests/:testId/messages/:messageId - get message by messageId of test of patient 
+POST /patients/:patientId/tests/:testId/messages - create a message in context of test of patient
+PUT /patients/:patientId/tests/:testId/messages/:messageId - update message by messageId of test of patient
+DELETE /patients/:patientId/tests/:testId/messages/:messageId - delete message by messageId of test of patient
 
-GET owners/:id/pets/:petId/prescriptions - get all prescriptions for pet
-GET owners/:id/pets/:petId/prescriptions/:prescriptionId - get prescription by id for pet
-POST owners/:id/pets/:petId/prescriptions - create prescription for pet
-PUT owners/:id/pets/:petId/prescriptions/:prescriptionId - update prescription by id for pet
-DELETE owners/:id/pets/:petId/prescriptions/:prescriptionId - delete prescription by id for pet
+GET /patients/:patientId/prescriptions - get all prescriptions of patient 
+GET /patients/:patientId/prescriptions/:prescriptionId - get prescription by prescriptionId of patient
+POST /patients/:patientId/prescriptions - create a prescription of patient
+PUT /patients/:patientId/prescriptions/:prescriptionId - update prescription by prescriptionId of patient
+DELETE /patients/:patientId/prescriptions/:prescriptionId - delete prescription by prescriptionId of patient
+
+GET /patients/:patientId/prescriptions/:prescriptionId/requests - get all refill requests of prescription of patient 
+GET /patients/:patientId/prescriptions/:prescriptionId/requests/:requestId - get refill request by requestId of prescription of patient 
+POST /patients/:patientId/prescriptions/:prescriptionId/requests - create a refill request of prescription of patient 
+
+GET /messages - get all messages 
+GET /messages/:messageId - get message by messageId 
+POST /messages - create a message
+PUT /messages/:messageId - update message by messageId
+DELETE /messages/:messageId - delete message by messageId
+
+GET /users - get all users
+GET /users/:username - get user by username
+POST /users - create a user
+PUT /users/:username - update user by username
+DELETE /users/:username - delete user by username
+
+PUT /prescriptions/:prescriptionId - update prescription by prescriptionId
+DELETE /prescriptions/:prescriptionId - delete prescription by prescriptionId
+
