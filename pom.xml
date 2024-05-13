@@ -51,6 +51,11 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>eu.fraho.spring</groupId>
+			<artifactId>security-jwt-base-spring-boot-starter</artifactId>
+			<version>5.0.9</version>
+		</dependency>
 	</dependencies>
 
 	<build>

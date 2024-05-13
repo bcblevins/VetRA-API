@@ -40,9 +40,9 @@ public class TestDao {
      */
     public List<TestWithDetails> getTestWithDetailsForPatient(int patientId) {
         List<TestWithDetails> testsForPatient = new ArrayList<>();
-        String sql = "select test.*, parameter.name, result.result_id, result.result_value, parameter.range_low, parameter.range_high, parameter.unit, parameter.qualitative_normal, parameter.is_qualitative\n" +
-                "from test\n" +
-                "join result on result.test_id = test.test_id\n" +
+        String sql = "select test.*, parameter.name, result.result_id, result.result_value, parameter.range_low, parameter.range_high, parameter.unit, parameter.qualitative_normal, parameter.is_qualitative " +
+                "from test " +
+                "join result on result.test_id = test.test_id " +
                 "join parameter on parameter.name = result.parameter_name " +
                 "where patient_id = ? " +
                 "order by test_id;";
@@ -63,9 +63,10 @@ public class TestDao {
                 currentTest.setTestId(currentTestId);
                 currentTest.setName(results.getString("name"));
                 currentTest.setPatientID(results.getInt("patient_id"));
-                currentTest.setDoctorID(results.getInt("doctor_id"));
-                currentTest.setDoctorNotes(results.getString("doctor_notes"));
-                currentTest.setTimestamp(results.getTimestamp("time_stamp").toLocalDateTime());
+                currentTest.setDoctorUsername(results.getString("doctor_username"));
+                if (results.getTimestamp("time_stamp") != null) {
+                    currentTest.setTimestamp(results.getTimestamp("time_stamp").toLocalDateTime());
+                }
             }
             currentTest.addToResults(new ParameterWithResult(
                     results.getInt("result_id"),
@@ -110,8 +111,7 @@ public class TestDao {
                 currentTest.setTestId(currentTestId);
                 currentTest.setName(results.getString("name"));
                 currentTest.setPatientID(results.getInt("patient_id"));
-                currentTest.setDoctorID(results.getInt("doctor_id"));
-                currentTest.setDoctorNotes(results.getString("doctor_notes"));
+                currentTest.setDoctorUsername(results.getString("doctor_username"));
                 currentTest.setTimestamp(results.getTimestamp("time_stamp").toLocalDateTime());
             }
             currentTest.addToResults(new ParameterWithResult(
@@ -135,28 +135,26 @@ public class TestDao {
 
     public Test create(Test test) {
         Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO test (name, time_stamp, doctor_notes, patient_id, doctor_id) " +
-                        "VALUES (?,?,?,?,?) " +
+                "INSERT INTO test (name, time_stamp, patient_id, doctor_username) " +
+                        "VALUES (?,?,?,?) " +
                         "RETURNING test_id;",
                 Integer.class,
                 test.getName(),
                 test.getTimestamp(),
-                test.getDoctorNotes(),
                 test.getPatientID(),
-                test.getDoctorID()
+                test.getDoctorUsername()
         );
         return getTestById(id);
     }
 
     public Test update(Test test) {
         int rowsAffected = jdbcTemplate.update(
-                "UPDATE test SET name = ?, time_stamp = ?, doctor_notes = ?, patient_id = ?, doctor_id = ? " +
+                "UPDATE test SET name = ?, time_stamp = ?, patient_id = ?, doctor_username = ? " +
                         "WHERE test_id = ?;",
                 test.getName(),
                 test.getTimestamp(),
-                test.getDoctorNotes(),
                 test.getPatientID(),
-                test.getDoctorID(),
+                test.getDoctorUsername(),
                 test.getId()
         );
         if (rowsAffected == 0) {
@@ -183,20 +181,13 @@ public class TestDao {
     //----------------------
     // Helper methods
     //----------------------
-    /**
-     * Maps a ResultSet row to a Test object.
-     * @param resultSet
-     * @param rowNumber
-     * @return Test object
-     */
     public Test mapToTest(ResultSet resultSet, int rowNumber) throws SQLException {
         return new Test(
                 resultSet.getInt("test_id"),
                 resultSet.getString("name"),
                 resultSet.getTimestamp("time_stamp").toLocalDateTime(),
-                resultSet.getString("doctor_notes"),
                 resultSet.getInt("patient_id"),
-                resultSet.getInt("doctor_id")
+                resultSet.getString("doctor_username")
         );
     }
 

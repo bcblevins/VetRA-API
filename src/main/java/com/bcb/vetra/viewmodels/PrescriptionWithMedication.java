@@ -27,5 +27,5 @@ public class PrescriptionWithMedication {
     @NotBlank(message = "Patient ID is required.")
     private int patientId;
     @NotBlank(message = "Doctor ID is required.")
-    private int doctorId;
+    private String doctorUsername;
 }

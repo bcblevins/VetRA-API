@@ -17,12 +17,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Patient {
     private int patientId;
-    @NotBlank(message = "Chart number is required.")
-    private String chartNumber;
     @NotBlank(message = "First name is required.")
     private String firstName;
-    @NotBlank(message = "Last name is required.")
-    private String lastName;
     private LocalDate birthday;
     private String species;
     private String sex;

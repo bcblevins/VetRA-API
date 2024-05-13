@@ -11,19 +11,18 @@ import java.util.List;
  * Controller class for the Patient model.
  */
 @RestController
-@RequestMapping(path="/users")
 public class PatientController {
     private PatientDao patientDao;
     public PatientController(PatientDao patientDao) {
         this.patientDao = patientDao;
     }
-    @RequestMapping(path = "/{username}/patients", method = RequestMethod.GET)
-    public List<Patient> getAll(@PathVariable String username) {
-        return patientDao.getPatientsByOwnerId(username);
+    @RequestMapping(path = "/patients", method = RequestMethod.GET)
+    public List<Patient> getAll() {
+        return patientDao.getAllPatients();
     }
-    @RequestMapping(path = "/{username}/patients/{patientId}", method = RequestMethod.GET)
-    public Patient get(@PathVariable String username, @PathVariable int patientId) {
-        return patientDao.getPatientByIdAndOwner(patientId, username);
+    @RequestMapping(path = "patients/{patientId}", method = RequestMethod.GET)
+    public Patient get(@PathVariable int patientId) {
+        return patientDao.getPatientById(patientId);
     }
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/{username}/patients", method = RequestMethod.POST)

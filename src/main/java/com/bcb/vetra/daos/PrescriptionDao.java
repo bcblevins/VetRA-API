@@ -51,7 +51,7 @@ public class PrescriptionDao {
     public PrescriptionWithMedication create(PrescriptionWithMedication prescription) {
         insertMedicationIfDoesNotExist(prescription);
         Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO prescription (medication_name, quantity, instructions, is_active, patient_id, doctor_id) " +
+                "INSERT INTO prescription (medication_name, quantity, instructions, is_active, patient_id, doctor_username) " +
                         "VALUES (?,?,?,?,?,?) " +
                         "RETURNING prescription_id;",
                 Integer.class,
@@ -60,20 +60,20 @@ public class PrescriptionDao {
                 prescription.getInstructions(),
                 prescription.isActive(),
                 prescription.getPatientId(),
-                prescription.getDoctorId()
+                prescription.getDoctorUsername()
         );
         return getPrescriptionWithMedicationById(id);
     }
     public PrescriptionWithMedication update(PrescriptionWithMedication prescription) {
         int rowsAffected = jdbcTemplate.update(
-                "UPDATE prescription SET medication_name = ?, quantity = ?, instructions = ?, is_active = ?, patient_id = ?, doctor_id = ? " +
+                "UPDATE prescription SET medication_name = ?, quantity = ?, instructions = ?, is_active = ?, patient_id = ?, doctor_username = ? " +
                         "WHERE prescription_id = ?;",
                 prescription.getName(),
                 prescription.getQuantity(),
                 prescription.getInstructions(),
                 prescription.isActive(),
                 prescription.getPatientId(),
-                prescription.getDoctorId(),
+                prescription.getDoctorUsername(),
                 prescription.getPrescriptionId()
         );
         if (rowsAffected == 0) {
@@ -106,7 +106,7 @@ public class PrescriptionDao {
                 resultSet.getString("instructions"),
                 resultSet.getBoolean("is_active"),
                 resultSet.getInt("patient_id"),
-                resultSet.getInt("doctor_id")
+                resultSet.getString("doctor_username")
                 );
     }
 
@@ -118,7 +118,7 @@ public class PrescriptionDao {
                 resultSet.getString("instructions"),
                 resultSet.getBoolean("is_active"),
                 resultSet.getInt("patient_id"),
-                resultSet.getInt("doctor_id")
+                resultSet.getString("doctor_username")
         );
     }
 

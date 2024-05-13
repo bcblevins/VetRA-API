@@ -117,11 +117,11 @@ ALTER TABLE "prescription" ADD FOREIGN KEY ("doctor_username") REFERENCES "user"
 
 ALTER TABLE "prescription" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id");
 
-ALTER TABLE "prescription" ADD FOREIGN KEY ("prescription_id") REFERENCES "refill_request" ("prescription_id");
+ALTER TABLE "refill_request" ADD FOREIGN KEY ("prescription_id") REFERENCES "prescription" ("prescription_id");
 
-ALTER TABLE "message" ADD FOREIGN KEY ("message_id") REFERENCES "message_patient" ("message_id");
+ALTER TABLE "message_patient" ADD FOREIGN KEY ("message_id") REFERENCES "message" ("message_id");
 
-ALTER TABLE "patient" ADD FOREIGN KEY ("patient_id") REFERENCES "message_patient" ("patient_id");
+ALTER TABLE "message_patient" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id");
 
 ALTER TABLE "message" ADD FOREIGN KEY ("from_username") REFERENCES "user" ("username");
 
@@ -129,7 +129,7 @@ ALTER TABLE "message" ADD FOREIGN KEY ("to_username") REFERENCES "user" ("userna
 
 ALTER TABLE "message_test" ADD FOREIGN KEY ("message_id") REFERENCES "message" ("message_id");
 
-ALTER TABLE "test" ADD FOREIGN KEY ("test_id") REFERENCES "message_test" ("test_id");
+ALTER TABLE "message_test" ADD FOREIGN KEY ("test_id") REFERENCES "test" ("test_id");
 
 ALTER TABLE "role" ADD FOREIGN KEY ("username") REFERENCES "user" ("username");
 
@@ -145,12 +145,12 @@ insert into "user" (username, password, first_name, last_name) values
 ('bblevins96', '1234', 'Beau', 'Blevins'),
 ('cakelly4', '1234', 'Chris', 'Kelly');
 
-insert into patient (chart_number, first_name, last_name, birthday, species, sex, username) values
-('000000', 'Charlie', 'Blevins', '2015-03-14', 'Canine', 'SF', 'bblevins96'),
-('000001', 'Sunny', 'Blevins', '2016-02-20', 'Feline', 'CM', 'bblevins96');
+insert into patient (first_name, birthday, species, sex, owner_username) values
+('Charlie', '2015-03-14', 'Canine', 'SF', 'bblevins96'),
+('Sunny', '2016-02-20', 'Feline', 'CM', 'bblevins96');
 
-insert into test (name, time_stamp, doctor_notes, patient_id, doctor_username)
-values ('CBC', '2024-02-20', 'Charlie''s labwork looks great!', 1, 'cakelly4');
+insert into test (name, time_stamp, patient_id, doctor_username)
+values ('CBC', '2024-02-20', 1, 'cakelly4');
 
 insert into result (test_id, parameter_name, result_value) values
 	(1, 'WBC', 9.3),
@@ -164,7 +164,12 @@ insert into medication (name, unit) values
 	('Trazodone 50mg', 'tablets'),
 	('Gabapentin 100mg', 'capsules');
 
-insert into prescription (quantity, instructions, is_active, patient_id, medication_name, doctor_username) values
-	(10, 'Give 1/2 tablet by mouth 3 hours prior to thunderstorms to reduce anxiety.', true, 1, 'Trazodone 50mg', 'cakelly4'),
-	(30, 'Give 1/2 to 1 capsule by mouth twice daily or as needed to reduce anxiety.', true, 2, 'Gabapentin 100mg', 'cakelly4');
+insert into prescription (quantity, instructions, is_active, patient_id, medication_name, doctor_username, refills) values
+	(10, 'Give 1/2 tablet by mouth 3 hours prior to thunderstorms to reduce anxiety.', true, 1, 'Trazodone 50mg', 'cakelly4', 0),
+	(30, 'Give 1/2 to 1 capsule by mouth twice daily or as needed to reduce anxiety.', true, 2, 'Gabapentin 100mg', 'cakelly4', 0);
+	
+insert into "role" (username, role) values 
+	('bblevins96', 'OWNER'),
+	('cakelly4', 'DOCTOR'),
+	('cakelly4', 'ADMIN');
 

@@ -4,12 +4,12 @@ import com.bcb.vetra.exception.DaoException;
 import com.bcb.vetra.models.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 /**
  * Data Access Object for the User model.
@@ -17,9 +17,11 @@ import java.util.List;
 @Component
 public class UserDao {
     private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserDao(DataSource dataSource) {
+    public UserDao(DataSource dataSource, PasswordEncoder passwordEncoder) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> getUsers() {
@@ -34,17 +36,18 @@ public class UserDao {
         }
     }
 
-    public User createPerson(User user) {
+    public User createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         String sql = "INSERT INTO \"user\" (username, password, first_name, last_name) VALUES (?,?,?,?) RETURNING username;";
         String username = jdbcTemplate.queryForObject(sql, String.class, user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName());
         return getUserByUsername(username);
     }
-    public User updatePerson(User user) {
+    public User updateUser(User user) {
         String sql = "UPDATE \"user\" SET first_name = ?, last_name = ? " +
                 "WHERE username = ?";
         int rowsAffected = jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getUsername());
         if (rowsAffected == 0) {
-            throw new DaoException("Zero rows affected, excpected at least one.");
+            throw new DaoException("Zero rows affected, expected at least one.");
         } else {
             return getUserByUsername(user.getUsername());
         }
@@ -54,7 +57,7 @@ public class UserDao {
         String sql = "UPDATE \"user\" SET password = ? WHERE username = ?";
         int rowsAffected = jdbcTemplate.update(sql, user.getPassword(), user.getUsername());
         if (rowsAffected == 0) {
-            throw new DaoException("Zero rows affected, excpected at least one.");
+            throw new DaoException("Zero rows affected, expected at least one.");
         } else {
             return getUserByUsername(user.getUsername());
         }

@@ -19,9 +19,8 @@ public class TestWithDetails {
     private int testId;
     private String name;
     private int patientID;
-    private int doctorID;
+    private String doctorUsername;
     private List<ParameterWithResult> results;
-    private String doctorNotes;
     private LocalDateTime timestamp;
     public void addToResults(ParameterWithResult result) {
         if (this.results == null) {

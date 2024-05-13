@@ -37,31 +37,27 @@ public class PatientDao {
     }
     public Patient create(Patient patient) {
         Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO patient (chart_number, first_name, last_name, birthday, species, sex, owner_id) " +
+                "INSERT INTO patient (first_name, birthday, species, sex, owner_username) " +
                         "VALUES (?,?,?,?,?,?,?) " +
                         "RETURNING patient_id;",
                 Integer.class,
-                patient.getChartNumber(),
                 patient.getFirstName(),
-                patient.getLastName(),
                 patient.getBirthday(),
                 patient.getSpecies(),
                 patient.getSex(),
-                patient.getOwnerID()
+                patient.getOwnerUsername()
                 );
         return getPatientById(id);
     }
     public Patient update(Patient patient) {
         int rowsAffected = jdbcTemplate.update(
-                "UPDATE patient SET chart_number = ?, first_name = ?, last_name = ?, birthday = ?, species = ?, sex = ?, owner_id = ? " +
+                "UPDATE patient SET first_name = ?, birthday = ?, species = ?, sex = ?, owner_username = ? " +
                         "WHERE patient_id = ?;",
-                patient.getChartNumber(),
                 patient.getFirstName(),
-                patient.getLastName(),
                 patient.getBirthday(),
                 patient.getSpecies(),
                 patient.getSex(),
-                patient.getOwnerID(),
+                patient.getOwnerUsername(),
                 patient.getPatientId()
         );
         if (rowsAffected == 0) {
@@ -73,15 +69,13 @@ public class PatientDao {
 
     public Patient updatePatientOfOwner(Patient patient, String username) {
         int rowsAffected = jdbcTemplate.update(
-                "UPDATE patient SET chart_number = ?, first_name = ?, last_name = ?, birthday = ?, species = ?, sex = ?, owner_id = ? " +
+                "UPDATE patient SET first_name = ?, birthday = ?, species = ?, sex = ?, owner_username = ? " +
                         "WHERE patient_id = ? AND username = ?;",
-                patient.getChartNumber(),
                 patient.getFirstName(),
-                patient.getLastName(),
                 patient.getBirthday(),
                 patient.getSpecies(),
                 patient.getSex(),
-                patient.getOwnerID(),
+                patient.getOwnerUsername(),
                 patient.getPatientId(),
                 username
         );
@@ -100,13 +94,11 @@ public class PatientDao {
     private Patient mapToPatient(ResultSet resultSet, int rowNumber) throws SQLException {
         return new Patient(
                 resultSet.getInt("patient_id"),
-                resultSet.getString("chart_number"),
                 resultSet.getString("first_name"),
-                resultSet.getString("last_name"),
                 resultSet.getDate("birthday").toLocalDate(),
                 resultSet.getString("species"),
                 resultSet.getString("sex"),
-                resultSet.getInt("owner_id")
+                resultSet.getString("owner_username")
         );
     }
 

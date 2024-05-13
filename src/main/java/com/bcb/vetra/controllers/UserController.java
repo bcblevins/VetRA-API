@@ -26,11 +26,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        return userDao.createPerson(user);
+        return userDao.createUser(user);
     }
     @PutMapping(path = "/{username}")
     public User update(@Valid @RequestBody User user, @PathVariable String username) {
-        return userDao.updatePerson(user);
+        return userDao.updateUser(user);
     }
     @PutMapping(path = "/{username}/password")
     public User updatePassword(@Valid @RequestBody User user, @PathVariable String username) {
