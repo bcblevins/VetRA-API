@@ -1,5 +1,6 @@
 package com.bcb.vetra.models;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,9 +18,12 @@ import java.util.List;
 @AllArgsConstructor
 public class Test {
     private int id;
+    @NotBlank(message = "Test must have a name.")
     private String name;
+    @NotBlank(message = "Test must have a timestamp.")
     private LocalDateTime timestamp;
-    private String doctorNotes;
+    @NotBlank(message = "Test must have a patientId.")
     private int patientID;
-    private int doctorID;
+    @NotBlank(message = "Test must have a doctorUsername.")
+    private String doctorUsername;
 }

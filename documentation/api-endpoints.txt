@@ -42,6 +42,5 @@ POST /users - create a user
 PUT /users/:username - update user by username
 DELETE /users/:username - delete user by username
 
-PUT /prescriptions/:prescriptionId - update prescription by prescriptionId
-DELETE /prescriptions/:prescriptionId - delete prescription by prescriptionId
+
 

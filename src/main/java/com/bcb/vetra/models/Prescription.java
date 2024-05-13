@@ -1,5 +1,6 @@
 package com.bcb.vetra.models;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,15 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Prescription {
     private int prescriptionId;
+    @NotBlank(message = "Prescription must have a medication name.")
     private String name;
+    @NotBlank(message = "Prescription must have a quantity.")
     private double quantity;
+    @NotBlank(message = "Prescription must have instructions.")
     private String instructions;
     private boolean isActive;
+    @NotBlank(message = "Prescription must have a patientId.")
     private int patientId;
-    private int doctorId;
+    @NotBlank(message = "Prescription must have a doctorUsername.")
+    private String doctorUsername;
 }

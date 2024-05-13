@@ -11,45 +11,40 @@ drop table if exists "message_test" cascade;
 drop table if exists "message_patient" cascade;
 drop table if exists "refill_request" cascade;
 
-
-
 CREATE TABLE "patient" (
   "patient_id" SERIAL PRIMARY KEY,
-  "chart_number" varchar(8) UNIQUE,
-  "first_name" varchar(20),
-  "last_name" varchar(20),
+  "first_name" varchar(20) NOT NULL,
   "birthday" date,
-  "species" varchar(20),
+  "species" varchar(20) NOT NULL,
   "sex" varchar(2),
-  "username" varchar(30)
+  "owner_username" varchar(30) NOT NULL
 );
 
 CREATE TABLE "user" (
   "username" varchar(30) PRIMARY KEY,
-  "password" varchar(300),
-  "first_name" varchar(20),
-  "last_name" varchar(20)
+  "password" varchar(300) NOT NULL,
+  "first_name" varchar(20) NOT NULL,
+  "last_name" varchar(20) NOT NULL
 );
 
 CREATE TABLE "role" (
-  "username" varchar(30),
-  "role" varchar(250)
+  "username" varchar(30) NOT NULL,
+  "role" varchar(250) NOT NULL
 );
 
 CREATE TABLE "test" (
   "test_id" SERIAL PRIMARY KEY,
-  "name" varchar(50),
-  "time_stamp" timestamp,
-  "doctor_notes" varchar(500),
-  "patient_id" int,
-  "doctor_username" varchar(30)
+  "name" varchar(50) NOT NULL,
+  "time_stamp" timestamp NOT NULL,
+  "patient_id" int NOT NULL,
+  "doctor_username" varchar(30) NOT NULL
 );
 
 CREATE TABLE "result" (
   "result_id" SERIAL PRIMARY KEY,
-  "test_id" int,
-  "parameter_name" varchar(20),
-  "result_value" varchar(20)
+  "test_id" int NOT NULL,
+  "parameter_name" varchar(20) NOT NULL,
+  "result_value" varchar(20) NOT NULL
 );
 
 CREATE TABLE "parameter" (
@@ -68,70 +63,75 @@ CREATE TABLE "medication" (
 
 CREATE TABLE "prescription" (
   "prescription_id" SERIAL PRIMARY KEY,
-  "quantity" numeric,
-  "instructions" varchar(300),
-  "refills" int,
+  "quantity" numeric NOT NULL,
+  "instructions" varchar(300) NOT NULL,
+  "refills" int NOT NULL,
   "is_active" boolean DEFAULT true,
-  "patient_id" int,
-  "medication_name" varchar(20),
-  "doctor_username" varchar(30)
+  "patient_id" int NOT NULL,
+  "medication_name" varchar(20) NOT NULL,
+  "doctor_username" varchar(30) NOT NULL
 );
 
 CREATE TABLE "message" (
   "message_id" SERIAL PRIMARY KEY,
-  "subject" varchar(50),
-  "body" varchar(1000),
-  "username" varchar(30)
+  "subject" varchar(50) NOT NULL,
+  "body" varchar(1000) NOT NULL,
+  "from_username" varchar(30) NOT NULL,
+  "to_username" varchar(30) NOT NULL
 );
 
 CREATE TABLE "message_test" (
-  "message_id" int,
-  "test_id" int,
+  "message_id" int NOT NULL,
+  "test_id" int NOT NULL,
   PRIMARY KEY ("message_id", "test_id")
 );
 
 CREATE TABLE "message_patient" (
-  "message_id" int,
-  "patient_id" int,
+  "message_id" int NOT NULL,
+  "patient_id" int NOT NULL,
   PRIMARY KEY ("message_id", "patient_id")
 );
 
 CREATE TABLE "refill_request" (
   "refill_request_id" SERIAL PRIMARY KEY,
-  "prescription_id" int,
+  "prescription_id" int NOT NULL,
   "status" varchar(20) DEFAULT 'PENDING',
   "request_date" timestamp DEFAULT (current_timestamp)
 );
 
-ALTER TABLE "test" ADD FOREIGN KEY ("doctor_username") REFERENCES "user" ("username") on delete cascade;
+CREATE INDEX ON "role" ("username", "role");
 
-ALTER TABLE "patient" ADD FOREIGN KEY ("username") REFERENCES "user" ("username") on delete cascade;
+ALTER TABLE "test" ADD FOREIGN KEY ("doctor_username") REFERENCES "user" ("username");
 
-ALTER TABLE "test" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id") on delete cascade;
+ALTER TABLE "patient" ADD FOREIGN KEY ("owner_username") REFERENCES "user" ("username");
 
-ALTER TABLE "result" ADD FOREIGN KEY ("test_id") REFERENCES "test" ("test_id") on delete cascade;
+ALTER TABLE "test" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id");
 
-ALTER TABLE "result" ADD FOREIGN KEY ("parameter_name") REFERENCES "parameter" ("name") on delete cascade;
+ALTER TABLE "result" ADD FOREIGN KEY ("test_id") REFERENCES "test" ("test_id");
 
-ALTER TABLE "prescription" ADD FOREIGN KEY ("medication_name") REFERENCES "medication" ("name") on delete cascade;
+ALTER TABLE "result" ADD FOREIGN KEY ("parameter_name") REFERENCES "parameter" ("name");
 
-ALTER TABLE "prescription" ADD FOREIGN KEY ("doctor_username") REFERENCES "user" ("username") on delete cascade;
+ALTER TABLE "prescription" ADD FOREIGN KEY ("medication_name") REFERENCES "medication" ("name");
 
-ALTER TABLE "prescription" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id") on delete cascade;
+ALTER TABLE "prescription" ADD FOREIGN KEY ("doctor_username") REFERENCES "user" ("username");
 
-ALTER TABLE "refill_request" ADD FOREIGN KEY ("prescription_id") REFERENCES "prescription" ("prescription_id") on delete cascade;
+ALTER TABLE "prescription" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id");
 
-ALTER TABLE "message_patient" ADD FOREIGN KEY ("message_id") REFERENCES "message" ("message_id") on delete cascade;
+ALTER TABLE "prescription" ADD FOREIGN KEY ("prescription_id") REFERENCES "refill_request" ("prescription_id");
 
-ALTER TABLE "message_patient" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id") on delete cascade;
+ALTER TABLE "message" ADD FOREIGN KEY ("message_id") REFERENCES "message_patient" ("message_id");
 
-ALTER TABLE "message" ADD FOREIGN KEY ("username") REFERENCES "user" ("username") on delete cascade;
+ALTER TABLE "patient" ADD FOREIGN KEY ("patient_id") REFERENCES "message_patient" ("patient_id");
 
-ALTER TABLE "message_test" ADD FOREIGN KEY ("message_id") REFERENCES "message" ("message_id") on delete cascade;
+ALTER TABLE "message" ADD FOREIGN KEY ("from_username") REFERENCES "user" ("username");
 
-ALTER TABLE "message_test" ADD FOREIGN KEY ("test_id") REFERENCES "test" ("test_id") on delete cascade;
+ALTER TABLE "message" ADD FOREIGN KEY ("to_username") REFERENCES "user" ("username");
 
-ALTER TABLE "roles" ADD FOREIGN KEY ("username") REFERENCES "user" ("username") on delete cascade;
+ALTER TABLE "message_test" ADD FOREIGN KEY ("message_id") REFERENCES "message" ("message_id");
+
+ALTER TABLE "test" ADD FOREIGN KEY ("test_id") REFERENCES "message_test" ("test_id");
+
+ALTER TABLE "role" ADD FOREIGN KEY ("username") REFERENCES "user" ("username");
 
 INSERT INTO parameter (name, range_low, range_high, unit) values
 	('WBC', 4, 15.5, '10^3/mcL'),

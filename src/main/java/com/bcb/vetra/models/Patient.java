@@ -26,6 +26,6 @@ public class Patient {
     private LocalDate birthday;
     private String species;
     private String sex;
-    @NotBlank(message = "Owner ID is required.")
-    private int ownerID;
+    @NotBlank(message = "Owner username is required.")
+    private String ownerUsername;
 }
