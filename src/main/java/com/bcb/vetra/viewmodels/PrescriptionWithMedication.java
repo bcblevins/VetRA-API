@@ -23,6 +23,8 @@ public class PrescriptionWithMedication {
     private String unit;
     @NotBlank(message = "Instructions are required.")
     private String instructions;
+    @NotBlank(message = "Refill count is required.")
+    private int refills;
     private boolean isActive;
     @NotBlank(message = "Patient ID is required.")
     private int patientId;

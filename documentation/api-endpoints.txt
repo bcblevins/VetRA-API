@@ -7,7 +7,6 @@ DELETE /patients/:patientId - delete patient by patientId
 
 PATIENT:MESSAGE
 GET /patients/:patientId/messages - get all messages about a patient
-GET /patients/:patientId/messages/:messageId - get message by messageId about a patient
 POST /patients/:patientId/messages - create a message about a patient
 PUT /patients/:patientId/messages/:messageId - update message by messageId about a patient
 DELETE /patients/:patientId/messages/:messageId - delete message by messageId about a patient
@@ -19,7 +18,6 @@ DELETE /patients/:patientId/tests/:testId - delete test by testId of patient
 
 PATIENT:TEST:MESSAGE
 GET /patients/:patientId/tests/:testId/messages - get all messages of test of patient 
-GET /patients/:patientId/tests/:testId/messages/:messageId - get message by messageId of test of patient 
 POST /patients/:patientId/tests/:testId/messages - create a message in context of test of patient
 PUT /patients/:patientId/tests/:testId/messages/:messageId - update message by messageId of test of patient
 DELETE /patients/:patientId/tests/:testId/messages/:messageId - delete message by messageId of test of patient

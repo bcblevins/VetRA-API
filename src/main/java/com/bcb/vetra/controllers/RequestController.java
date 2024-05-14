@@ -1,6 +1,7 @@
 package com.bcb.vetra.controllers;
 
 import com.bcb.vetra.models.Request;
+import com.bcb.vetra.viewmodels.RequestWithPrescription;
 import org.springframework.web.bind.annotation.*;
 
 import com.bcb.vetra.daos.RequestDao;
@@ -16,21 +17,21 @@ public class RequestController {
     }
 
     @GetMapping("/requests")
-    public List<Request> getAll() {
-        return requestDao.getAllRequests();
+    public List<RequestWithPrescription> getAll() {
+        return requestDao.getAllRequestsWithPrescription();
     }
 
-    @GetMapping("patient/{patientId}/prescription/{prescriptionId}/requests")
+    @GetMapping("patients/{patientId}/prescriptions/{prescriptionId}/requests")
     public List<Request> getAllForPrescription(@PathVariable int patientId, @PathVariable int prescriptionId) {
         return requestDao.getRequestsByPrescriptionId(prescriptionId);
     }
 
     @GetMapping("/requests/{requestId}")
-    public Request get(@PathVariable int requestId) {
-        return requestDao.getRequestById(requestId);
+    public RequestWithPrescription get(@PathVariable int requestId) {
+        return requestDao.getRequestWithPrescriptionById(requestId);
     }
 
-    @GetMapping("patient/{patientId}/prescription/{prescriptionId}/requests/{requestId}")
+    @GetMapping("patients/{patientId}/prescriptions/{prescriptionId}/requests/{requestId}")
     public Request getForPrescription(@PathVariable int patientId, @PathVariable int prescriptionId, @PathVariable int requestId) {
         return requestDao.getRequestById(requestId);
     }
@@ -40,7 +41,7 @@ public class RequestController {
         return requestDao.create(request);
     }
 
-    @PostMapping("patient/{patientId}/prescription/{prescriptionId}/requests")
+    @PostMapping("patients/{patientId}/prescriptions/{prescriptionId}/requests")
     public Request createForPrescription(@RequestBody Request request, @PathVariable int patientId, @PathVariable int prescriptionId) {
         request.setPrescriptionId(prescriptionId);
         return requestDao.create(request);

@@ -67,17 +67,16 @@ public class PatientDao {
         }
     }
 
-    public Patient updatePatientOfOwner(Patient patient, String username) {
+    public Patient updatePatient(Patient patient) {
         int rowsAffected = jdbcTemplate.update(
                 "UPDATE patient SET first_name = ?, birthday = ?, species = ?, sex = ?, owner_username = ? " +
-                        "WHERE patient_id = ? AND username = ?;",
+                        "WHERE patient_id = ?;",
                 patient.getFirstName(),
                 patient.getBirthday(),
                 patient.getSpecies(),
                 patient.getSex(),
                 patient.getOwnerUsername(),
-                patient.getPatientId(),
-                username
+                patient.getPatientId()
         );
         if (rowsAffected == 0) {
             throw new DaoException("Zero rows affected, expected at least one.");

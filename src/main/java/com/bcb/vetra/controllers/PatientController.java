@@ -11,32 +11,33 @@ import java.util.List;
  * Controller class for the Patient model.
  */
 @RestController
+@RequestMapping("/patients")
 public class PatientController {
     private PatientDao patientDao;
     public PatientController(PatientDao patientDao) {
         this.patientDao = patientDao;
     }
-    @RequestMapping(path = "/patients", method = RequestMethod.GET)
+    @GetMapping
     public List<Patient> getAll() {
         return patientDao.getAllPatients();
     }
-    @RequestMapping(path = "patients/{patientId}", method = RequestMethod.GET)
+    @GetMapping("/{patientId}")
     public Patient get(@PathVariable int patientId) {
         return patientDao.getPatientById(patientId);
     }
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(path = "/{username}/patients", method = RequestMethod.POST)
-    public Patient create(@PathVariable String username, @RequestBody Patient patient) {
+    @PostMapping
+    public Patient create(@RequestBody Patient patient) {
         return patientDao.create(patient);
     }
-    @RequestMapping(path = "/{username}/patients/{patientId}", method = RequestMethod.PUT)
-    public Patient update(@PathVariable String username, @PathVariable int patientId, @RequestBody Patient patient) {
+    @PutMapping("/{patientId}")
+    public Patient update(@PathVariable int patientId, @RequestBody Patient patient) {
         patient.setPatientId(patientId);
-        return patientDao.updatePatientOfOwner(patient, username);
+        return patientDao.updatePatient(patient);
     }
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @RequestMapping(path = "/{username}/patients/{patientId}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable String username, @PathVariable int patientId) {
+    @DeleteMapping("/{patientId}")
+    public void delete(@PathVariable int patientId) {
         patientDao.deletePatient(patientId);
     }
 }

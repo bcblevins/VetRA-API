@@ -104,6 +104,7 @@ public class PrescriptionDao {
                 resultSet.getInt("quantity"),
                 resultSet.getString("unit"),
                 resultSet.getString("instructions"),
+                resultSet.getInt("refills"),
                 resultSet.getBoolean("is_active"),
                 resultSet.getInt("patient_id"),
                 resultSet.getString("doctor_username")
@@ -116,6 +117,7 @@ public class PrescriptionDao {
                 resultSet.getString("name"),
                 resultSet.getInt("quantity"),
                 resultSet.getString("instructions"),
+                resultSet.getInt("refills"),
                 resultSet.getBoolean("is_active"),
                 resultSet.getInt("patient_id"),
                 resultSet.getString("doctor_username")

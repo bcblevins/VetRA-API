@@ -21,6 +21,8 @@ public class Prescription {
     private double quantity;
     @NotBlank(message = "Prescription must have instructions.")
     private String instructions;
+    @NotBlank(message = "Prescription must have a refill count.")
+    private int refills;
     private boolean isActive;
     @NotBlank(message = "Prescription must have a patientId.")
     private int patientId;

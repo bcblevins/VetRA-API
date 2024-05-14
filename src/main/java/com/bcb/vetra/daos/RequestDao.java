@@ -1,6 +1,7 @@
 package com.bcb.vetra.daos;
 
 import com.bcb.vetra.models.Request;
+import com.bcb.vetra.viewmodels.RequestWithPrescription;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,23 @@ public class RequestDao {
 
     public List<Request> getAllRequests() {
         return jdbcTemplate.query("SELECT * FROM request ORDER BY request_date", this::mapToRequest);
+    }
+
+    public List<RequestWithPrescription> getAllRequestsWithPrescription() {
+        return jdbcTemplate.query("SELECT request.*, prescription.* " +
+                "FROM request " +
+                "JOIN prescription ON request.prescription_id = prescription.prescription_id " +
+                "ORDER BY request.request_date;",
+                this::mapToRequestWithPrescription);
+    }
+
+    public RequestWithPrescription getRequestWithPrescriptionById(int id) {
+        return jdbcTemplate.queryForObject("SELECT request.*, prescription.* " +
+                "FROM request " +
+                "JOIN prescription ON request.prescription_id = prescription.prescription_id " +
+                "WHERE request_id = ?;",
+                this::mapToRequestWithPrescription,
+                id);
     }
 
     public List<Request> getRequestsByPatientId(int patientId) {
@@ -79,5 +97,21 @@ public class RequestDao {
                 rs.getString("request_date")
         );
 
+    }
+
+    private RequestWithPrescription mapToRequestWithPrescription(ResultSet rs, int rowNum) throws SQLException {
+        return new RequestWithPrescription(
+                rs.getInt("request_id"),
+                rs.getInt("prescription_id"),
+                rs.getInt("patient_id"),
+                rs.getString("status"),
+                rs.getString("request_date"),
+                rs.getString("medication_name"),
+                rs.getDouble("quantity"),
+                rs.getString("instructions"),
+                rs.getInt("refills"),
+                rs.getBoolean("is_active"),
+                rs.getString("doctor_username")
+        );
     }
 }
