@@ -32,9 +32,16 @@ PUT /patients/:patientId/prescriptions/:prescriptionId - update prescription by 
 DELETE /patients/:patientId/prescriptions/:prescriptionId - delete prescription by prescriptionId of patient
 
 PATIENT:PRESCRIPTION:REQUEST
-GET /patients/:patientId/prescriptions/:prescriptionId/requests - get all refill requests of prescription of patient 
+GET /patients/:patientId/prescriptions/:prescriptionId/requests - get all refill requests of prescription of patient
 GET /patients/:patientId/prescriptions/:prescriptionId/requests/:requestId - get refill request by requestId of prescription of patient 
 POST /patients/:patientId/prescriptions/:prescriptionId/requests - create a refill request of prescription of patient 
+
+REQUEST
+GET /requests - get all refill requests
+GET /requests/:requestId - get refill request by requestId
+POST /requests - create a refill request
+PUT /requests/:requestId - update refill request by requestId
+DELETE /requests/:requestId - delete refill request by requestId
 
 MESSAGE
 GET /messages - get all messages 

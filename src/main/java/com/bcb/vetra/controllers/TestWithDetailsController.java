@@ -2,10 +2,7 @@ package com.bcb.vetra.controllers;
 
 import com.bcb.vetra.daos.TestDao;
 import com.bcb.vetra.viewmodels.TestWithDetails;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -13,25 +10,24 @@ import java.util.List;
  * Controller class for the TestWithDetails view model.
  */
 @RestController
-@RequestMapping(path = "/owners")
 public class TestWithDetailsController {
     private TestDao testDao;
     public TestWithDetailsController(TestDao testDao) {
         this.testDao = testDao;
     }
-    @RequestMapping(path = "/{id}/patients/{patientId}/tests", method = RequestMethod.GET)
-    public List<TestWithDetails> getAll(@PathVariable int id, @PathVariable int patientId) {
+    @GetMapping("/patients/{patientId}/tests")
+    public List<TestWithDetails> getAll(@PathVariable int patientId) {
         return testDao.getTestWithDetailsForPatient(patientId);
     }
-    @RequestMapping(path = "/{id}/patients/{patientId}/tests/{testId}", method = RequestMethod.GET)
-    public TestWithDetails get(@PathVariable int id, @PathVariable int patientId, @PathVariable int testId) {
+    @GetMapping("/patients/{patientId}/tests/{testId}")
+    public TestWithDetails get(@PathVariable int patientId, @PathVariable int testId) {
         return testDao.getTestWithDetailsByTestId(testId);
     }
 
     // No create or update methods yet, as I plan to supply the test data from another API.
 
-    @RequestMapping(path = "/{id}/patients/{patientId}/tests/{testId}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable int id, @PathVariable int patientId, @PathVariable int testId) {
+    @DeleteMapping("/patients/{patientId}/tests/{testId}")
+    public void delete(@PathVariable int patientId, @PathVariable int testId) {
         testDao.deleteTestOfPatient(testId, patientId);
     }
 

@@ -9,7 +9,7 @@ drop table if exists "role" cascade;
 drop table if exists "message" cascade;
 drop table if exists "message_test" cascade;
 drop table if exists "message_patient" cascade;
-drop table if exists "refill_request" cascade;
+drop table if exists "request" cascade;
 
 CREATE TABLE "patient" (
   "patient_id" SERIAL PRIMARY KEY,
@@ -77,7 +77,7 @@ CREATE TABLE "message" (
   "subject" varchar(50) NOT NULL,
   "body" varchar(1000) NOT NULL,
   "from_username" varchar(30) NOT NULL,
-  "to_username" varchar(30) NOT NULL
+  "to_username" varchar(30) NOT NULL,
 );
 
 CREATE TABLE "message_test" (
@@ -92,8 +92,8 @@ CREATE TABLE "message_patient" (
   PRIMARY KEY ("message_id", "patient_id")
 );
 
-CREATE TABLE "refill_request" (
-  "refill_request_id" SERIAL PRIMARY KEY,
+CREATE TABLE "request" (
+  "request_id" SERIAL PRIMARY KEY,
   "prescription_id" int NOT NULL,
   "status" varchar(20) DEFAULT 'PENDING',
   "request_date" timestamp DEFAULT (current_timestamp)
@@ -117,7 +117,7 @@ ALTER TABLE "prescription" ADD FOREIGN KEY ("doctor_username") REFERENCES "user"
 
 ALTER TABLE "prescription" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id");
 
-ALTER TABLE "refill_request" ADD FOREIGN KEY ("prescription_id") REFERENCES "prescription" ("prescription_id");
+ALTER TABLE "request" ADD FOREIGN KEY ("prescription_id") REFERENCES "prescription" ("prescription_id");
 
 ALTER TABLE "message_patient" ADD FOREIGN KEY ("message_id") REFERENCES "message" ("message_id");
 
