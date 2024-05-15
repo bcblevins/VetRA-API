@@ -43,15 +43,13 @@ public class MessageController {
     }
 
     @PostMapping("/patients/{patientId}/messages")
-    public Message createForPatient(Principal principal, @RequestBody Message message, @PathVariable int patientId) {
-        message.setFromUsername(principal.getName());
+    public Message createForPatient(@RequestBody Message message, @PathVariable int patientId) {
         message.setPatientId(patientId);
         return messageDao.create(message);
     }
 
     @PostMapping("/patients/{patientId}/tests/{testId}/messages")
-    public Message createForTest(Principal principal, @RequestBody Message message, @PathVariable int patientId, @PathVariable int testId) {
-        message.setFromUsername(principal.getName());
+    public Message createForTest(@RequestBody Message message, @PathVariable int patientId, @PathVariable int testId) {
         message.setPatientId(patientId);
         message.setTestId(testId);
         return messageDao.create(message);
@@ -59,6 +57,7 @@ public class MessageController {
 
     @PutMapping("/messages/{messageId}")
     public Message update(@RequestBody Message message) {
+        message.setMessageId(message.getMessageId());
         return messageDao.update(message);
     }
 

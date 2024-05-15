@@ -38,7 +38,7 @@ public class PatientDao {
     public Patient create(Patient patient) {
         Integer id = jdbcTemplate.queryForObject(
                 "INSERT INTO patient (first_name, birthday, species, sex, owner_username) " +
-                        "VALUES (?,?,?,?,?,?,?) " +
+                        "VALUES (?,?,?,?,?) " +
                         "RETURNING patient_id;",
                 Integer.class,
                 patient.getFirstName(),

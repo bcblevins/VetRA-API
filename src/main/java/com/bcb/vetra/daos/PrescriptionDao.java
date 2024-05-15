@@ -51,8 +51,8 @@ public class PrescriptionDao {
     public PrescriptionWithMedication create(PrescriptionWithMedication prescription) {
         insertMedicationIfDoesNotExist(prescription);
         Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO prescription (medication_name, quantity, instructions, is_active, patient_id, doctor_username) " +
-                        "VALUES (?,?,?,?,?,?) " +
+                "INSERT INTO prescription (medication_name, quantity, instructions, is_active, patient_id, doctor_username, refills) " +
+                        "VALUES (?,?,?,?,?,?,?) " +
                         "RETURNING prescription_id;",
                 Integer.class,
                 prescription.getName(),
@@ -60,13 +60,14 @@ public class PrescriptionDao {
                 prescription.getInstructions(),
                 prescription.isActive(),
                 prescription.getPatientId(),
-                prescription.getDoctorUsername()
+                prescription.getDoctorUsername(),
+                prescription.getRefills()
         );
         return getPrescriptionWithMedicationById(id);
     }
     public PrescriptionWithMedication update(PrescriptionWithMedication prescription) {
         int rowsAffected = jdbcTemplate.update(
-                "UPDATE prescription SET medication_name = ?, quantity = ?, instructions = ?, is_active = ?, patient_id = ?, doctor_username = ? " +
+                "UPDATE prescription SET medication_name = ?, quantity = ?, instructions = ?, is_active = ?, patient_id = ?, doctor_username = ?, refills = ? " +
                         "WHERE prescription_id = ?;",
                 prescription.getName(),
                 prescription.getQuantity(),
@@ -74,6 +75,7 @@ public class PrescriptionDao {
                 prescription.isActive(),
                 prescription.getPatientId(),
                 prescription.getDoctorUsername(),
+                prescription.getRefills(),
                 prescription.getPrescriptionId()
         );
         if (rowsAffected == 0) {
