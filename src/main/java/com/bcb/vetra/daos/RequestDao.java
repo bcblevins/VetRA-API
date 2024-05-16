@@ -61,19 +61,20 @@ public class RequestDao {
     }
 
     public Request create(Request request) {
+        request.setStatus(request.getStatus().toUpperCase());
         Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO request (prescription_id, status, request_date) " +
-                        "VALUES (?,?,?) " +
+                "INSERT INTO request (prescription_id, status) " +
+                        "VALUES (?,?) " +
                         "RETURNING request_id;",
                 Integer.class,
                 request.getPrescriptionId(),
-                request.getStatus(),
-                request.getRequestDate()
+                request.getStatus()
         );
         return getRequestById(id);
     }
 
     public Request update(Request request) {
+        request.setStatus(request.getStatus().toUpperCase());
         int rowsAffected = jdbcTemplate.update(
                 "UPDATE request SET prescription_id = ?, status = ?, request_date = ? " +
                         "WHERE request_id = ?;",

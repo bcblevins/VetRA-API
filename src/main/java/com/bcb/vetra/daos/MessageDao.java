@@ -87,7 +87,7 @@ public class MessageDao {
                 message.getBody(),
                 message.getFromUsername(),
                 message.getToUsername(),
-                message.getTestId()
+                message.getMessageId()
         );
         return getMessageById(message.getMessageId());
     }

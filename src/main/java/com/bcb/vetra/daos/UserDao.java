@@ -43,9 +43,10 @@ public class UserDao {
         return getUserByUsername(username);
     }
     public User updateUser(User user) {
-        String sql = "UPDATE \"user\" SET first_name = ?, last_name = ? " +
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        String sql = "UPDATE \"user\" SET first_name = ?, last_name = ?, password = ? " +
                 "WHERE username = ?";
-        int rowsAffected = jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getUsername());
+        int rowsAffected = jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getPassword(), user.getUsername());
         if (rowsAffected == 0) {
             throw new DaoException("Zero rows affected, expected at least one.");
         } else {

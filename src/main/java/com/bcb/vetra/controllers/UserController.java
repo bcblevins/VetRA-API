@@ -30,6 +30,7 @@ public class UserController {
     }
     @PutMapping(path = "/{username}")
     public User update(@Valid @RequestBody User user, @PathVariable String username) {
+        user.setUsername(username);
         return userDao.updateUser(user);
     }
     @PutMapping(path = "/{username}/password")

@@ -56,8 +56,8 @@ public class MessageController {
     }
 
     @PutMapping("/messages/{messageId}")
-    public Message update(@RequestBody Message message) {
-        message.setMessageId(message.getMessageId());
+    public Message update(@PathVariable int messageId, @RequestBody Message message) {
+        message.setMessageId(messageId);
         return messageDao.update(message);
     }
 
