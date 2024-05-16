@@ -11,3 +11,6 @@ This API also provides authentication and authorization.
 ## How
 Java, PostgreSQL, Spring Boot
 
+
+### Please see documentation folder for more extensive user capability descriptions as well as endpoint paths and their behavior.
+
