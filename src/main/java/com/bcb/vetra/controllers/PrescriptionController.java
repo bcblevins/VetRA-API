@@ -8,7 +8,9 @@ import com.bcb.vetra.viewmodels.PrescriptionWithMedication;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -31,24 +33,36 @@ public class PrescriptionController {
 
     //TODO: Auth starting here
     @GetMapping("/patients/{patientId}/prescriptions")
-    public List<PrescriptionWithMedication> getAll(@PathVariable int patientId) {
+    public List<PrescriptionWithMedication> getAll(@PathVariable int patientId, Principal principal) {
+        if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
+            return null;
+        }
         return prescriptionDao.getPrescriptionsByPatientId(patientId);
     }
     @GetMapping("/patients/{patientId}/prescriptions/{prescriptionId}")
-    public PrescriptionWithMedication get(@PathVariable int patientId, @PathVariable int prescriptionId) {
+    public PrescriptionWithMedication get(@PathVariable int patientId, @PathVariable int prescriptionId, Principal principal) {
+        if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
+            return null;
+        }
         return prescriptionDao.getPrescriptionWithMedicationById(prescriptionId);
     }
+
+    @PreAuthorize("hasAuthority('DOCTOR', 'ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/patients/{patientId}/prescriptions")
     public PrescriptionWithMedication create(@PathVariable int patientId, @RequestBody PrescriptionWithMedication prescription) {
         prescription.setPrescriptionId(patientId);
         return prescriptionDao.create(prescription);
     }
+
+    @PreAuthorize("hasAuthority('DOCTOR', 'ADMIN')")
     @PutMapping("/patients/{patientId}/prescriptions/{prescriptionId}")
     public PrescriptionWithMedication update(@PathVariable int patientId, @PathVariable int prescriptionId, @RequestBody PrescriptionWithMedication prescription) {
         prescription.setPrescriptionId(prescriptionId);
         return prescriptionDao.update(prescription);
     }
+
+    @PreAuthorize("hasAuthority('DOCTOR', 'ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/patients/{patientId}/prescriptions/{prescriptionId}")
     public void delete(@PathVariable int patientId, @PathVariable int prescriptionId) {

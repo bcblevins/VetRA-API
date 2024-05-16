@@ -20,6 +20,9 @@ public class RequestDao {
     public Request getRequestById(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM request WHERE request_id = ?", this::mapToRequest, id);
     }
+    public Request getRequestByIdAndPatientId(int id, int patientId) {
+        return jdbcTemplate.queryForObject("SELECT * FROM request WHERE request_id = ? AND patient_id = ?", this::mapToRequest, id, patientId);
+    }
 
     public List<Request> getAllRequests() {
         return jdbcTemplate.query("SELECT * FROM request ORDER BY request_date", this::mapToRequest);
@@ -48,6 +51,10 @@ public class RequestDao {
 
     public List<Request> getRequestsByPrescriptionId(int prescriptionId) {
         return jdbcTemplate.query("SELECT * FROM request WHERE prescription_id = ? ORDER BY request_date", this::mapToRequest, prescriptionId);
+    }
+
+    public List<Request> getRequestsByPrescriptionIdAndPatientId(int prescriptionId, int patientId) {
+        return jdbcTemplate.query("SELECT * FROM request WHERE prescription_id = ? AND patient_id = ? ORDER BY request_date", this::mapToRequest, prescriptionId, patientId);
     }
 
     /**

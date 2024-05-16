@@ -62,6 +62,7 @@ public class MessageController {
         return messageDao.getMessagesByTestId(testId);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/patients/{patientId}/messages")
     public Message createForPatient(@RequestBody Message message, @PathVariable int patientId, Principal principal) {
         if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
@@ -72,6 +73,7 @@ public class MessageController {
         return messageDao.create(message);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/patients/{patientId}/tests/{testId}/messages")
     public Message createForTest(@RequestBody Message message, @PathVariable int patientId, @PathVariable int testId, Principal principal) {
         if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
@@ -93,6 +95,7 @@ public class MessageController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN'")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/messages/{messageId}")
     public void delete(@PathVariable int messageId) {
         messageDao.delete(messageId);

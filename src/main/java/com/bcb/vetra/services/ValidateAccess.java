@@ -3,7 +3,9 @@ package com.bcb.vetra.services;
 import com.bcb.vetra.daos.MessageDao;
 import com.bcb.vetra.daos.PatientDao;
 import com.bcb.vetra.daos.UserDao;
+import com.bcb.vetra.models.Test;
 import com.bcb.vetra.models.User;
+import com.bcb.vetra.viewmodels.TestWithDetails;
 
 public class ValidateAccess {
     private UserDao userDao;
@@ -25,6 +27,13 @@ public class ValidateAccess {
     }
 
     public boolean canAccessPatient(int patientId, String username) {
+        boolean isOwnedBy = patientDao.getPatientByIdAndOwner(patientId, username) != null;
+        boolean isDoctor = userDao.getRoles(username).contains("DOCTOR");
+        return isOwnedBy || isDoctor;
+    }
+
+    public boolean canAccessTest(TestWithDetails test, String username) {
+        int patientId = test.getPatientID();
         boolean isOwnedBy = patientDao.getPatientByIdAndOwner(patientId, username) != null;
         boolean isDoctor = userDao.getRoles(username).contains("DOCTOR");
         return isOwnedBy || isDoctor;
