@@ -1,28 +1,54 @@
 package com.bcb.vetra.controllers;
 
 import com.bcb.vetra.daos.MessageDao;
+import com.bcb.vetra.daos.PatientDao;
+import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Message;
+import com.bcb.vetra.models.Patient;
+import com.bcb.vetra.services.ValidateAccess;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 public class MessageController {
     private MessageDao messageDao;
+    private UserDao userDao;
+    private PatientDao patientDao;
+    private ValidateAccess validateAccess;
 
-    public MessageController(MessageDao messageDao) {
+    public MessageController(MessageDao messageDao, PatientDao patientDao, UserDao userDao) {
         this.messageDao = messageDao;
+        this.patientDao = patientDao;
+        this.userDao = userDao;
+        this.validateAccess = new ValidateAccess(userDao, patientDao, messageDao);
     }
 
     @GetMapping("/messages")
-    // public List<Message> getAll(Principal principal)
+    public List<Message> getAll(Principal principal) {
+        return messageDao.getMessagesByUsername(principal.getName());
+    }
+
+    @GetMapping("/messages/{messageId}")
+    public Message get(@PathVariable int messageId, Principal principal) {
+        return messageDao.getMessageByIdAndUsername(messageId, principal.getName());
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/allMessages")
     public List<Message> getAll() {
         return messageDao.getAll();
     }
 
-    @GetMapping("/messages/{messageId}")
-    public Message get(@PathVariable int messageId) {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/allMessages/{messageId}")
+    public Message getFromAll(@PathVariable int messageId) {
         return messageDao.getMessageById(messageId);
     }
 
@@ -36,31 +62,37 @@ public class MessageController {
         return messageDao.getMessagesByTestId(testId);
     }
 
-    @PostMapping("/messages")
-    // public Message create(Principal principal, @RequestBody Message message)
-    public Message create(@RequestBody Message message) {
-        return messageDao.create(message);
-    }
-
     @PostMapping("/patients/{patientId}/messages")
-    public Message createForPatient(@RequestBody Message message, @PathVariable int patientId) {
+    public Message createForPatient(@RequestBody Message message, @PathVariable int patientId, Principal principal) {
+        if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this patient");
+        }
         message.setPatientId(patientId);
+        message.setFromUsername(principal.getName());
         return messageDao.create(message);
     }
 
     @PostMapping("/patients/{patientId}/tests/{testId}/messages")
-    public Message createForTest(@RequestBody Message message, @PathVariable int patientId, @PathVariable int testId) {
+    public Message createForTest(@RequestBody Message message, @PathVariable int patientId, @PathVariable int testId, Principal principal) {
+        if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this patient");
+        }
         message.setPatientId(patientId);
         message.setTestId(testId);
         return messageDao.create(message);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
     @PutMapping("/messages/{messageId}")
     public Message update(@PathVariable int messageId, @RequestBody Message message) {
+        if (!validateAccess.canAccessMessage(messageId, message.getFromUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this message");
+        }
         message.setMessageId(messageId);
         return messageDao.update(message);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN'")
     @DeleteMapping("/messages/{messageId}")
     public void delete(@PathVariable int messageId) {
         messageDao.delete(messageId);

@@ -33,6 +33,14 @@ public class MessageDao {
                         "WHERE message.message_id = ?;",
                 this::mapToMessage, id);
     }
+    public Message getMessageByIdAndUsername(int id, String username) {
+        return jdbcTemplate.queryForObject("SELECT message.*, message_test.test_id, message_patient.patient_id  " +
+                        "FROM message  " +
+                        "LEFT JOIN message_test ON message_test.message_id = message.message_id " +
+                        "LEFT JOIN message_patient ON message_patient.message_id = message.message_id " +
+                        "WHERE message.message_id = ? AND (to_username = ? OR from_username = ?);",
+                this::mapToMessage, id, username, username);
+    }
 
     public List<Message> getAll() {
         return jdbcTemplate.query("SELECT message.*, message_test.test_id, message_patient.patient_id  " +

@@ -6,6 +6,7 @@
 | POST   | /patients            | create a patient            | DOCTOR     |       |
 | PUT    | /patients/:patientId | update patient by patientId | DOCTOR     |       |
 | DELETE | /patients/:patientId | delete patient by patientId | ADMIN ONLY |       |
+| GET    | /patients/all        | get all patients            | DOCTOR     |       |
 
 ### PATIENT:MESSAGE
 | Method | Path                          | Description                      | Role | Codes |
@@ -52,22 +53,26 @@
 | DELETE | /requests/:requestId | delete refill request by requestId | ADMIN ONLY |       |
 
 ### MESSAGE
-| Method | Path                 | Description                 | Role       | Codes |
-|--------|----------------------|-----------------------------|------------|-------|
-| GET    | /messages            | get all messages            | ALL        |       |
-| GET    | /messages/:messageId | get message by messageId    | ALL        |       |
-| POST   | /messages            | create a message            | ALL        |       |
-| PUT    | /messages/:messageId | update message by messageId | DOCTOR     |       |
-| DELETE | /messages/:messageId | delete message by messageId | ADMIN ONLY |       |
+| Method | Path                    | Description                 | Role       | Codes |
+|--------|-------------------------|-----------------------------|------------|-------|
+| GET    | /messages               | get all messages            | ALL        |       |
+| GET    | /messages/:messageId    | get message by messageId    | ALL        |       |
+| PUT    | /messages/:messageId    | update message by messageId | DOCTOR     |       |
+| DELETE | /messages/:messageId    | delete message by messageId | ADMIN ONLY |       |
+| GET    | /allMessages            | get all messages            | ADMIN ONLY |       |
+| GET    | /allMessages/:messageId | get message by messageId    | ADMIN ONLY |       |
 
 ### USER
-| Method | Path             | Description             | Role       | Codes |
-|--------|------------------|-------------------------|------------|-------|
-| GET    | /users           | get all users           | DOCTOR     |       |
-| GET    | /users/:username | get user by username    | DOCTOR     |       |
-| POST   | /users           | create a user           | ALL        |       |
-| PUT    | /users/:username | update user by username | DOCTOR     |       |
-| DELETE | /users/:username | delete user by username | ADMIN ONLY |       |
-
-
+| Method | Path                      | Description                            | Role       | Codes |
+|--------|---------------------------|----------------------------------------|------------|-------|
+| GET    | /users                    | get all users                          | DOCTOR     |       |
+| GET    | /users/:username          | get user by username                   | DOCTOR     |       |
+| POST   | /users                    | create a user                          | ADMIN ONLY |       |
+| PUT    | /users/:username          | update user by username (not password) | ADMIN ONLY |       |
+| DELETE | /users/:username          | delete user by username                | ADMIN ONLY |       |
+| GET    | /users/:username/roles    | get roles of user by username          | DOCTOR     |       |
+| POST   | /users/:username/roles    | add role to user by username           | ADMIN ONLY |       |
+| DELETE | /users/:username/roles    | delete role from user by username      | ADMIN ONLY |       |
+| PUT    | /password                 | change own password                    | ALL        |       |
+| PUT    | /users/:username/password | change password of user by username    | ADMIN ONLY |       |
 

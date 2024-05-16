@@ -140,6 +140,7 @@ INSERT INTO medication VALUES ('Gabapentin 100mg', 'capsules');
 
 INSERT INTO "user" VALUES ('bblevins96', '1234', 'Beau', 'Blevins');
 INSERT INTO "user" VALUES ('cakelly4', '1234', 'Chris', 'Kelly');
+INSERT INTO "user" VALUES ('admin', 'admin', 'admin', 'admin');
 
 INSERT INTO message VALUES (1, 'What is up', 'I''m just bored, messaged you to entertain myself.', 'bblevins96', 'cakelly4');
 
@@ -174,4 +175,4 @@ INSERT INTO result VALUES (6, 1, 'PLT', '330.0');
 
 INSERT INTO role VALUES ('bblevins96', 'OWNER');
 INSERT INTO role VALUES ('cakelly4', 'DOCTOR');
-INSERT INTO role VALUES ('cakelly4', 'ADMIN');
+INSERT INTO role VALUES ('admin', 'ADMIN');

@@ -2,6 +2,7 @@ package com.bcb.vetra.controllers;
 
 import com.bcb.vetra.daos.TestDao;
 import com.bcb.vetra.viewmodels.TestWithDetails;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.List;
 /**
  * Controller class for the TestWithDetails view model.
  */
+@PreAuthorize("isAuthenticated()")
+
 @RestController
 public class TestWithDetailsController {
     private TestDao testDao;

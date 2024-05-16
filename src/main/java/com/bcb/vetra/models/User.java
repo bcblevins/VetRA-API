@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Model class for doctors and pet owners.
+ * Model class for users.
  */
 @Getter
 @Setter
@@ -26,5 +26,4 @@ public class User {
     private String firstName;
     @NotBlank(message = "User must have a last name.")
     private String lastName;
-    private List<String> roles;
 }

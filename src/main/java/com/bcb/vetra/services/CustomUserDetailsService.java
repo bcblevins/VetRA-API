@@ -26,17 +26,28 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Get user
         User user = userDao.getUserByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found.");
+        }
+
+        // Get roles -> authorities
         List<String> roles = userDao.getRoles(username);
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (String role : roles) {
             authorities.add(new SimpleGrantedAuthority(role));
         }
 
+        // Create JwtUser
         JwtUser jwtUser = new JwtUser();
         jwtUser.setUsername(user.getUsername());
         jwtUser.setPassword(user.getPassword());
         jwtUser.setAuthorities(authorities);
+
+
+
+        // Not sure if this is necessary
         jwtUser.setAccountNonExpired(true);
         jwtUser.setAccountNonLocked(true);
         jwtUser.setApiAccessAllowed(true);

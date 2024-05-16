@@ -2,11 +2,14 @@ package com.bcb.vetra.controllers;
 
 import com.bcb.vetra.models.Request;
 import com.bcb.vetra.viewmodels.RequestWithPrescription;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.bcb.vetra.daos.RequestDao;
 
 import java.util.List;
+
+@PreAuthorize("isAuthenticated()")
 
 @RestController
 public class RequestController {

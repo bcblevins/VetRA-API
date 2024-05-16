@@ -37,16 +37,15 @@ public class UserDao {
     }
 
     public User createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
         String sql = "INSERT INTO \"user\" (username, password, first_name, last_name) VALUES (?,?,?,?) RETURNING username;";
-        String username = jdbcTemplate.queryForObject(sql, String.class, user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName());
+        String username = jdbcTemplate.queryForObject(sql, String.class, user.getUsername(), hashedPassword, user.getFirstName(), user.getLastName());
         return getUserByUsername(username);
     }
     public User updateUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        String sql = "UPDATE \"user\" SET first_name = ?, last_name = ?, password = ? " +
+        String sql = "UPDATE \"user\" SET first_name = ?, last_name = ? " +
                 "WHERE username = ?";
-        int rowsAffected = jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getPassword(), user.getUsername());
+        int rowsAffected = jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getUsername());
         if (rowsAffected == 0) {
             throw new DaoException("Zero rows affected, expected at least one.");
         } else {
@@ -55,8 +54,9 @@ public class UserDao {
     }
 
     public User updatePassword(User user) {
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
         String sql = "UPDATE \"user\" SET password = ? WHERE username = ?";
-        int rowsAffected = jdbcTemplate.update(sql, user.getPassword(), user.getUsername());
+        int rowsAffected = jdbcTemplate.update(sql, hashedPassword, user.getUsername());
         if (rowsAffected == 0) {
             throw new DaoException("Zero rows affected, expected at least one.");
         } else {
@@ -94,8 +94,7 @@ public class UserDao {
                 username,
                 resultSet.getString("password"),
                 resultSet.getString("first_name"),
-                resultSet.getString("last_name"),
-                getRoles(username)
+                resultSet.getString("last_name")
         );
     }
     private String mapToRoles(ResultSet resultSet, int rowNumber) throws SQLException {

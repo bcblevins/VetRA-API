@@ -29,7 +29,7 @@ public class PatientDao {
     public Patient getPatientByIdAndOwner(int patientId, String username){
         return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ? AND username = ?;", this::mapToPatient, patientId, username);
     }
-    public List<Patient> getPatientsByOwnerId(String username) {
+    public List<Patient> getPatientsByUsername(String username) {
         return jdbcTemplate.query("SELECT * FROM patient WHERE username = ? ORDER BY first_name;", this::mapToPatient, username);
     }
     public List<Patient> getAllPatients() {
