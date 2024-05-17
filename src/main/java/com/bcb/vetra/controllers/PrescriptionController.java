@@ -5,6 +5,7 @@ import com.bcb.vetra.daos.PatientDao;
 import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.services.ValidateAccess;
 import com.bcb.vetra.viewmodels.PrescriptionWithMedication;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -47,22 +48,22 @@ public class PrescriptionController {
         return prescriptionDao.getPrescriptionWithMedicationById(prescriptionId);
     }
 
-    @PreAuthorize("hasAuthority('DOCTOR', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DOCTOR', 'ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/patients/{patientId}/prescriptions")
-    public PrescriptionWithMedication create(@PathVariable int patientId, @RequestBody PrescriptionWithMedication prescription) {
+    public PrescriptionWithMedication create(@PathVariable int patientId, @Valid @RequestBody PrescriptionWithMedication prescription) {
         prescription.setPrescriptionId(patientId);
         return prescriptionDao.create(prescription);
     }
 
-    @PreAuthorize("hasAuthority('DOCTOR', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DOCTOR', 'ADMIN')")
     @PutMapping("/patients/{patientId}/prescriptions/{prescriptionId}")
-    public PrescriptionWithMedication update(@PathVariable int patientId, @PathVariable int prescriptionId, @RequestBody PrescriptionWithMedication prescription) {
+    public PrescriptionWithMedication update(@PathVariable int patientId, @PathVariable int prescriptionId, @Valid @RequestBody PrescriptionWithMedication prescription) {
         prescription.setPrescriptionId(prescriptionId);
         return prescriptionDao.update(prescription);
     }
 
-    @PreAuthorize("hasAuthority('DOCTOR', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DOCTOR', 'ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/patients/{patientId}/prescriptions/{prescriptionId}")
     public void delete(@PathVariable int patientId, @PathVariable int prescriptionId) {

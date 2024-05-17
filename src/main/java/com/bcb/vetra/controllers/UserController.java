@@ -18,12 +18,12 @@ import java.util.List;
 public class UserController {
     private UserDao userDao;
     public UserController(UserDao userDao) {this.userDao = userDao;}
-    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @GetMapping(path = "/users")
     public List<User> getAll() {
         return userDao.getUsers();
     }
-    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @GetMapping(path = "/users/{username}")
     public User get(@PathVariable String username) {
         return userDao.getUserByUsername(username);
@@ -65,7 +65,7 @@ public class UserController {
     // Roles
     //------------------------
 
-    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @GetMapping(path = "users/{username}/roles")
     public List<String> getRoles(@PathVariable String username) {
         return userDao.getRoles(username);

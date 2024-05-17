@@ -138,9 +138,9 @@ ALTER TABLE "role" ADD FOREIGN KEY ("username") REFERENCES "user" ("username") O
 INSERT INTO medication VALUES ('Trazodone 50mg', 'tablets');
 INSERT INTO medication VALUES ('Gabapentin 100mg', 'capsules');
 
-INSERT INTO "user" VALUES ('bblevins96', '1234', 'Beau', 'Blevins');
-INSERT INTO "user" VALUES ('cakelly4', '1234', 'Chris', 'Kelly');
-INSERT INTO "user" VALUES ('admin', 'admin', 'admin', 'admin');
+INSERT INTO "user" VALUES ('bblevins96', '$2a$10$rdrt3j7YkAaVTQJcGnPX.ORrpMZ3ZXUMZqhfx0jR68vLaqB2jvsH2', 'Beau', 'Blevins');
+INSERT INTO "user" VALUES ('cakelly4', '$2a$10$rdrt3j7YkAaVTQJcGnPX.ORrpMZ3ZXUMZqhfx0jR68vLaqB2jvsH2', 'Chris', 'Kelly');
+INSERT INTO "user" VALUES ('admin', '$2a$10$o5y4WbVoawMUwZiTnQINJOAm6QJyOE3dD2KYIE1kkze7O0m6PzqA.', 'admin', 'admin');
 
 INSERT INTO message VALUES (1, 'What is up', 'I''m just bored, messaged you to entertain myself.', 'bblevins96', 'cakelly4');
 

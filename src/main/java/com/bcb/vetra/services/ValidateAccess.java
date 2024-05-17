@@ -29,19 +29,30 @@ public class ValidateAccess {
     public boolean canAccessPatient(int patientId, String username) {
         boolean isOwnedBy = patientDao.getPatientByIdAndOwner(patientId, username) != null;
         boolean isDoctor = userDao.getRoles(username).contains("DOCTOR");
-        return isOwnedBy || isDoctor;
+        boolean isAdmin = userDao.getRoles(username).contains("ADMIN");
+        return isOwnedBy || isDoctor || isAdmin;
     }
 
     public boolean canAccessTest(TestWithDetails test, String username) {
         int patientId = test.getPatientID();
         boolean isOwnedBy = patientDao.getPatientByIdAndOwner(patientId, username) != null;
         boolean isDoctor = userDao.getRoles(username).contains("DOCTOR");
-        return isOwnedBy || isDoctor;
+        boolean isAdmin = userDao.getRoles(username).contains("ADMIN");
+        return isOwnedBy || isDoctor || isAdmin;
     }
 
     public boolean canAccessMessage(int messageId, String username) {
         boolean isOwnedBy = messageDao.getMessageByIdAndUsername(messageId, username) != null;
-        boolean isDoctor = userDao.getRoles(username).contains("ADMIN");
-        return isOwnedBy || isDoctor;
+        boolean isAdmin = userDao.getRoles(username).contains("ADMIN");
+
+        return isOwnedBy || isAdmin;
+    }
+
+    public boolean isAdmin(String username) {
+        return userDao.getRoles(username).contains("ADMIN");
+    }
+
+    public boolean isDoctorOrAdmin(String username) {
+        return userDao.getRoles(username).contains("DOCTOR") || userDao.getRoles(username).contains("ADMIN");
     }
 }

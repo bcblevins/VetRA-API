@@ -1,8 +1,12 @@
 package com.bcb.vetra.controllers;
 
+import com.bcb.vetra.daos.PatientDao;
 import com.bcb.vetra.daos.PrescriptionDao;
+import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Request;
+import com.bcb.vetra.services.ValidateAccess;
 import com.bcb.vetra.viewmodels.RequestWithPrescription;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import com.bcb.vetra.daos.RequestDao;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -17,24 +22,34 @@ import java.util.List;
 public class RequestController {
     private RequestDao requestDao;
     private PrescriptionDao prescriptionDao;
+    private PatientDao patientDao;
+    private UserDao userDao;
+    private ValidateAccess validateAccess;
 
-    public RequestController(RequestDao requestDao, PrescriptionDao prescriptionDao) {
+    public RequestController(RequestDao requestDao, PrescriptionDao prescriptionDao, PatientDao patientDao, UserDao userDao) {
         this.requestDao = requestDao;
         this.prescriptionDao = prescriptionDao;
+        this.patientDao = patientDao;
+        this.userDao = userDao;
+        this.validateAccess = new ValidateAccess(patientDao, userDao);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @GetMapping("/requests")
     public List<RequestWithPrescription> getAll() {
         return requestDao.getAllRequestsWithPrescription();
     }
 
     @GetMapping("patients/{patientId}/prescriptions/{prescriptionId}/requests")
-    public List<Request> getAllForPrescription(@PathVariable int patientId, @PathVariable int prescriptionId) {
+    public List<Request> getAllForPrescription(@PathVariable int patientId, @PathVariable int prescriptionId, Principal principal ) {
+        if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this patient.");
+        }
+
         return requestDao.getRequestsByPrescriptionIdAndPatientId(prescriptionId, patientId);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @GetMapping("/requests/{requestId}")
     public RequestWithPrescription get(@PathVariable int requestId) {
         return requestDao.getRequestWithPrescriptionById(requestId);
@@ -45,16 +60,16 @@ public class RequestController {
         return requestDao.getRequestByIdAndPatientId(requestId, patientId);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/requests")
-    public Request create(@RequestBody Request request) {
+    public Request create(@Valid @RequestBody Request request) {
         return requestDao.create(request);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("patients/{patientId}/prescriptions/{prescriptionId}/requests")
-    public Request createForPrescription(@RequestBody Request request, @PathVariable int patientId, @PathVariable int prescriptionId) {
+    public Request createForPrescription(@Valid @RequestBody Request request, @PathVariable int patientId, @PathVariable int prescriptionId) {
         if (prescriptionDao.getPrescriptionWithMedicationById(prescriptionId) == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prescription does not exist for patient");
         }
@@ -62,9 +77,9 @@ public class RequestController {
         return requestDao.create(request);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @PutMapping("/requests/{requestId}")
-    public Request update(@PathVariable int requestId, @RequestBody Request request) {
+    public Request update(@PathVariable int requestId, @Valid @RequestBody Request request) {
         request.setRequestId(requestId);
         return requestDao.update(request);
     }

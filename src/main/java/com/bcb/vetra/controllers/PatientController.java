@@ -3,8 +3,8 @@ package com.bcb.vetra.controllers;
 import com.bcb.vetra.daos.PatientDao;
 import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Patient;
-import com.bcb.vetra.models.User;
 import com.bcb.vetra.services.ValidateAccess;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +32,7 @@ public class PatientController {
     public List<Patient> getAllByUsername(Principal principal) {
         return patientDao.getPatientsByUsername(principal.getName());
     }
-    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @GetMapping("/all")
     public List<Patient> getAll() {
         return patientDao.getAllPatients();
@@ -44,24 +44,25 @@ public class PatientController {
         if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this patient.");
         }
+
         return patientDao.getPatientById(patientId);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Patient create(@RequestBody Patient patient) {
+    public Patient create(@Valid @RequestBody Patient patient) {
         return patientDao.create(patient);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @PutMapping("/{patientId}")
-    public Patient update(@PathVariable int patientId, @RequestBody Patient patient) {
+    public Patient update(@PathVariable int patientId, @Valid @RequestBody Patient patient) {
         patient.setPatientId(patientId);
         return patientDao.updatePatient(patient);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{patientId}")
     public void delete(@PathVariable int patientId) {

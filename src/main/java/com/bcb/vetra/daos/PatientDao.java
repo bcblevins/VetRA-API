@@ -2,6 +2,7 @@ package com.bcb.vetra.daos;
 
 import com.bcb.vetra.exception.DaoException;
 import com.bcb.vetra.models.Patient;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -27,10 +28,14 @@ public class PatientDao {
      * @return Patient
      */
     public Patient getPatientByIdAndOwner(int patientId, String username){
-        return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ? AND username = ?;", this::mapToPatient, patientId, username);
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ? AND owner_username = ?;", this::mapToPatient, patientId, username);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
     public List<Patient> getPatientsByUsername(String username) {
-        return jdbcTemplate.query("SELECT * FROM patient WHERE username = ? ORDER BY first_name;", this::mapToPatient, username);
+        return jdbcTemplate.query("SELECT * FROM patient WHERE owner_username = ? ORDER BY first_name;", this::mapToPatient, username);
     }
     public List<Patient> getAllPatients() {
         return jdbcTemplate.query("SELECT * FROM patient ORDER BY first_name", this::mapToPatient);

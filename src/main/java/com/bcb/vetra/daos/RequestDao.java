@@ -20,6 +20,7 @@ public class RequestDao {
     public Request getRequestById(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM request WHERE request_id = ?", this::mapToRequest, id);
     }
+
     public Request getRequestByIdAndPatientId(int id, int patientId) {
         return jdbcTemplate.queryForObject("SELECT * FROM request WHERE request_id = ? AND patient_id = ?", this::mapToRequest, id, patientId);
     }
@@ -30,17 +31,17 @@ public class RequestDao {
 
     public List<RequestWithPrescription> getAllRequestsWithPrescription() {
         return jdbcTemplate.query("SELECT request.*, prescription.* " +
-                "FROM request " +
-                "JOIN prescription ON request.prescription_id = prescription.prescription_id " +
-                "ORDER BY request.request_date;",
+                        "FROM request " +
+                        "JOIN prescription ON request.prescription_id = prescription.prescription_id " +
+                        "ORDER BY request.request_date;",
                 this::mapToRequestWithPrescription);
     }
 
     public RequestWithPrescription getRequestWithPrescriptionById(int id) {
         return jdbcTemplate.queryForObject("SELECT request.*, prescription.* " +
-                "FROM request " +
-                "JOIN prescription ON request.prescription_id = prescription.prescription_id " +
-                "WHERE request_id = ?;",
+                        "FROM request " +
+                        "JOIN prescription ON request.prescription_id = prescription.prescription_id " +
+                        "WHERE request_id = ?;",
                 this::mapToRequestWithPrescription,
                 id);
     }
@@ -54,11 +55,14 @@ public class RequestDao {
     }
 
     public List<Request> getRequestsByPrescriptionIdAndPatientId(int prescriptionId, int patientId) {
-        return jdbcTemplate.query("SELECT * FROM request WHERE prescription_id = ? AND patient_id = ? ORDER BY request_date", this::mapToRequest, prescriptionId, patientId);
+        return jdbcTemplate.query(
+                "SELECT r.*, p.patient_id " +
+                        "FROM request r " +
+                        "JOIN prescription p ON p.prescription_id = r.prescription_id " +
+                        "WHERE r.prescription_id = ? AND p.patient_id = ? ORDER BY r.request_date", this::mapToRequest, prescriptionId, patientId);
     }
 
     /**
-     *
      * @param status pending, approved, or denied
      * @return
      */

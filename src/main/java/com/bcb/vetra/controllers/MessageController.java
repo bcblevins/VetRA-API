@@ -4,8 +4,8 @@ import com.bcb.vetra.daos.MessageDao;
 import com.bcb.vetra.daos.PatientDao;
 import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Message;
-import com.bcb.vetra.models.Patient;
 import com.bcb.vetra.services.ValidateAccess;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
@@ -64,7 +64,7 @@ public class MessageController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/patients/{patientId}/messages")
-    public Message createForPatient(@RequestBody Message message, @PathVariable int patientId, Principal principal) {
+    public Message createForPatient(@Valid @RequestBody Message message, @PathVariable int patientId, Principal principal) {
         if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this patient");
         }
@@ -75,7 +75,7 @@ public class MessageController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/patients/{patientId}/tests/{testId}/messages")
-    public Message createForTest(@RequestBody Message message, @PathVariable int patientId, @PathVariable int testId, Principal principal) {
+    public Message createForTest(@Valid @RequestBody Message message, @PathVariable int patientId, @PathVariable int testId, Principal principal) {
         if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this patient");
         }
@@ -86,7 +86,7 @@ public class MessageController {
 
     @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
     @PutMapping("/messages/{messageId}")
-    public Message update(@PathVariable int messageId, @RequestBody Message message) {
+    public Message update(@PathVariable int messageId, @Valid @RequestBody Message message) {
         if (!validateAccess.canAccessMessage(messageId, message.getFromUsername())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this message");
         }
