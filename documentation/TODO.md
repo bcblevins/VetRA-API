@@ -1,8 +1,8 @@
 # TODO
 
-- [ ] Clean up sql file
-    - [ ] inserts
-    - [ ] foreign keys
+- [x] Clean up sql file
+    - [x] inserts
+    - [x] foreign keys
 - [ ] Javadocs
 - [x] Validation
   - [x] Controllers
