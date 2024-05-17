@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.Principal;
 import java.util.List;
 
+
 @PreAuthorize("isAuthenticated()")
 @RestController
 public class MessageController {

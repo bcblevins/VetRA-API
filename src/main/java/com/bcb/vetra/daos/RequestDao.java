@@ -9,6 +9,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * <strong>Data Access Object for requests.</strong>
+ * <br><br>
+ * This class is responsible for all database operations related to requests.
+ * <br><br>
+ * Models: <i>Request, RequestWithPrescription(view model)</i>
+ */
 @Component
 public class RequestDao {
     private JdbcTemplate jdbcTemplate;
@@ -21,6 +28,12 @@ public class RequestDao {
         return jdbcTemplate.queryForObject("SELECT * FROM request WHERE request_id = ?", this::mapToRequest, id);
     }
 
+    /**
+     * Gets a request by ID if it exists for a patient.
+     * @param id
+     * @param patientId
+     * @return Request
+     */
     public Request getRequestByIdAndPatientId(int id, int patientId) {
         return jdbcTemplate.queryForObject("SELECT * FROM request WHERE request_id = ? AND patient_id = ?", this::mapToRequest, id, patientId);
     }
@@ -29,6 +42,10 @@ public class RequestDao {
         return jdbcTemplate.query("SELECT * FROM request ORDER BY request_date", this::mapToRequest);
     }
 
+    /**
+     * Gets all requests with prescription details.
+     * @return List of RequestWithPrescription
+     */
     public List<RequestWithPrescription> getAllRequestsWithPrescription() {
         return jdbcTemplate.query("SELECT request.*, prescription.* " +
                         "FROM request " +
@@ -37,6 +54,11 @@ public class RequestDao {
                 this::mapToRequestWithPrescription);
     }
 
+    /**
+     * Gets a request with prescription details by ID.
+     * @param id
+     * @return RequestWithPrescription
+     */
     public RequestWithPrescription getRequestWithPrescriptionById(int id) {
         return jdbcTemplate.queryForObject("SELECT request.*, prescription.* " +
                         "FROM request " +
@@ -54,6 +76,12 @@ public class RequestDao {
         return jdbcTemplate.query("SELECT * FROM request WHERE prescription_id = ? ORDER BY request_date", this::mapToRequest, prescriptionId);
     }
 
+    /**
+     * Gets all requests for a prescription by ID and patient by ID.
+     * @param prescriptionId
+     * @param patientId
+     * @return List of Request
+     */
     public List<Request> getRequestsByPrescriptionIdAndPatientId(int prescriptionId, int patientId) {
         return jdbcTemplate.query(
                 "SELECT r.*, p.patient_id " +

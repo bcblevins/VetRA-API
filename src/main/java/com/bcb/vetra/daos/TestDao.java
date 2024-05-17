@@ -15,7 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Data Access Object for the Test model.
+ * <strong>Data Access Object for diagnostic tests.</strong>
+ * <br><br>
+ * This class is responsible for all database operations related to diagnostic tests.
+ * <br><br>
+ * Models: <i>Test, TestWithDetails(view model), ParameterWithResult(view model)</i>
  */
 @Component
 public class TestDao {

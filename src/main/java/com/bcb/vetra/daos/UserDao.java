@@ -12,7 +12,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 /**
- * Data Access Object for the User model.
+ * <strong>Data Access Object for users.</strong>
+ * <br><br>
+ * This class is responsible for all database operations related to users.
+ * <br><br>
+ * Models: <i>User</i>
  */
 @Component
 public class UserDao {

@@ -1,7 +1,6 @@
 package com.bcb.vetra.daos;
 
 import com.bcb.vetra.exception.DaoException;
-import com.bcb.vetra.models.Prescription;
 import com.bcb.vetra.viewmodels.PrescriptionWithMedication;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -12,13 +11,22 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Data Access Object for the Prescription model, also gets info from medication table.
+ * <strong>Data Access Object for prescriptions.</strong>
+ * <br><br>
+ * This class is responsible for all database operations related to prescriptions.
+ * <br><br>
+ * Models: <i>PrescriptionWithMedication(view model)</i>
  */
 @Component
 public class PrescriptionDao {
     private final JdbcTemplate jdbcTemplate;
     public PrescriptionDao(DataSource dataSource) {this.jdbcTemplate = new JdbcTemplate(dataSource);}
-    public PrescriptionWithMedication getPrescriptionWithMedicationById(int id) {
+    /**
+     * Gets a prescription by ID.
+     * @param id
+     * @return PrescriptionWithMedication
+     */
+    public PrescriptionWithMedication getPrescriptionById(int id) {
         return jdbcTemplate.queryForObject(
                 "SELECT prescription.*, medication.unit " +
                         "FROM prescription " +
@@ -29,6 +37,11 @@ public class PrescriptionDao {
         );
     }
 
+    /**
+     * Gets all prescriptions for a patient by ID.
+     * @param id
+     * @return List of PrescriptionWithMedication
+     */
     public List<PrescriptionWithMedication> getPrescriptionsByPatientId(int id) {
         return jdbcTemplate.query(
                 "SELECT prescription.*, medication.unit " +
@@ -63,7 +76,7 @@ public class PrescriptionDao {
                 prescription.getDoctorUsername(),
                 prescription.getRefills()
         );
-        return getPrescriptionWithMedicationById(id);
+        return getPrescriptionById(id);
     }
     public PrescriptionWithMedication update(PrescriptionWithMedication prescription) {
         int rowsAffected = jdbcTemplate.update(
@@ -81,7 +94,7 @@ public class PrescriptionDao {
         if (rowsAffected == 0) {
             throw new DaoException("Zero rows affected, expected at least one.");
         } else {
-            return getPrescriptionWithMedicationById(prescription.getPrescriptionId());
+            return getPrescriptionById(prescription.getPrescriptionId());
         }
     }
     public boolean delete(int id) {
@@ -113,20 +126,12 @@ public class PrescriptionDao {
                 );
     }
 
-    private Prescription mapToPrescription(ResultSet resultSet, int rowNumber) throws SQLException {
-        return new Prescription(
-                resultSet.getInt("prescription_id"),
-                resultSet.getString("name"),
-                resultSet.getInt("quantity"),
-                resultSet.getString("instructions"),
-                resultSet.getInt("refills"),
-                resultSet.getBoolean("is_active"),
-                resultSet.getInt("patient_id"),
-                resultSet.getString("doctor_username")
-        );
-    }
-
-    public boolean insertMedicationIfDoesNotExist(PrescriptionWithMedication medication) {
+    /**
+     * Inserts a medication into medication table if it is not already present.
+     * @param medication
+     * @return boolean indicating success
+     */
+    private boolean insertMedicationIfDoesNotExist(PrescriptionWithMedication medication) {
         boolean exists = 0 < jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM medication WHERE name = ?",
                 Integer.class,

@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
@@ -45,7 +44,7 @@ public class PrescriptionController {
         if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
             return null;
         }
-        return prescriptionDao.getPrescriptionWithMedicationById(prescriptionId);
+        return prescriptionDao.getPrescriptionById(prescriptionId);
     }
 
     @PreAuthorize("hasAnyAuthority('DOCTOR', 'ADMIN')")

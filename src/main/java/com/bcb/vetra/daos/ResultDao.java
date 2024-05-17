@@ -11,7 +11,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Data Access Object for the Result model.
+ * <strong>Data Access Object for results.</strong>
+ * <br><br>
+ * This class is responsible for all database operations related to results.
+ * <br><br>
+ * Models: <i>Result</i>
  */
 @Component
 public class ResultDao {

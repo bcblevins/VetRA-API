@@ -11,7 +11,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Data Access Object for the Parameter model.
+ * <strong>Data Access Object for test parameters.</strong>
+ * <br><br>
+ * This class is responsible for all database operations related to test parameters.
+ * <br><br>
+ * Models: <i>Parameter</i>
  */
 @Component
 public class ParameterDao {

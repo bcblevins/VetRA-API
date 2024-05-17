@@ -8,6 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * <strong>Data Access Object for messages.</strong>
+ * <br><br>
+ * This class is responsible for all database operations related to messages. Includes methods that filter results by username, patient ID, and test ID.
+ * <br><br>
+ * Models: <i>Message</i>
+ */
 @Component
 public class MessageDao {
     private JdbcTemplate jdbcTemplate;
@@ -16,6 +23,11 @@ public class MessageDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Gets all messages sent to or from a specific username.
+     * @param username
+     * @return List of messages
+     */
     public List<Message> getMessagesByUsername(String username) {
         return jdbcTemplate.query("SELECT message.*, message_test.test_id, message_patient.patient_id  " +
                         "FROM message  " +
@@ -33,6 +45,12 @@ public class MessageDao {
                         "WHERE message.message_id = ?;",
                 this::mapToMessage, id);
     }
+    /**
+     * Gets a message by ID if it has been sent to or from a username.
+     * @param id
+     * @param username
+     * @return Message
+     */
     public Message getMessageByIdAndUsername(int id, String username) {
         return jdbcTemplate.queryForObject("SELECT message.*, message_test.test_id, message_patient.patient_id  " +
                         "FROM message  " +
@@ -59,12 +77,17 @@ public class MessageDao {
                 this::mapToMessage, id);
     }
 
-    public List<Message> getMessagesByTestId(int id) {
+    /**
+     * Gets all messages associated with a specific testId.
+     * @param testId
+     * @return List of messages
+     */
+    public List<Message> getMessagesByTestId(int testId) {
         return jdbcTemplate.query("SELECT message.*, message_test.test_id, message_patient.patient_id  " +
                 "FROM message  " +
                 "LEFT JOIN message_test ON message_test.message_id = message.message_id " +
                 "LEFT JOIN message_patient ON message_patient.message_id = message.message_id " +
-                "WHERE message_test.test_id = ?;", this::mapToMessage, id);
+                "WHERE message_test.test_id = ?;", this::mapToMessage, testId);
     }
 
     public Message create(Message message) {

@@ -70,7 +70,7 @@ public class RequestController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("patients/{patientId}/prescriptions/{prescriptionId}/requests")
     public Request createForPrescription(@Valid @RequestBody Request request, @PathVariable int patientId, @PathVariable int prescriptionId) {
-        if (prescriptionDao.getPrescriptionWithMedicationById(prescriptionId) == null) {
+        if (prescriptionDao.getPrescriptionById(prescriptionId) == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prescription does not exist for patient");
         }
         request.setPrescriptionId(prescriptionId);
