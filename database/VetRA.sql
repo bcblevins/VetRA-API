@@ -14,8 +14,9 @@ drop table if exists "request" cascade;
 CREATE TABLE "user" (
   "username" varchar(30) PRIMARY KEY,
   "password" varchar(300) NOT NULL,
-  "first_name" varchar(20) NOT NULL,
-  "last_name" varchar(20) NOT NULL
+  "first_name" varchar(50) NOT NULL,
+  "last_name" varchar(50) NOT NULL,
+  "email" varchar(350)
 );
 
 CREATE TABLE "patient" (
@@ -139,10 +140,10 @@ INSERT INTO medication (name, unit) VALUES
     ('Trazodone 50mg', 'tablets'),
     ('Gabapentin 100mg', 'capsules');
 
-INSERT INTO "user" (username, password, first_name, last_name) VALUES
-    ('bblevins96', '$2a$10$rdrt3j7YkAaVTQJcGnPX.ORrpMZ3ZXUMZqhfx0jR68vLaqB2jvsH2', 'Beau', 'Blevins'),
-    ('cakelly4', '$2a$10$rdrt3j7YkAaVTQJcGnPX.ORrpMZ3ZXUMZqhfx0jR68vLaqB2jvsH2', 'Chris', 'Kelly'),
-    ('admin', '$2a$10$o5y4WbVoawMUwZiTnQINJOAm6QJyOE3dD2KYIE1kkze7O0m6PzqA.', 'admin', 'admin');
+INSERT INTO "user" (username, password, first_name, last_name, email) VALUES
+    ('bblevins96', '$2a$10$rdrt3j7YkAaVTQJcGnPX.ORrpMZ3ZXUMZqhfx0jR68vLaqB2jvsH2', 'Beau', 'Blevins', 'notreal@test.com'),
+    ('cakelly4', '$2a$10$rdrt3j7YkAaVTQJcGnPX.ORrpMZ3ZXUMZqhfx0jR68vLaqB2jvsH2', 'Chris', 'Kelly', 'itsmybossimnotgivingyouhisemail@shameonyou.com'),
+    ('admin', '$2a$10$o5y4WbVoawMUwZiTnQINJOAm6QJyOE3dD2KYIE1kkze7O0m6PzqA.', 'admin', 'admin', 'company@info.com');
 
 INSERT INTO message (subject, body, from_username, to_username) VALUES
     ('What is up', 'I''m just bored, messaged you to entertain myself.', 'bblevins96', 'cakelly4');

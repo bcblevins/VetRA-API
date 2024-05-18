@@ -4,6 +4,7 @@ import com.bcb.vetra.daos.MessageDao;
 import com.bcb.vetra.daos.PatientDao;
 import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Message;
+import com.bcb.vetra.services.MessageNotification;
 import com.bcb.vetra.services.ValidateAccess;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,12 +24,14 @@ public class MessageController {
     private UserDao userDao;
     private PatientDao patientDao;
     private ValidateAccess validateAccess;
+    private MessageNotification messageNotification;
 
     public MessageController(MessageDao messageDao, PatientDao patientDao, UserDao userDao) {
         this.messageDao = messageDao;
         this.patientDao = patientDao;
         this.userDao = userDao;
         this.validateAccess = new ValidateAccess(userDao, patientDao, messageDao);
+        this.messageNotification = new MessageNotification();
     }
 
     @GetMapping("/messages")
@@ -82,6 +85,10 @@ public class MessageController {
         }
         message.setPatientId(patientId);
         message.setTestId(testId);
+        String toEmail = userDao.getUserByUsername(message.getToUsername()).getEmail();
+
+        messageNotification.sendEmail(toEmail, message, false);
+
         return messageDao.create(message);
     }
 

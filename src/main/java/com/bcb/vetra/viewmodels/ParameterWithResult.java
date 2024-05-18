@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * View Model class for a single parameter with its result.
+ * View Model class for a single parameter with its result. Will be used to display the results of a test.
  */
 @Getter
 @Setter

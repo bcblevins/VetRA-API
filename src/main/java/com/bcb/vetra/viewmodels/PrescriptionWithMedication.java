@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Model class for a prescription with medication information.
+ * Model class for a prescription with medication information. Will be used to display prescriptions.
  */
 @Getter
 @Setter

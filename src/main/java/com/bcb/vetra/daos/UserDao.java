@@ -42,14 +42,14 @@ public class UserDao {
 
     public User createUser(User user) {
         String hashedPassword = passwordEncoder.encode(user.getPassword());
-        String sql = "INSERT INTO \"user\" (username, password, first_name, last_name) VALUES (?,?,?,?) RETURNING username;";
+        String sql = "INSERT INTO \"user\" (username, password, first_name, last_name, email) VALUES (?,?,?,?,?) RETURNING username;";
         String username = jdbcTemplate.queryForObject(sql, String.class, user.getUsername(), hashedPassword, user.getFirstName(), user.getLastName());
         return getUserByUsername(username);
     }
     public User updateUser(User user) {
-        String sql = "UPDATE \"user\" SET first_name = ?, last_name = ? " +
+        String sql = "UPDATE \"user\" SET first_name = ?, last_name = ?, email = ? " +
                 "WHERE username = ?";
-        int rowsAffected = jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getUsername());
+        int rowsAffected = jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername());
         if (rowsAffected == 0) {
             throw new DaoException("Zero rows affected, expected at least one.");
         } else {
@@ -98,7 +98,8 @@ public class UserDao {
                 username,
                 resultSet.getString("password"),
                 resultSet.getString("first_name"),
-                resultSet.getString("last_name")
+                resultSet.getString("last_name"),
+                resultSet.getString("email")
         );
     }
     private String mapToRoles(ResultSet resultSet, int rowNumber) throws SQLException {

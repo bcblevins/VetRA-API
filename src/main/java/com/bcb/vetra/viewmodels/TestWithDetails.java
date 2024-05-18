@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * View Model class for a test, including all results and parameters.
+ * View Model class for a test, including all results and parameters. Will be used to display test results.
  */
 @Getter
 @Setter

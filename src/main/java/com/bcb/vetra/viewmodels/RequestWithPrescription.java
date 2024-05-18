@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * View Model class for a request with its prescription. Will be used to display refill requests to DOCTORs so they have more contextual information.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
