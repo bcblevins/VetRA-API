@@ -74,6 +74,11 @@ public class MessageController {
         }
         message.setPatientId(patientId);
         message.setFromUsername(principal.getName());
+
+        //Send email notification
+        String toEmail = userDao.getUserByUsername(message.getToUsername()).getEmail();
+        messageNotification.sendEmail(toEmail, message, false);
+
         return messageDao.create(message);
     }
 
@@ -85,14 +90,16 @@ public class MessageController {
         }
         message.setPatientId(patientId);
         message.setTestId(testId);
-        String toEmail = userDao.getUserByUsername(message.getToUsername()).getEmail();
+        message.setFromUsername(principal.getName());
 
+        //Send email notification
+        String toEmail = userDao.getUserByUsername(message.getToUsername()).getEmail();
         messageNotification.sendEmail(toEmail, message, false);
 
         return messageDao.create(message);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @PutMapping("/messages/{messageId}")
     public Message update(@PathVariable int messageId, @Valid @RequestBody Message message) {
         if (!validateAccess.canAccessMessage(messageId, message.getFromUsername())) {
