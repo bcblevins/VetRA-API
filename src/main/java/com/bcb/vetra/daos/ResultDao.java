@@ -29,23 +29,30 @@ public class ResultDao {
     }
     public Result create(Result result) {
         Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO result (test_id, parameter_name, result_value) " +
-                        "VALUES (?,?,?) " +
+                "INSERT INTO result (test_id, result_value, parameter_name, range_low, range_high, unit) " +
+                        "VALUES (?,?,?,?,?,?) " +
                         "RETURNING result_id;",
                 Integer.class,
                 result.getTestID(),
+                result.getResultValue(),
+                result.getResultValue(),
                 result.getParameterName(),
-                result.getResultValue()
+                result.getRangeLow(),
+                result.getRangeHigh(),
+                result.getUnit()
         );
         return getResultById(id);
     }
     public Result update(Result result) {
         int rowsAffected = jdbcTemplate.update(
-                "UPDATE result SET test_id = ?, parameter_name = ?, result_value = ? " +
+                "UPDATE result SET test_id = ?, result_value = ?, parameter_name = ?, range_low = ?, range_high = ?, unit = ?" +
                         "WHERE result_id = ?;",
                 result.getTestID(),
-                result.getParameterName(),
                 result.getResultValue(),
+                result.getParameterName(),
+                result.getRangeLow(),
+                result.getRangeHigh(),
+                result.getUnit(),
                 result.getResultID()
         );
         if (rowsAffected == 0) {
@@ -61,8 +68,11 @@ public class ResultDao {
         return new Result(
                 resultSet.getInt("result_id"),
                 resultSet.getInt("test_id"),
+                resultSet.getString("result_value"),
                 resultSet.getString("parameter_name"),
-                resultSet.getString("result_value")
+                resultSet.getString("range_low"),
+                resultSet.getString("range_high"),
+                resultSet.getString("unit")
         );
     }
 }

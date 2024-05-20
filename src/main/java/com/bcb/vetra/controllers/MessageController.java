@@ -30,7 +30,7 @@ public class MessageController {
         this.messageDao = messageDao;
         this.patientDao = patientDao;
         this.userDao = userDao;
-        this.validateAccess = new ValidateAccess(userDao, patientDao, messageDao);
+        this.validateAccess = new ValidateAccess(patientDao, userDao, messageDao);
         this.messageNotification = new MessageNotification();
     }
 

@@ -1,6 +1,5 @@
 drop table if exists prescription cascade;
-drop table if exists result cascade;
-drop table if exists parameter cascade;
+drop table if exists "result" cascade;
 drop table if exists test cascade;
 drop table if exists medication cascade;
 drop table if exists patient cascade;
@@ -42,20 +41,14 @@ CREATE TABLE "test" (
   "doctor_username" varchar(30) NOT NULL REFERENCES "user" ("username")
 );
 
-CREATE TABLE "parameter" (
-  "name" varchar(20) PRIMARY KEY,
-  "range_low" numeric,
-  "range_high" numeric,
-  "unit" varchar(20),
-  "qualitative_normal" varchar(20),
-  "is_qualitative" boolean DEFAULT false
-);
-
 CREATE TABLE "result" (
-  "result_id" SERIAL PRIMARY KEY,
-  "test_id" int NOT NULL REFERENCES "test" ("test_id"),
-  "parameter_name" varchar(20) NOT NULL REFERENCES "parameter" ("name"),
-  "result_value" varchar(20) NOT NULL
+	"result_id" SERIAL PRIMARY KEY,
+	"test_id" int NOT NULL REFERENCES test (test_id),
+	"result_value" varchar(250) NOT NULL,
+	"parameter_name" varchar(250),
+	"range_low" varchar(250),
+	"range_high" varchar(250),
+	"unit" varchar(250)
 );
 
 CREATE TABLE "medication" (
@@ -102,39 +95,6 @@ CREATE TABLE "request" (
 );
 
 
---ALTER TABLE "test" ADD FOREIGN KEY ("doctor_username") REFERENCES "user" ("username");
-
---ALTER TABLE "patient" ADD FOREIGN KEY ("owner_username") REFERENCES "user" ("username");
-
---ALTER TABLE "test" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id");
-
---ALTER TABLE "result" ADD FOREIGN KEY ("test_id") REFERENCES "test" ("test_id");
-
---ALTER TABLE "result" ADD FOREIGN KEY ("parameter_name") REFERENCES "parameter" ("name");
-
---ALTER TABLE "prescription" ADD FOREIGN KEY ("medication_name") REFERENCES "medication" ("name");
-
---ALTER TABLE "prescription" ADD FOREIGN KEY ("doctor_username") REFERENCES "user" ("username");
-
---ALTER TABLE "prescription" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id");
-
---ALTER TABLE "request" ADD FOREIGN KEY ("prescription_id") REFERENCES "prescription" ("prescription_id");
-
---ALTER TABLE "message_patient" ADD FOREIGN KEY ("message_id") REFERENCES "message" ("message_id");
-
---ALTER TABLE "message_patient" ADD FOREIGN KEY ("patient_id") REFERENCES "patient" ("patient_id");
-
---ALTER TABLE "message" ADD FOREIGN KEY ("from_username") REFERENCES "user" ("username");
-
---ALTER TABLE "message" ADD FOREIGN KEY ("to_username") REFERENCES "user" ("username");
-
---ALTER TABLE "message_test" ADD FOREIGN KEY ("message_id") REFERENCES "message" ("message_id");
-
---ALTER TABLE "message_test" ADD FOREIGN KEY ("test_id") REFERENCES "test" ("test_id");
-
---ALTER TABLE "role" ADD FOREIGN KEY ("username") REFERENCES "user" ("username");
-
-
 -- INSERTS
 INSERT INTO medication (name, unit) VALUES
     ('Trazodone 50mg', 'tablets'),
@@ -159,13 +119,13 @@ INSERT INTO test (name, time_stamp, patient_id, doctor_username) VALUES
 
 INSERT INTO message_test (message_id, test_id) VALUES (1, 1);
 
-INSERT INTO parameter (name, range_low, range_high, unit, qualitative_normal, is_qualitative) VALUES
-    ('WBC', 4, 15.5, '10^3/mcL', NULL, false),
-    ('RBC', 4.8, 9.3, '10^6/mcL', NULL, false),
-    ('HGB', 12.1, 20.3, 'g/dl', NULL, false),
-    ('HCT', 36, 60, '%', NULL, false),
-    ('MCV', 58, 79, 'fL', NULL, false),
-    ('PLT', 170, 400, '10^3/mcL', NULL, false);
+INSERT INTO "result" (test_id, result_value, parameter_name, range_low, range_high, unit) VALUES
+    (1, '9.3', 'WBC', '4', '15.5', '10^3/mcL'),
+    (1, '8.0', 'RBC', '4.8', '9.3', '10^6/mcL'),
+    (1, '20.3', 'HGB', '12.1', '20.3', 'g/dl'),
+    (1, '54.0', 'HCT', '36', '60', '%'),
+    (1, '67.0', 'MCV', '58', '79', 'fL'),
+    (1, '330', 'PLT', '170', '400', '10^3/mcL');
 
 INSERT INTO prescription (quantity, instructions, refills, is_active, patient_id, medication_name, doctor_username) VALUES
     (10, 'Give 1/2 tablet by mouth 3 hours prior to thunderstorms to reduce anxiety.', 0, true, 1, 'Trazodone 50mg', 'cakelly4'),
@@ -174,14 +134,6 @@ INSERT INTO prescription (quantity, instructions, refills, is_active, patient_id
 
 INSERT INTO request (prescription_id, status, request_date) VALUES
     (1, 'PENDING', '2024-05-14 14:23:34.448466');
-
-INSERT INTO result VALUES
-    (1, 1, 'WBC', '9.3'),
-    (2, 1, 'RBC', '8.0'),
-    (3, 1, 'HGB', '20.3'),
-    (4, 1, 'HCT', '54.0'),
-    (5, 1, 'MCV', '67.0'),
-    (6, 1, 'PLT', '330.0');
 
 INSERT INTO role VALUES
     ('bblevins96', 'OWNER'),

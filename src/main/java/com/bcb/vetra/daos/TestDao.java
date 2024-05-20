@@ -2,10 +2,7 @@ package com.bcb.vetra.daos;
 
 import com.bcb.vetra.exception.DaoException;
 import com.bcb.vetra.models.Test;
-import com.bcb.vetra.viewmodels.ParameterWithResult;
-import com.bcb.vetra.viewmodels.TestWithDetails;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -19,7 +16,7 @@ import java.util.List;
  * <br><br>
  * This class is responsible for all database operations related to diagnostic tests.
  * <br><br>
- * Models: <i>Test, TestWithDetails(view model), ParameterWithResult(view model)</i>
+ * Models: <i>Test</i>
  */
 @Component
 public class TestDao {
@@ -36,106 +33,6 @@ public class TestDao {
     public List<Test> getTestsForPatient(int patientId) {
         return jdbcTemplate.query("SELECT * FROM test WHERE patient_id = ?", this::mapToTest, patientId);
     }
-
-    /**
-     * Gets all tests for a patient with all parameters and results.
-     * @param patientId
-     * @return List of TestWithDetails
-     */
-    public List<TestWithDetails> getTestWithDetailsForPatient(int patientId) {
-        List<TestWithDetails> testsForPatient = new ArrayList<>();
-        String sql = "select test.*, parameter.name, result.result_id, result.result_value, parameter.range_low, parameter.range_high, parameter.unit, parameter.qualitative_normal, parameter.is_qualitative " +
-                "from test " +
-                "join result on result.test_id = test.test_id " +
-                "join parameter on parameter.name = result.parameter_name " +
-                "where patient_id = ? " +
-                "order by test_id;";
-
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, patientId);
-
-        int currentTestId;
-        int previousTestId = -1;
-        TestWithDetails currentTest = null;
-
-        while (results.next()) {
-            currentTestId = results.getInt("test_id");
-            if (currentTestId != previousTestId) {
-                if (currentTest != null) {
-                    testsForPatient.add(currentTest);
-                }
-                currentTest = new TestWithDetails();
-                currentTest.setTestId(currentTestId);
-                currentTest.setName(results.getString("name"));
-                currentTest.setPatientID(results.getInt("patient_id"));
-                currentTest.setDoctorUsername(results.getString("doctor_username"));
-                if (results.getTimestamp("time_stamp") != null) {
-                    currentTest.setTimestamp(results.getTimestamp("time_stamp").toLocalDateTime());
-                }
-            }
-            currentTest.addToResults(new ParameterWithResult(
-                    results.getInt("result_id"),
-                    results.getInt("test_id"),
-                    results.getString("name"),
-                    results.getString("result_value"),
-                    results.getString("range_low"),
-                    results.getString("range_high"),
-                    results.getString("unit"),
-                    results.getString("qualitative_normal"),
-                    results.getBoolean("is_qualitative")
-            ));
-            previousTestId = currentTestId;
-        }
-        if (currentTest != null) {
-            testsForPatient.add(currentTest);
-        }
-        return testsForPatient;
-    }
-    /**
-     * Gets a test with all parameters and results by its id.
-     * @param testId
-     * @return TestWithDetails
-     */
-
-    public TestWithDetails getTestWithDetailsByTestId(int testId) {
-        String sql = "select test.*, parameter.name, result.result_id, result.result_value, parameter.range_low, parameter.range_high, parameter.unit, parameter.qualitative_normal, parameter.is_qualitative\n" +
-                "from test\n" +
-                "join result on result.test_id = test.test_id\n" +
-                "join parameter on parameter.name = result.parameter_name " +
-                "where test.test_id = ?;";
-
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, testId);
-
-        int currentTestId;
-        int previousTestId = -1;
-        TestWithDetails currentTest = new TestWithDetails();
-
-        while (results.next()) {
-            currentTestId = results.getInt("test_id");
-            if (currentTestId != previousTestId) {
-                currentTest.setTestId(currentTestId);
-                currentTest.setName(results.getString("name"));
-                currentTest.setPatientID(results.getInt("patient_id"));
-                currentTest.setDoctorUsername(results.getString("doctor_username"));
-                currentTest.setTimestamp(results.getTimestamp("time_stamp").toLocalDateTime());
-            }
-            currentTest.addToResults(new ParameterWithResult(
-                    results.getInt("result_id"),
-                    results.getInt("test_id"),
-                    results.getString("name"),
-                    results.getString("result_value"),
-                    results.getString("range_low"),
-                    results.getString("range_high"),
-                    results.getString("unit"),
-                    results.getString("qualitative_normal"),
-                    results.getBoolean("is_qualitative")
-            ));
-            previousTestId = currentTestId;
-        }
-
-        return currentTest;
-    }
-
-
 
     public Test create(Test test) {
         Integer id = jdbcTemplate.queryForObject(
