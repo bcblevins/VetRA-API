@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "Patient",
+			"name": "User",
 			"item": [
 				{
 					"name": "Users",
@@ -28,6 +28,331 @@
 					"response": []
 				},
 				{
+					"name": "User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/admin",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"bethblevins93\",\n    \"password\": \"$2a$10$o5y4WbVoawMUwZiTnQINJOAm6QJyOE3dD2KYIE1kkze7O0m6PzqA.\",\n    \"firstName\": \"admin\",\n    \"lastName\": \"admin\",\n    \"email\": \"company@info.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"bblevins96\",\n    \"password\": \"$2a$10$o5y4WbVoawMUwZiTnQINJOAm6QJyOE3dD2KYIE1kkze7O0m6PzqA.\",\n    \"firstName\": \"Beau\",\n    \"lastName\": \"Blevins\",\n    \"email\": \"evenmorefake@email.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/bblevins96",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"bblevins96"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"bblevins96\",\n    \"password\": \"$2a$10$o5y4WbVoawMUwZiTnQINJOAm6QJyOE3dD2KYIE1kkze7O0m6PzqA.\",\n    \"firstName\": \"Beau\",\n    \"lastName\": \"Blevins\",\n    \"email\": \"evenmorefake@email.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/bblevins96",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"bblevins96"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User:Role",
+			"item": [
+				{
+					"name": "Roles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/bblevins96/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"bblevins96",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "ADMIN",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/bblevins96/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"bblevins96",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "ADMIN",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/bblevins96/roles/admin",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"bblevins96",
+								"roles",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Password",
+			"item": [
+				{
+					"name": "Password Self",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "newPassword",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Password Any User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "newPassword",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/bblevins96/password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"bblevins96",
+								"password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Patient",
+			"item": [
+				{
 					"name": "Patients",
 					"request": {
 						"method": "GET",
@@ -48,16 +373,27 @@
 				{
 					"name": "Patient",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/patients",
+							"raw": "localhost:8080/patients/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"patients"
+								"patients",
+								"1"
 							]
 						}
 					},
@@ -68,6 +404,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Arlo\",\n    \"birthday\": \"2020-02-20\",\n    \"species\": \"Feline\",\n    \"sex\": \"CM\",\n    \"ownerUsername\": \"bblevins96\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "localhost:8080/patients",
 							"host": [
@@ -86,14 +431,24 @@
 					"request": {
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"patientId\": 1,\n    \"firstName\": \"Charlie Bean\",\n    \"birthday\": \"2015-03-14\",\n    \"species\": \"Canine\",\n    \"sex\": \"SF\",\n    \"ownerUsername\": \"bblevins96\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "localhost:8080/patients",
+							"raw": "localhost:8080/patients/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"patients"
+								"patients",
+								"1"
 							]
 						}
 					},
@@ -105,14 +460,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/patients/{patientId}",
+							"raw": "localhost:8080/patients/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"patients",
-								"{patientId}"
+								"1"
 							]
 						}
 					},
@@ -145,17 +500,27 @@
 				{
 					"name": "Messages",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/patients/{patientId}/messages",
+							"raw": "localhost:8080/patients/1/messages",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"patients",
-								"{patientId}",
+								"1",
 								"messages"
 							]
 						}
@@ -167,15 +532,24 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subject\": \"Charlie learned to drive\",\n    \"body\": \"Please help, Charlie has kidnapped me and is driving me to the treat store. I haven't told her yet that that doesn't exist.\",\n    \"fromUsername\": \"bblevins96\",\n    \"toUsername\": \"cakelly4\",\n    \"patientId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "localhost:8080/patients/{patientId}/messages",
+							"raw": "localhost:8080/patients/1/messages",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"patients",
-								"{patientId}",
+								"1",
 								"messages"
 							]
 						}
@@ -226,19 +600,29 @@
 				{
 					"name": "Test",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/patients/{patientId}/tests/{testId}",
+							"raw": "localhost:8080/patients/1/tests/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"patients",
-								"{patientId}",
+								"1",
 								"tests",
-								"{testId}"
+								"1"
 							]
 						}
 					},
@@ -247,19 +631,132 @@
 				{
 					"name": "Test",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/patients/{patientId}/tests/{testId}",
+							"raw": "localhost:8080/patients/1/tests/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"patients",
-								"{patientId}",
+								"1",
 								"tests",
-								"{testId}"
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Patient:Test:Result",
+			"item": [
+				{
+					"name": "Results",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/patients/1/tests/1/results",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1",
+								"tests",
+								"1",
+								"results"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Result",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/patients/1/tests/1/results/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1",
+								"tests",
+								"1",
+								"results",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Result",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/patients/1/tests/1/results/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1",
+								"tests",
+								"1",
+								"results",
+								"1"
 							]
 						}
 					},
@@ -273,19 +770,29 @@
 				{
 					"name": "MessagesForTest",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/patients/{patientId}/tests/{testId}/messages",
+							"raw": "localhost:8080/patients/1/tests/1/messages",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"patients",
-								"{patientId}",
+								"1",
 								"tests",
-								"{testId}",
+								"1",
 								"messages"
 							]
 						}
@@ -295,21 +802,39 @@
 				{
 					"name": "MessageForTest",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subject\": \"No concerns!\",\n    \"body\": \"Charlie's labwork looks great.\",\n    \"fromUsername\": \"cakelly4\",\n    \"toUsername\": \"bblevins\",\n    \"testId\": 1,\n    \"patientId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "localhost:8080/patients/{patientId}/tests/{testId}/messages/",
+							"raw": "localhost:8080/patients/1/tests/1/messages",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"patients",
-								"{patientId}",
+								"1",
 								"tests",
-								"{testId}",
-								"messages",
-								""
+								"1",
+								"messages"
 							]
 						}
 					},
@@ -321,20 +846,640 @@
 			"name": "Patient:Prescription",
 			"item": [
 				{
-					"name": "PrescriptionsForPatient",
+					"name": "Prescriptions",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/patients/{patientId}/prescription",
+							"raw": "localhost:8080/patients/1/prescription",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"patients",
-								"{patientId}",
+								"1",
 								"prescription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Prescription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/patients/1/prescriptions/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1",
+								"prescriptions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Prescription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Trazodone 100mg\",\n    \"quantity\": 10,\n    \"unit\": \"tablets\",\n    \"instructions\": \"Give 1/4 tablet by mouth 3 hours prior to thunderstorms to reduce anxiety.\",\n    \"refills\": 2,\n    \"patientId\": 1,\n    \"doctorUsername\": \"cakelly4\",\n    \"active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/patients/1/prescriptions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1",
+								"prescriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Prescription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"prescriptionId\": 1,\n    \"name\": \"Trazodone 50mg\",\n    \"quantity\": 10,\n    \"unit\": \"tablets\",\n    \"instructions\": \"Give 1/2 to 1 tablet by mouth 3 hours prior to thunderstorms to reduce anxiety.\",\n    \"refills\": 1,\n    \"patientId\": 1,\n    \"doctorUsername\": \"cakelly4\",\n    \"active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/patients/1/prescriptions/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1",
+								"prescriptions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Prescription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/patients/1/prescriptions/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1",
+								"prescriptions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Patient:Prescription:Request",
+			"item": [
+				{
+					"name": "Refill Requests",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/patients/1/prescriptions/1/requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1",
+								"prescriptions",
+								"1",
+								"requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refill Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/patients/1/prescriptions/1/requests/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1",
+								"prescriptions",
+								"1",
+								"requests",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refill Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"requestId\": 1,\n    \"prescriptionId\": 1,\n    \"status\": \"PENDING\",\n    \"requestDate\": \"2024-05-14 14:23:34.448466\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/patients/1/prescriptions/1/requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1",
+								"prescriptions",
+								"1",
+								"requests"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Request",
+			"item": [
+				{
+					"name": "Refill Requests",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refill Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/requests/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"requests",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refill Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"prescriptionId\": 1,\n    \"status\": \"PENDING\",\n    \"requestDate\": \"2024-05-14 14:23:34.448466\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refill Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"requestId\": 1,\n    \"prescriptionId\": 1,\n    \"status\": \"APPPROVED\",\n    \"requestDate\": \"2024-05-14 14:23:34.448466\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/requests/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"requests",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refill Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/requests/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"requests",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Message",
+			"item": [
+				{
+					"name": "Messages to or from User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxMzYzNSwiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTcyMzUsImlhdCI6MTcxNjMxMzYzNSwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiODBkZTJiYjUtNzdjNy00NjYzLWJlZWMtM2QzMGQ3OTk5ODdjIn0.PSBHv7pRjh7FHmjTcao-dUmT6r2ROJG4RC9Ni185yN4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/messages",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"messages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Message to or from User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/messages/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"messages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Messages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/messages/all",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"messages",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Any Medication",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/messages/all/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"messages",
+								"all",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Any Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"messageId\": 1,\n    \"subject\": \"What is up\",\n    \"body\": \"I'm just bored, messaged you to entertain myself.\",\n    \"fromUsername\": \"bblevins96\",\n    \"toUsername\": \"cakelly4\",\n    \"testId\": 0,\n    \"patientId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/messages/all/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"messages",
+								"all",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Any Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVpZCI6LTEsIm5iZiI6MTcxNjMxNjIxMywiaXNzIjoiZnJhaG8tc2VjdXJpdHkiLCJleHAiOjE3MTYzMTk4MTMsImlhdCI6MTcxNjMxNjIxMywiYXV0aG9yaXRpZXMiOlsiQURNSU4iXSwianRpIjoiZmEzYzg4MzYtOTFjNS00Yjg2LTk0NzktMzM2MjllYmI0MjVjIn0.Ys1_0MQJc3FCXQbmQtKLb5ErL5397DmeXK1iFxg5Ing",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/messages/all/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"messages",
+								"all",
+								"1"
 							]
 						}
 					},

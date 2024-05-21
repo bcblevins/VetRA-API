@@ -74,6 +74,7 @@ public class RequestController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prescription does not exist for patient");
         }
         request.setPrescriptionId(prescriptionId);
+        request.setStatus("PENDING");
         return requestDao.create(request);
     }
 

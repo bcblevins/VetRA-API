@@ -211,14 +211,14 @@
 </details>
 
 ### MESSAGE
-| Method | Path                    | Description                 | Role       |
-|--------|-------------------------|-----------------------------|------------|
-| GET    | /messages               | get all messages            | ALL        |
-| GET    | /messages/:messageId    | get message by messageId    | ALL        |
-| PUT    | /messages/:messageId    | update message by messageId | DOCTOR     |
-| DELETE | /messages/:messageId    | delete message by messageId | ADMIN ONLY |
-| GET    | /allMessages            | get all messages            | ADMIN ONLY |
-| GET    | /allMessages/:messageId | get message by messageId    | ADMIN ONLY |
+| Method | Path                     | Description                                 | Role       |
+|--------|--------------------------|---------------------------------------------|------------|
+| GET    | /messages                | get all messages sent by or to user         | ALL        |
+| GET    | /messages/:messageId     | get message by messageId sent by or to user | ALL        |
+| PUT    | /messages/all/:messageId | update message by messageId                 | DOCTOR     |
+| DELETE | /messages/all/:messageId | delete message by messageId                 | ADMIN ONLY |
+| GET    | /messages/all            | get all messages                            | ADMIN ONLY |
+| GET    | /messages/all/:messageId | get message by messageId                    | ADMIN ONLY |
 
 <details>
   <summary>JSON Format(s)</summary>
@@ -239,18 +239,18 @@
 </details>
 
 ### USER
-| Method | Path                      | Description                            | Role       |
-|--------|---------------------------|----------------------------------------|------------|
-| GET    | /users                    | get all users                          | DOCTOR     |
-| GET    | /users/:username          | get user by username                   | DOCTOR     |
-| POST   | /users                    | create a user                          | ADMIN ONLY |
-| PUT    | /users/:username          | update user by username (not password) | ADMIN ONLY |
-| DELETE | /users/:username          | delete user by username                | ADMIN ONLY |
-| GET    | /users/:username/roles    | get roles of user by username          | DOCTOR     |
-| POST   | /users/:username/roles    | add role to user by username           | ADMIN ONLY |
-| DELETE | /users/:username/roles    | delete role from user by username      | ADMIN ONLY |
-| PUT    | /password                 | change own password                    | ALL        |
-| PUT    | /users/:username/password | change password of user by username    | ADMIN ONLY |
+| Method | Path                         | Description                            | Role       |
+|--------|------------------------------|----------------------------------------|------------|
+| GET    | /users                       | get all users                          | DOCTOR     |
+| GET    | /users/:username             | get user by username                   | DOCTOR     |
+| POST   | /users                       | create a user                          | ADMIN ONLY |
+| PUT    | /users/:username             | update user by username (not password) | ADMIN ONLY |
+| DELETE | /users/:username             | delete user by username                | ADMIN ONLY |
+| GET    | /users/:username/roles       | get roles of user by username          | DOCTOR     |
+| POST   | /users/:username/roles       | add role to user by username           | ADMIN ONLY |
+| DELETE | /users/:username/roles/:role | delete role from user by username      | ADMIN ONLY |
+| PUT    | /password                    | change own password                    | ALL        |
+| PUT    | /users/:username/password    | change password of user by username    | ADMIN ONLY |
 
 <details>
   <summary>JSON Format(s)</summary>

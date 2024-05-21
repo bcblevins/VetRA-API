@@ -45,13 +45,13 @@ public class MessageController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/allMessages")
+    @GetMapping("/messages/all")
     public List<Message> getAll() {
         return messageDao.getAll();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/allMessages/{messageId}")
+    @GetMapping("/messages/all/{messageId}")
     public Message getFromAll(@PathVariable int messageId) {
         return messageDao.getMessageById(messageId);
     }
@@ -100,7 +100,7 @@ public class MessageController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
-    @PutMapping("/messages/{messageId}")
+    @PutMapping("/messages/all/{messageId}")
     public Message update(@PathVariable int messageId, @Valid @RequestBody Message message) {
         if (!validateAccess.canAccessMessage(messageId, message.getFromUsername())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this message");
@@ -111,7 +111,7 @@ public class MessageController {
 
     @PreAuthorize("hasAuthority('ADMIN'")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/messages/{messageId}")
+    @DeleteMapping("/messages/all/{messageId}")
     public void delete(@PathVariable int messageId) {
         messageDao.delete(messageId);
     }

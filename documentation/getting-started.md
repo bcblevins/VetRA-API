@@ -40,4 +40,4 @@
 5. Navigate to the 'Authorization' tab in Postman and select 'Bearer Token' from the 'Type' dropdown. Paste the token you copied into the 'Token' field.
 
 ## Using the API
-You can now use the API by selecting a request from the collection on the left side of Postman. You can find information about each request in the 'api-endpoints.md' file located in the documentation folder of this project (the collection in postman is not complete, but it contains some requests to get you started).
+You can now use the API by selecting a request from the collection on the left side of Postman. You can find information about each request in the 'api-endpoints.md' file located in the documentation folder of this project, or use the collection you imported.

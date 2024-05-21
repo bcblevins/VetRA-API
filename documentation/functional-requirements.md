@@ -5,7 +5,9 @@ As an authenticated user I should be able to view:
  - all pets for a specific owner                             
  - one pet for a specific owner                              
  - all tests for a specific pet                              
- - one test for a specific pet                               
+ - one test for a specific pet
+ - all results for a specific test
+ - one result for a specific test
  - all prescriptions for a specific pet                      
  - one prescription for a specific pet                       
  - all refill requests                                             
@@ -38,6 +40,7 @@ As an authenticated user I should be able to delete:
  - a user                                                      
  - a pet for a specific owner                                  
  - a prescription for a specific pet                           
- - a test for a specific pet                                   
+ - a test for a specific pet     
+ - a result for a specific test
  - a refill request                                            
  - a message                                                   
