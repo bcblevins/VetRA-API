@@ -26,4 +26,11 @@ public class Test {
     private int patientID;
     @NotBlank(message = "Test must have a doctorUsername.")
     private String doctorUsername;
+
+    public Test (int id, String name, int patientID, String doctorUsername) {
+        this.id = id;
+        this.name = name;
+        this.patientID = patientID;
+        this.doctorUsername = doctorUsername;
+    }
 }

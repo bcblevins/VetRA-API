@@ -1,10 +1,13 @@
 package com.bcb.vetra.controllers;
 
 import com.bcb.vetra.daos.PatientDao;
+import com.bcb.vetra.daos.ResultDao;
 import com.bcb.vetra.daos.TestDao;
 import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Test;
+import com.bcb.vetra.services.MockVmsIntegration;
 import com.bcb.vetra.services.ValidateAccess;
+import com.bcb.vetra.services.VmsIntegration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +24,16 @@ import java.util.List;
 @RestController
 public class TestController {
     private TestDao testDao;
+    private ResultDao resultDao;
     private PatientDao patientDao;
     private UserDao userDao;
     private ValidateAccess validateAccess;
-    public TestController(TestDao testDao, UserDao userDao, PatientDao patientDao) {
+    private VmsIntegration vmsIntegration;
+    public TestController(TestDao testDao, UserDao userDao, PatientDao patientDao, ResultDao resultDao) {
         this.testDao = testDao;
+        this.resultDao = resultDao;
         this.validateAccess = new ValidateAccess(patientDao, userDao);
+        this.vmsIntegration = new MockVmsIntegration(testDao, resultDao);
     }
 
     @GetMapping("/patients/{patientId}/tests")
@@ -34,6 +41,7 @@ public class TestController {
         if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You do not have access to this patient.");
         }
+        vmsIntegration.updateDB();
         return testDao.getTestsForPatient(patientId);
     }
     @GetMapping("/patients/{patientId}/tests/{testId}")
@@ -42,6 +50,7 @@ public class TestController {
         if (!validateAccess.canAccessTest(test, principal.getName())) {
             return null;
         }
+        vmsIntegration.updateDB();
         return test;
     }
 

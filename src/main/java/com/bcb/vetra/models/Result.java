@@ -23,4 +23,11 @@ public class Result {
     private String rangeLow;
     private String rangeHigh;
     private String unit;
+
+    public Result (int resultId, int testId, String resultValue, String parameterName) {
+        this.resultID = resultId;
+        this.testID = testId;
+        this.resultValue = resultValue;
+        this.parameterName = parameterName;
+    }
 }
