@@ -1,0 +1,7 @@
+com.bcb.vetra
+com.bcb.vetra.controllers
+com.bcb.vetra.daos
+com.bcb.vetra.exception
+com.bcb.vetra.models
+com.bcb.vetra.services
+com.bcb.vetra.viewmodels

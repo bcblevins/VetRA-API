@@ -35,7 +35,6 @@ public class ResultDao {
                 Integer.class,
                 result.getTestID(),
                 result.getResultValue(),
-                result.getResultValue(),
                 result.getParameterName(),
                 result.getRangeLow(),
                 result.getRangeHigh(),

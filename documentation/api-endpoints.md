@@ -1,3 +1,5 @@
+# API Endpoints
+
 ### PATIENT
 | Method | Path                 | Description                 | Role       |
 |--------|----------------------|-----------------------------|------------|

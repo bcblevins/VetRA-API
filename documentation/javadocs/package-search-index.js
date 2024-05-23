@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.bcb.vetra"},{"l":"com.bcb.vetra.controllers"},{"l":"com.bcb.vetra.daos"},{"l":"com.bcb.vetra.exception"},{"l":"com.bcb.vetra.models"},{"l":"com.bcb.vetra.services"},{"l":"com.bcb.vetra.viewmodels"}];updateSearchResults();

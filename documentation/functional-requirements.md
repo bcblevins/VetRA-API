@@ -1,4 +1,6 @@
-As an authenticated user I should be able to view:                                                            
+# Functional Requirements
+
+### As an authenticated user I should be able to view:                                                            
 
  - all users                                                       
  - one user                                                  
@@ -16,7 +18,7 @@ As an authenticated user I should be able to view:
  - all messages that I have sent or have been sent to me    
  - one message that I have sent or has been sent to me      
 
-As an authenticated user I should be able to create: 
+### As an authenticated user I should be able to create: 
 
  - messages to a specific doctor                                    
  - messages in the context of a test                         
@@ -25,7 +27,7 @@ As an authenticated user I should be able to create:
  - a new pet for a specific user                                   
  - a new prescription for a specific pet                           
 
-As an authenticated user I should be able to update:
+### As an authenticated user I should be able to update:
 
  - a user                                               
  - a pet for a specific owner                                      
@@ -35,7 +37,7 @@ As an authenticated user I should be able to update:
  - a refill request to denied                                      
  - a refill request to pending                                 
 
-As an authenticated user I should be able to delete:
+### As an authenticated user I should be able to delete:
 
  - a user                                                      
  - a pet for a specific owner                                  

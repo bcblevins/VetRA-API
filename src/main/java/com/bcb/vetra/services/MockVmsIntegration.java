@@ -6,6 +6,7 @@ import com.bcb.vetra.daos.ResultDao;
 import com.bcb.vetra.daos.TestDao;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
@@ -46,8 +47,8 @@ public class MockVmsIntegration implements VmsIntegration {
     }
 
     private void generateRandomTest(Random rand, int testId) {
-        int animalChoice = rand.nextInt(1, 2);
-        int testChoice = rand.nextInt(1, 2);
+        int animalChoice = rand.nextInt(1, 3);
+        int testChoice = rand.nextInt(1, 3);
         switch (testChoice) {
             case 1:
                 generateCBC(rand, animalChoice, testId);
@@ -73,7 +74,7 @@ public class MockVmsIntegration implements VmsIntegration {
         results.add(new Result(0, testId, mcv, "MCV", "58", "79", "fL"));
         results.add(new Result(0, testId, plt, "Platelets", "170", "400", "10^3/uL"));
 
-        testMap.put(new Test(0, "CBC", animalChoice, "cakelly4"), results);
+        testMap.put(new Test(0, "CBC", animalChoice, "cakelly4", LocalDateTime.now()), results);
     }
 
     private void generateFecal(Random rand, int animalChoice, int testId) {
@@ -88,6 +89,6 @@ public class MockVmsIntegration implements VmsIntegration {
         results.add(new Result(0, testId, whips ? "Positive" : "Negative", "Whipworms"));
         results.add(new Result(0, testId, tapes ? "Positive" : "Negative", "Tapeworms"));
 
-        testMap.put(new Test(0, "Fecal", animalChoice, "cakelly4"), results);
+        testMap.put(new Test(0, "Fecal", animalChoice, "cakelly4", LocalDateTime.now()), results);
     }
 }
