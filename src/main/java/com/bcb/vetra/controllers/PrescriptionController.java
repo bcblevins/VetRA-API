@@ -14,7 +14,9 @@ import java.security.Principal;
 import java.util.List;
 
 /**
- * Controller class for the Prescription model. Also manipulates the medication table as needed for handling prescription requests.
+ * <strong>Controller for prescriptions.</strong>
+ * <br><br>
+ * This class is responsible for handling all HTTP requests related to prescriptions.
  */
 @PreAuthorize("isAuthenticated()")
 @RestController

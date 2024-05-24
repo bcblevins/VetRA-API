@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
 /**
  * <strong>Data Access Object for users.</strong>
  * <br><br>
@@ -43,9 +44,14 @@ public class UserDao {
     public User createUser(User user) {
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         String sql = "INSERT INTO \"user\" (username, password, first_name, last_name, email) VALUES (?,?,?,?,?) RETURNING username;";
-        String username = jdbcTemplate.queryForObject(sql, String.class, user.getUsername(), hashedPassword, user.getFirstName(), user.getLastName());
-        return getUserByUsername(username);
+        try {
+            String username = jdbcTemplate.queryForObject(sql, String.class, user.getUsername(), hashedPassword, user.getFirstName(), user.getLastName(), user.getEmail());
+            return getUserByUsername(username);
+        } catch (EmptyResultDataAccessException e) {
+            throw new DaoException("Failed to create user.");
+        }
     }
+
     public User updateUser(User user) {
         String sql = "UPDATE \"user\" SET first_name = ?, last_name = ?, email = ? " +
                 "WHERE username = ?";
@@ -79,11 +85,13 @@ public class UserDao {
     public List<String> getRoles(String username) {
         return jdbcTemplate.query("SELECT role FROM \"role\" WHERE username = ?;", this::mapToRoles, username);
     }
-    public User addRole(String username, String role) {
+
+    public List<String> addRole(String username, String role) {
         String sql = "INSERT INTO \"role\" (username, role) VALUES (?,?)";
         jdbcTemplate.update(sql, username, role);
-        return getUserByUsername(username);
+        return getRoles(username);
     }
+
     public void deleteRole(String username, String role) {
         String sql = "DELETE FROM \"role\" WHERE username = ? AND role = ?";
         jdbcTemplate.update(sql, username, role);
@@ -92,7 +100,7 @@ public class UserDao {
     //------------------
     // Helper methods
     //------------------
-    private User mapToUser(ResultSet resultSet, int rowNumber) throws SQLException{
+    private User mapToUser(ResultSet resultSet, int rowNumber) throws SQLException {
         String username = resultSet.getString("username");
         return new User(
                 username,
@@ -102,6 +110,7 @@ public class UserDao {
                 resultSet.getString("email")
         );
     }
+
     private String mapToRoles(ResultSet resultSet, int rowNumber) throws SQLException {
         return resultSet.getString("role");
     }

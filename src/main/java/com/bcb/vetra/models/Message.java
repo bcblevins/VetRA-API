@@ -23,6 +23,5 @@ public class Message {
     @NotBlank(message = "To username is required.")
     private String toUsername;
     private int testId;
-    @NotBlank(message = "Patient ID is required.")
     private int patientId;
 }

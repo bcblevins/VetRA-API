@@ -14,7 +14,9 @@ import java.security.Principal;
 import java.util.List;
 
 /**
- * Controller class for the Patient model.
+ * <strong>Controller for patients.</strong>
+ * <br><br>
+ * This class is responsible for handling all HTTP requests related to patients.
  */
 
 @PreAuthorize("isAuthenticated()")

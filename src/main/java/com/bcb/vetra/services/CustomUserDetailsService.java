@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Custom user details service for JWT authentication.
+ */
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;

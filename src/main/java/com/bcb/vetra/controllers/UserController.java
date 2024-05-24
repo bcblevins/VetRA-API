@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 /**
- * Controller class for the person model, only meant to retrieve persons that !isDoctor.
+ * <strong>Controller for users.</strong>
+ * <br><br>
+ * This class is responsible for handling all HTTP requests related to users.
  */
 
 @PreAuthorize("isAuthenticated()")
@@ -73,7 +75,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(path = "users/{username}/roles")
-    public User addRole(@PathVariable String username, @RequestBody String role) {
+    public List<String> addRole(@PathVariable String username, @RequestBody String role) {
         return userDao.addRole(username, role.toUpperCase());
     }
 

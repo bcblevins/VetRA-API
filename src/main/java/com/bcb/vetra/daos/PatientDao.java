@@ -21,47 +21,66 @@ import java.util.List;
 @Component
 public class PatientDao {
     private final JdbcTemplate jdbcTemplate;
-    public PatientDao(DataSource dataSource) {this.jdbcTemplate = new JdbcTemplate(dataSource);}
-    public Patient getPatientById(int id){
-        return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ?", this::mapToPatient, id);
+
+    public PatientDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
+
+    public Patient getPatientById(int id) {
+        Patient patient = null;
+        try {
+            patient = jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ?", this::mapToPatient, id);
+        } catch (EmptyResultDataAccessException e) {
+        }
+        return patient;
+    }
+
     /**
      * Gets a patient by ID if they are associated with a specific username.
+     *
      * @param patientId
-     * @param username owner id
+     * @param username  owner id
      * @return Patient
      */
-    public Patient getPatientByIdAndOwner(int patientId, String username){
+    public Patient getPatientByIdAndOwner(int patientId, String username) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ? AND owner_username = ?;", this::mapToPatient, patientId, username);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
+
     /**
      * Gets all patients owned by a user by username.
+     *
      * @param username
      * @return List of patients
      */
     public List<Patient> getPatientsByUsername(String username) {
         return jdbcTemplate.query("SELECT * FROM patient WHERE owner_username = ? ORDER BY first_name;", this::mapToPatient, username);
     }
+
     public List<Patient> getAllPatients() {
         return jdbcTemplate.query("SELECT * FROM patient ORDER BY first_name", this::mapToPatient);
     }
+
     public Patient create(Patient patient) {
-        Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO patient (first_name, birthday, species, sex, owner_username) " +
-                        "VALUES (?,?,?,?,?) " +
-                        "RETURNING patient_id;",
-                Integer.class,
-                patient.getFirstName(),
-                patient.getBirthday(),
-                patient.getSpecies(),
-                patient.getSex(),
-                patient.getOwnerUsername()
-                );
-        return getPatientById(id);
+        try {
+            Integer id = jdbcTemplate.queryForObject(
+                    "INSERT INTO patient (first_name, birthday, species, sex, owner_username) " +
+                            "VALUES (?,?,?,?,?) " +
+                            "RETURNING patient_id;",
+                    Integer.class,
+                    patient.getFirstName(),
+                    patient.getBirthday(),
+                    patient.getSpecies(),
+                    patient.getSex(),
+                    patient.getOwnerUsername()
+            );
+            return getPatientById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new DaoException("Failed to create patient.");
+        }
     }
 
     public Patient updatePatient(Patient patient) {
@@ -85,6 +104,7 @@ public class PatientDao {
     public boolean deletePatient(int id) {
         return jdbcTemplate.update("DELETE FROM patient WHERE patient_id = ?;", id) > 1;
     }
+
     private Patient mapToPatient(ResultSet resultSet, int rowNumber) throws SQLException {
         return new Patient(
                 resultSet.getInt("patient_id"),

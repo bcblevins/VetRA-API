@@ -1,6 +1,7 @@
 package com.bcb.vetra.daos;
 
 import com.bcb.vetra.models.Message;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -29,21 +30,21 @@ public class MessageDao {
      * @return List of messages
      */
     public List<Message> getMessagesByUsername(String username) {
-        return jdbcTemplate.query("SELECT message.*, message_test.test_id, message_patient.patient_id  " +
-                        "FROM message  " +
-                        "LEFT JOIN message_test ON message_test.message_id = message.message_id " +
-                        "LEFT JOIN message_patient ON message_patient.message_id = message.message_id " +
+        return jdbcTemplate.query("SELECT * " +
+                        "FROM message " +
                         "WHERE to_username = ? OR from_username = ?;",
                 this::mapToMessage, username, username);
     }
 
     public Message getMessageById(int id) {
-        return jdbcTemplate.queryForObject("SELECT message.*, message_test.test_id, message_patient.patient_id  " +
+        try {
+        return jdbcTemplate.queryForObject("SELECT * " +
                         "FROM message  " +
-                        "LEFT JOIN message_test ON message_test.message_id = message.message_id " +
-                        "LEFT JOIN message_patient ON message_patient.message_id = message.message_id " +
-                        "WHERE message.message_id = ?;",
+                        "WHERE message_id = ?;",
                 this::mapToMessage, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
     /**
      * Gets a message by ID if it has been sent to or from a username.
@@ -52,28 +53,24 @@ public class MessageDao {
      * @return Message
      */
     public Message getMessageByIdAndUsername(int id, String username) {
-        return jdbcTemplate.queryForObject("SELECT message.*, message_test.test_id, message_patient.patient_id  " +
+        try {
+        return jdbcTemplate.queryForObject("SELECT * " +
                         "FROM message  " +
-                        "LEFT JOIN message_test ON message_test.message_id = message.message_id " +
-                        "LEFT JOIN message_patient ON message_patient.message_id = message.message_id " +
-                        "WHERE message.message_id = ? AND (to_username = ? OR from_username = ?);",
+                        "WHERE message_id = ? AND (to_username = ? OR from_username = ?);",
                 this::mapToMessage, id, username, username);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public List<Message> getAll() {
-        return jdbcTemplate.query("SELECT message.*, message_test.test_id, message_patient.patient_id  " +
-                        "FROM message  " +
-                        "LEFT JOIN message_test ON message_test.message_id = message.message_id " +
-                        "LEFT JOIN message_patient ON message_patient.message_id = message.message_id",
-                this::mapToMessage);
+        return jdbcTemplate.query("SELECT * FROM message;", this::mapToMessage);
     }
 
     public List<Message> getMessagesByPatientId(int id) {
-        return jdbcTemplate.query("SELECT message.*, message_test.test_id, message_patient.patient_id  " +
+        return jdbcTemplate.query("SELECT * " +
                         "FROM message  " +
-                        "LEFT JOIN message_test ON message_test.message_id = message.message_id " +
-                        "LEFT JOIN message_patient ON message_patient.message_id = message.message_id " +
-                        "WHERE message_patient.patient_id = ?;",
+                        "WHERE patient_id = ?;",
                 this::mapToMessage, id);
     }
 
@@ -83,41 +80,44 @@ public class MessageDao {
      * @return List of messages
      */
     public List<Message> getMessagesByTestId(int testId) {
-        return jdbcTemplate.query("SELECT message.*, message_test.test_id, message_patient.patient_id  " +
-                "FROM message  " +
-                "LEFT JOIN message_test ON message_test.message_id = message.message_id " +
-                "LEFT JOIN message_patient ON message_patient.message_id = message.message_id " +
-                "WHERE message_test.test_id = ?;", this::mapToMessage, testId);
+        return jdbcTemplate.query("SELECT * " +
+                "FROM message " +
+                "WHERE test_id = ?;",
+                this::mapToMessage,
+                testId);
     }
 
     public Message create(Message message) {
-        Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO message (subject, body, from_username, to_username) " +
-                        "VALUES (?,?,?,?) " +
+        Integer id;
+        try {
+        id = jdbcTemplate.queryForObject(
+                "INSERT INTO message (subject, body, from_username, to_username, test_id, patient_id) " +
+                        "VALUES (?,?,?,?,?,?) " +
                         "RETURNING message_id;",
                 Integer.class,
                 message.getSubject(),
                 message.getBody(),
                 message.getFromUsername(),
-                message.getToUsername()
+                message.getToUsername(),
+                message.getTestId(),
+                message.getPatientId()
         );
-        if (message.getTestId() != 0) {
-            jdbcTemplate.update("INSERT INTO message_test (message_id, test_id) VALUES (?,?);", id, message.getTestId());
-        }
-        if (message.getPatientId() != 0) {
-            jdbcTemplate.update("INSERT INTO message_patient (message_id, patient_id) VALUES (?,?);", id, message.getPatientId());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         }
         return getMessageById(id);
     }
 
     public Message update(Message message) {
         int rowsAffected = jdbcTemplate.update(
-                "UPDATE message SET subject = ?, body = ?, from_username = ?, to_username = ? " +
+                "UPDATE message SET subject = ?, body = ?, from_username = ?, to_username = ?, test_id = ?, patient_id = ? " +
                         "WHERE message_id = ?;",
                 message.getSubject(),
                 message.getBody(),
                 message.getFromUsername(),
                 message.getToUsername(),
+                message.getTestId(),
+                message.getPatientId(),
                 message.getMessageId()
         );
         return getMessageById(message.getMessageId());

@@ -20,6 +20,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.Principal;
 import java.util.List;
 
+/**
+ * <strong>Controller for results.</strong>
+ * <br><br>
+ * This class is responsible for handling all HTTP requests related to test results.
+ */
 @PreAuthorize("isAuthenticated()")
 @RestController
 public class ResultController {

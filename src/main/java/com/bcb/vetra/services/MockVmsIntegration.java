@@ -9,20 +9,28 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * Mock VMS integration to be replaced by an external API.
+ */
 @Component
 public class MockVmsIntegration implements VmsIntegration {
 
     private Map<Test, List<Result>> testMap;
     private TestDao testDao;
     private ResultDao resultDao;
+    private boolean isDisabled = false;
 
     public MockVmsIntegration(TestDao testDao, ResultDao resultDao) {
         testMap = new HashMap<>();
         this.testDao = testDao;
         this.resultDao = resultDao;
     }
+
     @Override
     public int updateDB() {
+        if (isDisabled) {
+            return 0;
+        }
         int tests = pickTests();
         for (Map.Entry<Test, List<Result>> entry : testMap.entrySet()) {
             int testId = testDao.create(entry.getKey()).getId();
@@ -30,6 +38,12 @@ public class MockVmsIntegration implements VmsIntegration {
                 result.setTestID(testId);
                 resultDao.create(result);
             }
+        }
+        if (tests > 0) {
+            System.out.println("Added " + tests + " tests to the database.");
+            this.isDisabled = true;
+        } else {
+            System.out.println("No new tests to add.");
         }
         return tests;
     }

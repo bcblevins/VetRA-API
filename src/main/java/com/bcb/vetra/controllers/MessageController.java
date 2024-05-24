@@ -16,6 +16,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.Principal;
 import java.util.List;
 
+/**
+ * <strong>Controller for messages.</strong>
+ * <br><br>
+ * This class is responsible for handling all HTTP requests related to messages.
+ */
 
 @PreAuthorize("isAuthenticated()")
 @RestController
@@ -109,7 +114,7 @@ public class MessageController {
         return messageDao.update(message);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN'")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/messages/all/{messageId}")
     public void delete(@PathVariable int messageId) {

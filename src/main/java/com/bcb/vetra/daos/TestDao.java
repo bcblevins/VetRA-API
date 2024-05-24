@@ -2,6 +2,7 @@ package com.bcb.vetra.daos;
 
 import com.bcb.vetra.exception.DaoException;
 import com.bcb.vetra.models.Test;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,11 @@ public class TestDao {
     }
 
     public Test getTestById(int id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM test WHERE test_id = ?", this::mapToTest, id);
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM test WHERE test_id = ?", this::mapToTest, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public List<Test> getTestsForPatient(int patientId) {
@@ -35,17 +40,21 @@ public class TestDao {
     }
 
     public Test create(Test test) {
-        Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO test (name, time_stamp, patient_id, doctor_username) " +
-                        "VALUES (?,?,?,?) " +
-                        "RETURNING test_id;",
-                Integer.class,
-                test.getName(),
-                test.getTimestamp(),
-                test.getPatientID(),
-                test.getDoctorUsername()
-        );
-        return getTestById(id);
+        try {
+            Integer id = jdbcTemplate.queryForObject(
+                    "INSERT INTO test (name, time_stamp, patient_id, doctor_username) " +
+                            "VALUES (?,?,?,?) " +
+                            "RETURNING test_id;",
+                    Integer.class,
+                    test.getName(),
+                    test.getTimestamp(),
+                    test.getPatientID(),
+                    test.getDoctorUsername()
+            );
+            return getTestById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new DaoException("Failed to create test.");
+        }
     }
 
     public Test update(Test test) {

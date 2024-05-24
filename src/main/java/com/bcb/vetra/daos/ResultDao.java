@@ -2,6 +2,7 @@ package com.bcb.vetra.daos;
 
 import com.bcb.vetra.exception.DaoException;
 import com.bcb.vetra.models.Result;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -20,28 +21,43 @@ import java.util.List;
 @Component
 public class ResultDao {
     private final JdbcTemplate jdbcTemplate;
-    public ResultDao(DataSource dataSource) {this.jdbcTemplate = new JdbcTemplate(dataSource);}
-    public Result getResultById(int id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM result WHERE result_id = ?", this::mapToResult, id);
+
+    public ResultDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
+
+    public Result getResultById(int id) {
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM result WHERE result_id = ?", this::mapToResult, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
     public List<Result> getResultsForTest(int testId) {
         return jdbcTemplate.query("SELECT * FROM result WHERE test_id = ? ORDER BY result_id", this::mapToResult, testId);
     }
+
     public Result create(Result result) {
-        Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO result (test_id, result_value, parameter_name, range_low, range_high, unit) " +
-                        "VALUES (?,?,?,?,?,?) " +
-                        "RETURNING result_id;",
-                Integer.class,
-                result.getTestID(),
-                result.getResultValue(),
-                result.getParameterName(),
-                result.getRangeLow(),
-                result.getRangeHigh(),
-                result.getUnit()
-        );
-        return getResultById(id);
+        try {
+            Integer id = jdbcTemplate.queryForObject(
+                    "INSERT INTO result (test_id, result_value, parameter_name, range_low, range_high, unit) " +
+                            "VALUES (?,?,?,?,?,?) " +
+                            "RETURNING result_id;",
+                    Integer.class,
+                    result.getTestID(),
+                    result.getResultValue(),
+                    result.getParameterName(),
+                    result.getRangeLow(),
+                    result.getRangeHigh(),
+                    result.getUnit()
+            );
+            return getResultById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new DaoException("Failed to create result.");
+        }
     }
+
     public Result update(Result result) {
         int rowsAffected = jdbcTemplate.update(
                 "UPDATE result SET test_id = ?, result_value = ?, parameter_name = ?, range_low = ?, range_high = ?, unit = ?" +
@@ -60,9 +76,11 @@ public class ResultDao {
             return getResultById(result.getResultID());
         }
     }
+
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM result WHERE result_id = ?", id) > 0;
     }
+
     private Result mapToResult(ResultSet resultSet, int rowNumber) throws SQLException {
         return new Result(
                 resultSet.getInt("result_id"),

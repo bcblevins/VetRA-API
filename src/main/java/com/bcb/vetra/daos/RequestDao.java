@@ -1,7 +1,9 @@
 package com.bcb.vetra.daos;
 
+import com.bcb.vetra.exception.DaoException;
 import com.bcb.vetra.models.Request;
 import com.bcb.vetra.viewmodels.RequestWithPrescription;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -25,17 +27,33 @@ public class RequestDao {
     }
 
     public Request getRequestById(int id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM request WHERE request_id = ?", this::mapToRequest, id);
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM request WHERE request_id = ?", this::mapToRequest, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     /**
      * Gets a request by ID if it exists for a patient.
+     *
      * @param id
      * @param patientId
      * @return Request
      */
     public Request getRequestByIdAndPatientId(int id, int patientId) {
-        return jdbcTemplate.queryForObject("SELECT * FROM request WHERE request_id = ? AND patient_id = ?", this::mapToRequest, id, patientId);
+        try {
+            return jdbcTemplate.queryForObject(
+                    "SELECT * " +
+                            "FROM request r " +
+                            "JOIN prescription p ON p.prescription_id = r.prescription_id " +
+                            "WHERE r.request_id = ? AND p.patient_id = ?",
+                    this::mapToRequest,
+                    id,
+                    patientId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public List<Request> getAllRequests() {
@@ -44,6 +62,7 @@ public class RequestDao {
 
     /**
      * Gets all requests with prescription details.
+     *
      * @return List of RequestWithPrescription
      */
     public List<RequestWithPrescription> getAllRequestsWithPrescription() {
@@ -56,16 +75,21 @@ public class RequestDao {
 
     /**
      * Gets a request with prescription details by ID.
+     *
      * @param id
      * @return RequestWithPrescription
      */
     public RequestWithPrescription getRequestWithPrescriptionById(int id) {
-        return jdbcTemplate.queryForObject("SELECT request.*, prescription.* " +
-                        "FROM request " +
-                        "JOIN prescription ON request.prescription_id = prescription.prescription_id " +
-                        "WHERE request_id = ?;",
-                this::mapToRequestWithPrescription,
-                id);
+        try {
+            return jdbcTemplate.queryForObject("SELECT request.*, prescription.* " +
+                            "FROM request " +
+                            "JOIN prescription ON request.prescription_id = prescription.prescription_id " +
+                            "WHERE request_id = ?;",
+                    this::mapToRequestWithPrescription,
+                    id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public List<Request> getRequestsByPatientId(int patientId) {
@@ -78,6 +102,7 @@ public class RequestDao {
 
     /**
      * Gets all requests for a prescription by ID and patient by ID.
+     *
      * @param prescriptionId
      * @param patientId
      * @return List of Request
@@ -101,25 +126,28 @@ public class RequestDao {
 
     public Request create(Request request) {
         request.setStatus(request.getStatus().toUpperCase());
-        Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO request (prescription_id, status) " +
-                        "VALUES (?,?) " +
-                        "RETURNING request_id;",
-                Integer.class,
-                request.getPrescriptionId(),
-                request.getStatus()
-        );
-        return getRequestById(id);
+        try {
+            Integer id = jdbcTemplate.queryForObject(
+                    "INSERT INTO request (prescription_id, status) " +
+                            "VALUES (?,?) " +
+                            "RETURNING request_id;",
+                    Integer.class,
+                    request.getPrescriptionId(),
+                    request.getStatus()
+            );
+            return getRequestById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new DaoException("Failed to create request.");
+        }
     }
 
     public Request update(Request request) {
         request.setStatus(request.getStatus().toUpperCase());
         int rowsAffected = jdbcTemplate.update(
-                "UPDATE request SET prescription_id = ?, status = ?, request_date = ? " +
+                "UPDATE request SET prescription_id = ?, status = ? " +
                         "WHERE request_id = ?;",
                 request.getPrescriptionId(),
                 request.getStatus(),
-                request.getRequestDate(),
                 request.getRequestId()
         );
         return getRequestById(request.getRequestId());
@@ -134,7 +162,7 @@ public class RequestDao {
                 rs.getInt("request_id"),
                 rs.getInt("prescription_id"),
                 rs.getString("status"),
-                rs.getString("request_date")
+                rs.getTimestamp("request_date").toLocalDateTime()
         );
 
     }

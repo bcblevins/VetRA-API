@@ -17,6 +17,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.Principal;
 import java.util.List;
 
+/**
+ * <strong>Controller for requests.</strong>
+ * <br><br>
+ * This class is responsible for handling all HTTP requests related to requests.
+ */
 @PreAuthorize("isAuthenticated()")
 @RestController
 public class RequestController {
@@ -85,7 +90,7 @@ public class RequestController {
         return requestDao.update(request);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN'")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/requests/{requestId}")
     public void delete(@PathVariable int requestId) {

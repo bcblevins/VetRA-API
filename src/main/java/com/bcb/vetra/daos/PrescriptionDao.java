@@ -2,6 +2,7 @@ package com.bcb.vetra.daos;
 
 import com.bcb.vetra.exception.DaoException;
 import com.bcb.vetra.viewmodels.PrescriptionWithMedication;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -20,25 +21,35 @@ import java.util.List;
 @Component
 public class PrescriptionDao {
     private final JdbcTemplate jdbcTemplate;
-    public PrescriptionDao(DataSource dataSource) {this.jdbcTemplate = new JdbcTemplate(dataSource);}
+
+    public PrescriptionDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
     /**
      * Gets a prescription by ID.
+     *
      * @param id
      * @return PrescriptionWithMedication
      */
     public PrescriptionWithMedication getPrescriptionById(int id) {
-        return jdbcTemplate.queryForObject(
-                "SELECT prescription.*, medication.unit " +
-                        "FROM prescription " +
-                        "JOIN medication ON medication.name = prescription.medication_name " +
-                        "WHERE prescription.prescription_id = ?;",
-                this::mapToPrescriptionWithMedication,
-                id
-        );
+        try {
+            return jdbcTemplate.queryForObject(
+                    "SELECT prescription.*, medication.unit " +
+                            "FROM prescription " +
+                            "JOIN medication ON medication.name = prescription.medication_name " +
+                            "WHERE prescription.prescription_id = ?;",
+                    this::mapToPrescriptionWithMedication,
+                    id
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     /**
      * Gets all prescriptions for a patient by ID.
+     *
      * @param id
      * @return List of PrescriptionWithMedication
      */
@@ -53,6 +64,7 @@ public class PrescriptionDao {
                 id
         );
     }
+
     public List<PrescriptionWithMedication> getAllPrescriptions() {
         return jdbcTemplate.query(
                 "SELECT prescription.*, medication.unit " +
@@ -61,23 +73,29 @@ public class PrescriptionDao {
                         "ORDER BY prescription.medication_name;",
                 this::mapToPrescriptionWithMedication);
     }
+
     public PrescriptionWithMedication create(PrescriptionWithMedication prescription) {
         insertMedicationIfDoesNotExist(prescription);
-        Integer id = jdbcTemplate.queryForObject(
-                "INSERT INTO prescription (medication_name, quantity, instructions, is_active, patient_id, doctor_username, refills) " +
-                        "VALUES (?,?,?,?,?,?,?) " +
-                        "RETURNING prescription_id;",
-                Integer.class,
-                prescription.getName(),
-                prescription.getQuantity(),
-                prescription.getInstructions(),
-                prescription.isActive(),
-                prescription.getPatientId(),
-                prescription.getDoctorUsername(),
-                prescription.getRefills()
-        );
-        return getPrescriptionById(id);
+        try {
+            Integer id = jdbcTemplate.queryForObject(
+                    "INSERT INTO prescription (medication_name, quantity, instructions, is_active, patient_id, doctor_username, refills) " +
+                            "VALUES (?,?,?,?,?,?,?) " +
+                            "RETURNING prescription_id;",
+                    Integer.class,
+                    prescription.getName(),
+                    prescription.getQuantity(),
+                    prescription.getInstructions(),
+                    prescription.isActive(),
+                    prescription.getPatientId(),
+                    prescription.getDoctorUsername(),
+                    prescription.getRefills()
+            );
+            return getPrescriptionById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new DaoException("Failed to create prescription.");
+        }
     }
+
     public PrescriptionWithMedication update(PrescriptionWithMedication prescription) {
         int rowsAffected = jdbcTemplate.update(
                 "UPDATE prescription SET medication_name = ?, quantity = ?, instructions = ?, is_active = ?, patient_id = ?, doctor_username = ?, refills = ? " +
@@ -97,18 +115,22 @@ public class PrescriptionDao {
             return getPrescriptionById(prescription.getPrescriptionId());
         }
     }
+
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM prescription WHERE prescription_id = ?", id) > 0;
     }
+
     /**
      * Deletes a prescription of a patient.
-     * @param id id of prescription
+     *
+     * @param id        id of prescription
      * @param patientId
      * @return boolean indicating success
      */
     public boolean deletePrescriptionOfPet(int id, int patientId) {
         return jdbcTemplate.update("DELETE FROM prescription WHERE prescription_id = ? AND patient_id = ?", id, patientId) > 0;
     }
+
     //----------------------
     // Helper methods
     //----------------------
@@ -123,29 +145,34 @@ public class PrescriptionDao {
                 resultSet.getBoolean("is_active"),
                 resultSet.getInt("patient_id"),
                 resultSet.getString("doctor_username")
-                );
+        );
     }
 
     /**
      * Inserts a medication into medication table if it is not already present.
+     *
      * @param medication
      * @return boolean indicating success
      */
     private boolean insertMedicationIfDoesNotExist(PrescriptionWithMedication medication) {
-        boolean exists = 0 < jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM medication WHERE name = ?",
-                Integer.class,
-                medication.getName()
-        );
-        if (!exists) {
-            jdbcTemplate.update(
-                    "INSERT INTO medication (name, unit) VALUES (?, ?)",
-                    medication.getName(),
-                    medication.getUnit()
+        try {
+            boolean exists = 0 < jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM medication WHERE name = ?",
+                    Integer.class,
+                    medication.getName()
             );
-            return true;
+            if (!exists) {
+                jdbcTemplate.update(
+                        "INSERT INTO medication (name, unit) VALUES (?, ?)",
+                        medication.getName(),
+                        medication.getUnit()
+                );
+                return true;
+            }
+            return false;
+        } catch (EmptyResultDataAccessException e) {
+            return false;
         }
-        return false;
     }
 
 }

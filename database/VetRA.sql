@@ -6,8 +6,6 @@ drop table if exists patient cascade;
 drop table if exists "user" cascade;
 drop table if exists "role" cascade;
 drop table if exists "message" cascade;
-drop table if exists "message_test" cascade;
-drop table if exists "message_patient" cascade;
 drop table if exists "request" cascade;
 
 CREATE TABLE "user" (
@@ -24,11 +22,11 @@ CREATE TABLE "patient" (
   "birthday" date,
   "species" varchar(20) NOT NULL,
   "sex" varchar(2),
-  "owner_username" varchar(30) NOT NULL REFERENCES "user" ("username")
+  "owner_username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE
 );
 
 CREATE TABLE "role" (
-  "username" varchar(30) NOT NULL REFERENCES "user" ("username"),
+  "username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE,
   "role" varchar(250) NOT NULL,
   PRIMARY KEY ("username", "role")
 );
@@ -37,13 +35,13 @@ CREATE TABLE "test" (
   "test_id" SERIAL PRIMARY KEY,
   "name" varchar(50) NOT NULL,
   "time_stamp" timestamp NOT NULL,
-  "patient_id" int NOT NULL REFERENCES "patient" ("patient_id"),
-  "doctor_username" varchar(30) NOT NULL REFERENCES "user" ("username")
+  "patient_id" int NOT NULL REFERENCES "patient" ("patient_id") ON DELETE CASCADE,
+  "doctor_username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE
 );
 
 CREATE TABLE "result" (
 	"result_id" SERIAL PRIMARY KEY,
-	"test_id" int NOT NULL REFERENCES test (test_id),
+	"test_id" int NOT NULL REFERENCES test (test_id) ON DELETE CASCADE,
 	"result_value" varchar(250) NOT NULL,
 	"parameter_name" varchar(250),
 	"range_low" varchar(250),
@@ -63,33 +61,24 @@ CREATE TABLE "prescription" (
   "refills" int NOT NULL,
   "is_active" boolean DEFAULT true,
   "patient_id" int NOT NULL REFERENCES "patient" ("patient_id"),
-  "medication_name" varchar(20) NOT NULL REFERENCES "medication" ("name"),
-  "doctor_username" varchar(30) NOT NULL REFERENCES "user" ("username")
+  "medication_name" varchar(20) NOT NULL REFERENCES "medication" ("name") ON DELETE CASCADE,
+  "doctor_username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE
 );
 
 CREATE TABLE "message" (
   "message_id" SERIAL PRIMARY KEY,
   "subject" varchar(50) NOT NULL,
   "body" varchar(1000) NOT NULL,
-  "from_username" varchar(30) NOT NULL REFERENCES "user" ("username"),
-  "to_username" varchar(30) NOT NULL REFERENCES "user" ("username")
+  "from_username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE,
+  "to_username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE,
+  "test_id" int NOT NULL REFERENCES "test" ("test_id") ON DELETE CASCADE,
+  "patient_id" int NOT NULL REFERENCES "patient" ("patient_id") ON DELETE CASCADE
 );
 
-CREATE TABLE "message_test" (
-  "message_id" int NOT NULL REFERENCES "message" ("message_id"),
-  "test_id" int NOT NULL REFERENCES "test" ("test_id"),
-  PRIMARY KEY ("message_id", "test_id")
-);
-
-CREATE TABLE "message_patient" (
-  "message_id" int NOT NULL REFERENCES "message" ("message_id"),
-  "patient_id" int NOT NULL REFERENCES "patient" ("patient_id"),
-  PRIMARY KEY ("message_id", "patient_id")
-);
 
 CREATE TABLE "request" (
   "request_id" SERIAL PRIMARY KEY,
-  "prescription_id" int NOT NULL REFERENCES "prescription" ("prescription_id"),
+  "prescription_id" int NOT NULL REFERENCES "prescription" ("prescription_id") ON DELETE CASCADE,
   "status" varchar(20) DEFAULT 'PENDING',
   "request_date" timestamp DEFAULT (current_timestamp)
 );
@@ -105,19 +94,17 @@ INSERT INTO "user" (username, password, first_name, last_name, email) VALUES
     ('cakelly4', '$2a$10$rdrt3j7YkAaVTQJcGnPX.ORrpMZ3ZXUMZqhfx0jR68vLaqB2jvsH2', 'Chris', 'Kelly', 'itsmybossimnotgivingyouhisemail@shameonyou.com'),
     ('admin', '$2a$10$o5y4WbVoawMUwZiTnQINJOAm6QJyOE3dD2KYIE1kkze7O0m6PzqA.', 'admin', 'admin', 'company@info.com');
 
-INSERT INTO message (subject, body, from_username, to_username) VALUES
-    ('What is up', 'I''m just bored, messaged you to entertain myself.', 'bblevins96', 'cakelly4');
-
 INSERT INTO patient (first_name, birthday, species, sex, owner_username) VALUES
     ('Charlie', '2015-03-14', 'Canine', 'SF', 'bblevins96'),
     ('Sunny', '2016-02-20', 'Feline', 'CM', 'bblevins96');
 
-INSERT INTO message_patient (message_id, patient_id) VALUES (1, 1);
+
 
 INSERT INTO test (name, time_stamp, patient_id, doctor_username) VALUES
     ('CBC', '2024-02-20 00:00:00', 1, 'cakelly4');
 
-INSERT INTO message_test (message_id, test_id) VALUES (1, 1);
+INSERT INTO "message" (subject, body, from_username, to_username, test_id, patient_id) VALUES
+    ('What is up', 'I''m just bored, messaged you to entertain myself.', 'bblevins96', 'cakelly4', 1, 1);
 
 INSERT INTO "result" (test_id, result_value, parameter_name, range_low, range_high, unit) VALUES
     (1, '9.3', 'WBC', '4', '15.5', '10^3/mcL'),

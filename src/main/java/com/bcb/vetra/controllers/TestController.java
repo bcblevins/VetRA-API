@@ -17,7 +17,9 @@ import java.security.Principal;
 import java.util.List;
 
 /**
- * Controller class for the Test model.
+ * <strong>Controller for tests.</strong>
+ * <br><br>
+ * This class is responsible for handling all HTTP requests related to tests.
  */
 @PreAuthorize("isAuthenticated()")
 
