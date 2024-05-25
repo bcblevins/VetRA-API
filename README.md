@@ -11,6 +11,8 @@ This API also provides authentication and authorization.
 ## How
 Java, PostgreSQL, Spring Boot
 
+---
 
-### Please see documentation folder for more extensive user capability descriptions as well as endpoint paths and their behavior.
+See [documentation](documentation) folder for more extensive user capability descriptions as well as endpoint paths and their behavior.
 
+See [getting started](documentation/getting-started.md) document to set up and test VetRA.
