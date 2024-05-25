@@ -5,14 +5,10 @@ import com.bcb.vetra.daos.ResultDao;
 import com.bcb.vetra.daos.TestDao;
 import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Result;
-import com.bcb.vetra.models.Test;
 import com.bcb.vetra.services.MockVmsIntegration;
-import com.bcb.vetra.services.ValidateAccess;
+import com.bcb.vetra.services.AccessControl;
 import com.bcb.vetra.services.VmsIntegration;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -33,18 +29,18 @@ public class ResultController {
     private ResultDao resultDao;
     private PatientDao patientDao;
     private UserDao userDao;
-    private ValidateAccess validateAccess;
+    private AccessControl accessControl;
     private VmsIntegration vmsIntegration;
     public ResultController(ResultDao resultDao, TestDao testDao, UserDao userDao, PatientDao patientDao) {
         this.resultDao = resultDao;
         this.testDao = testDao;
-        this.validateAccess = new ValidateAccess(patientDao, userDao, testDao);
+        this.accessControl = new AccessControl(patientDao, userDao, testDao);
         this.vmsIntegration = new MockVmsIntegration(testDao, resultDao);
     }
 
     @GetMapping("/patients/{patientId}/tests/{testId}/results")
     public List<Result> getAll(@PathVariable int patientId, @PathVariable int testId, Principal principal) {
-        if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
+        if (!accessControl.canAccessPatient(patientId, principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this patient.");
         }
         vmsIntegration.updateDB();
@@ -56,7 +52,7 @@ public class ResultController {
         if (result.getTestID() != testId) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Result does not belong to test.");
         }
-        if (!validateAccess.canAccessResult(result, testId, principal.getName())) {
+        if (!accessControl.canAccessResult(result, testId, principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this result.");
         }
         vmsIntegration.updateDB();

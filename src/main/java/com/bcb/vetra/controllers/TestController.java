@@ -6,7 +6,7 @@ import com.bcb.vetra.daos.TestDao;
 import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Test;
 import com.bcb.vetra.services.MockVmsIntegration;
-import com.bcb.vetra.services.ValidateAccess;
+import com.bcb.vetra.services.AccessControl;
 import com.bcb.vetra.services.VmsIntegration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,18 +29,18 @@ public class TestController {
     private ResultDao resultDao;
     private PatientDao patientDao;
     private UserDao userDao;
-    private ValidateAccess validateAccess;
+    private AccessControl accessControl;
     private VmsIntegration vmsIntegration;
     public TestController(TestDao testDao, UserDao userDao, PatientDao patientDao, ResultDao resultDao) {
         this.testDao = testDao;
         this.resultDao = resultDao;
-        this.validateAccess = new ValidateAccess(patientDao, userDao);
+        this.accessControl = new AccessControl(patientDao, userDao);
         this.vmsIntegration = new MockVmsIntegration(testDao, resultDao);
     }
 
     @GetMapping("/patients/{patientId}/tests")
     public List<Test> getAll(@PathVariable int patientId, Principal principal) {
-        if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
+        if (!accessControl.canAccessPatient(patientId, principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You do not have access to this patient.");
         }
         vmsIntegration.updateDB();
@@ -49,7 +49,7 @@ public class TestController {
     @GetMapping("/patients/{patientId}/tests/{testId}")
     public Test get(@PathVariable int patientId, @PathVariable int testId, Principal principal) {
         Test test = testDao.getTestById(testId);
-        if (!validateAccess.canAccessTest(test, principal.getName())) {
+        if (!accessControl.canAccessTest(test, principal.getName())) {
             return null;
         }
         vmsIntegration.updateDB();

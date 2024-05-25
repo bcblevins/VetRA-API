@@ -6,26 +6,25 @@ import com.bcb.vetra.daos.TestDao;
 import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Result;
 import com.bcb.vetra.models.Test;
-import com.bcb.vetra.models.User;
 
-public class ValidateAccess {
+public class AccessControl {
     private UserDao userDao;
     private PatientDao patientDao;
     private MessageDao messageDao;
     private TestDao testDao;
 
-    public ValidateAccess(PatientDao patientDao, UserDao userDao) {
+    public AccessControl(PatientDao patientDao, UserDao userDao) {
         this.patientDao = patientDao;
         this.userDao = userDao;
     }
 
-    public ValidateAccess(PatientDao patientDao, UserDao userDao, MessageDao messageDao) {
+    public AccessControl(PatientDao patientDao, UserDao userDao, MessageDao messageDao) {
         this.patientDao = patientDao;
         this.userDao = userDao;
         this.messageDao = messageDao;
     }
 
-    public ValidateAccess(PatientDao patientDao, UserDao userDao, TestDao testDao) {
+    public AccessControl(PatientDao patientDao, UserDao userDao, TestDao testDao) {
         this.patientDao = patientDao;
         this.userDao = userDao;
         this.testDao = testDao;

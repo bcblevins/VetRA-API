@@ -4,7 +4,7 @@ import com.bcb.vetra.daos.PatientDao;
 import com.bcb.vetra.daos.PrescriptionDao;
 import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Request;
-import com.bcb.vetra.services.ValidateAccess;
+import com.bcb.vetra.services.AccessControl;
 import com.bcb.vetra.viewmodels.RequestWithPrescription;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -29,14 +29,14 @@ public class RequestController {
     private PrescriptionDao prescriptionDao;
     private PatientDao patientDao;
     private UserDao userDao;
-    private ValidateAccess validateAccess;
+    private AccessControl accessControl;
 
     public RequestController(RequestDao requestDao, PrescriptionDao prescriptionDao, PatientDao patientDao, UserDao userDao) {
         this.requestDao = requestDao;
         this.prescriptionDao = prescriptionDao;
         this.patientDao = patientDao;
         this.userDao = userDao;
-        this.validateAccess = new ValidateAccess(patientDao, userDao);
+        this.accessControl = new AccessControl(patientDao, userDao);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
@@ -47,7 +47,7 @@ public class RequestController {
 
     @GetMapping("patients/{patientId}/prescriptions/{prescriptionId}/requests")
     public List<Request> getAllForPrescription(@PathVariable int patientId, @PathVariable int prescriptionId, Principal principal ) {
-        if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
+        if (!accessControl.canAccessPatient(patientId, principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this patient.");
         }
 
@@ -74,7 +74,7 @@ public class RequestController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("patients/{patientId}/prescriptions/{prescriptionId}/requests")
-    public Request createForPrescription(@Valid @RequestBody Request request, @PathVariable int patientId, @PathVariable int prescriptionId) {
+    public Request createForPrescription(@RequestBody Request request, @PathVariable int patientId, @PathVariable int prescriptionId) {
         if (prescriptionDao.getPrescriptionById(prescriptionId) == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prescription does not exist for patient");
         }

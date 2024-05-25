@@ -101,10 +101,10 @@ INSERT INTO patient (first_name, birthday, species, sex, owner_username) VALUES
 
 
 INSERT INTO test (name, time_stamp, patient_id, doctor_username) VALUES
-    ('CBC', '2024-02-20 00:00:00', 1, 'cakelly4');
+    ('CBC', '2024-05-24 00:00:00', 1, 'cakelly4');
 
 INSERT INTO "message" (subject, body, from_username, to_username, test_id, patient_id) VALUES
-    ('What is up', 'I''m just bored, messaged you to entertain myself.', 'bblevins96', 'cakelly4', 1, 1);
+    ('Looks great!', 'Charlie''s labwork looks great, her white blood cell count is back in the normal range. How is she doing after her visit?', 'cakelly4', 'bblevins96', 1, 1);
 
 INSERT INTO "result" (test_id, result_value, parameter_name, range_low, range_high, unit) VALUES
     (1, '9.3', 'WBC', '4', '15.5', '10^3/mcL'),

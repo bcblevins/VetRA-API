@@ -3,7 +3,7 @@ package com.bcb.vetra.controllers;
 import com.bcb.vetra.daos.PatientDao;
 import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Patient;
-import com.bcb.vetra.services.ValidateAccess;
+import com.bcb.vetra.services.AccessControl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,10 +25,10 @@ import java.util.List;
 public class PatientController {
     private PatientDao patientDao;
     private UserDao userDao;
-    private ValidateAccess validateAccess;
+    private AccessControl accessControl;
     public PatientController(PatientDao patientDao, UserDao userDao) {
         this.patientDao = patientDao;
-        this.validateAccess = new ValidateAccess(patientDao, userDao);
+        this.accessControl = new AccessControl(patientDao, userDao);
     }
     @GetMapping
     public List<Patient> getAllByUsername(Principal principal) {
@@ -43,7 +43,7 @@ public class PatientController {
 
     @GetMapping("/{patientId}")
     public Patient get(@PathVariable int patientId, Principal principal) {
-        if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
+        if (!accessControl.canAccessPatient(patientId, principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have access to this patient.");
         }
 

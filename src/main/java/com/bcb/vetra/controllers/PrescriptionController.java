@@ -3,7 +3,7 @@ package com.bcb.vetra.controllers;
 import com.bcb.vetra.daos.PrescriptionDao;
 import com.bcb.vetra.daos.PatientDao;
 import com.bcb.vetra.daos.UserDao;
-import com.bcb.vetra.services.ValidateAccess;
+import com.bcb.vetra.services.AccessControl;
 import com.bcb.vetra.viewmodels.PrescriptionWithMedication;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -24,26 +24,26 @@ public class PrescriptionController {
     private PrescriptionDao prescriptionDao;
     private UserDao userDao;
     private PatientDao patientDao;
-    private ValidateAccess validateAccess;
+    private AccessControl accessControl;
 
     public PrescriptionController(PrescriptionDao prescriptionDao, UserDao userDao, PatientDao patientDao) {
         this.prescriptionDao = prescriptionDao;
         this.userDao = userDao;
         this.patientDao = patientDao;
-        this.validateAccess = new ValidateAccess(patientDao, userDao);
+        this.accessControl = new AccessControl(patientDao, userDao);
     }
 
     //TODO: Auth starting here
     @GetMapping("/patients/{patientId}/prescriptions")
     public List<PrescriptionWithMedication> getAll(@PathVariable int patientId, Principal principal) {
-        if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
+        if (!accessControl.canAccessPatient(patientId, principal.getName())) {
             return null;
         }
         return prescriptionDao.getPrescriptionsByPatientId(patientId);
     }
     @GetMapping("/patients/{patientId}/prescriptions/{prescriptionId}")
     public PrescriptionWithMedication get(@PathVariable int patientId, @PathVariable int prescriptionId, Principal principal) {
-        if (!validateAccess.canAccessPatient(patientId, principal.getName())) {
+        if (!accessControl.canAccessPatient(patientId, principal.getName())) {
             return null;
         }
         return prescriptionDao.getPrescriptionById(prescriptionId);
