@@ -36,6 +36,11 @@ public class MessageDao {
                 this::mapToMessage, username, username);
     }
 
+    /**
+     * Gets a message by ID.
+     * @param id
+     * @return Message
+     */
     public Message getMessageById(int id) {
         try {
         return jdbcTemplate.queryForObject("SELECT * " +
@@ -63,10 +68,19 @@ public class MessageDao {
         }
     }
 
+    /**
+     * Gets all messages.
+     * @return List of messages
+     */
     public List<Message> getAll() {
         return jdbcTemplate.query("SELECT * FROM message;", this::mapToMessage);
     }
 
+    /**
+     * Gets all messages associated with a specific patientId.
+     * @param id
+     * @return List of messages
+     */
     public List<Message> getMessagesByPatientId(int id) {
         return jdbcTemplate.query("SELECT * " +
                         "FROM message  " +
@@ -87,6 +101,11 @@ public class MessageDao {
                 testId);
     }
 
+    /**
+     * Creates a new message.
+     * @param message
+     * @return The created message
+     */
     public Message create(Message message) {
         Integer id;
         try {
@@ -108,6 +127,11 @@ public class MessageDao {
         return getMessageById(id);
     }
 
+    /**
+     * Updates a message.
+     * @param message
+     * @return The updated message
+     */
     public Message update(Message message) {
         int rowsAffected = jdbcTemplate.update(
                 "UPDATE message SET subject = ?, body = ?, from_username = ?, to_username = ?, test_id = ?, patient_id = ? " +
@@ -123,10 +147,22 @@ public class MessageDao {
         return getMessageById(message.getMessageId());
     }
 
+    /**
+     * Deletes a message by ID.
+     * @param id
+     * @return True if the message was deleted, false otherwise
+     */
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM message WHERE message_id = ?;", id) > 0;
     }
 
+    /**
+     * Maps a ResultSet to a Message object.
+     * @param rs
+     * @param rowNum
+     * @return Message
+     * @throws SQLException
+     */
     private Message mapToMessage(ResultSet rs, int rowNum) throws SQLException {
         return new Message(
                 rs.getInt("message_id"),

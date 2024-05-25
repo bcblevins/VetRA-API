@@ -26,6 +26,12 @@ public class PatientDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    /**
+     * Gets a patient by ID.
+     *
+     * @param id
+     * @return Patient
+     */
     public Patient getPatientById(int id) {
         Patient patient = null;
         try {
@@ -64,6 +70,12 @@ public class PatientDao {
         return jdbcTemplate.query("SELECT * FROM patient ORDER BY first_name", this::mapToPatient);
     }
 
+    /**
+     * Creates a new patient.
+     *
+     * @param patient
+     * @return Patient
+     */
     public Patient create(Patient patient) {
         try {
             Integer id = jdbcTemplate.queryForObject(
@@ -83,6 +95,12 @@ public class PatientDao {
         }
     }
 
+    /**
+     * Updates a patient.
+     *
+     * @param patient
+     * @return Patient
+     */
     public Patient updatePatient(Patient patient) {
         int rowsAffected = jdbcTemplate.update(
                 "UPDATE patient SET first_name = ?, birthday = ?, species = ?, sex = ?, owner_username = ? " +
@@ -101,10 +119,24 @@ public class PatientDao {
         }
     }
 
+    /**
+     * Deletes a patient by ID.
+     *
+     * @param id
+     * @return boolean
+     */
     public boolean deletePatient(int id) {
         return jdbcTemplate.update("DELETE FROM patient WHERE patient_id = ?;", id) > 1;
     }
 
+    /**
+     * Maps a ResultSet to a Patient object.
+     *
+     * @param resultSet
+     * @param rowNumber
+     * @return Patient
+     * @throws SQLException
+     */
     private Patient mapToPatient(ResultSet resultSet, int rowNumber) throws SQLException {
         return new Patient(
                 resultSet.getInt("patient_id"),

@@ -38,38 +38,79 @@ public class MessageController {
         this.messageNotification = new MessageNotification();
     }
 
+    /**
+     * Gets all message sent to or from user.
+     *
+     * @param principal The currently logged in user.
+     * @return A list of all messages for the currently logged in user.
+     */
     @GetMapping("/messages")
     public List<Message> getAll(Principal principal) {
         return messageDao.getMessagesByUsername(principal.getName());
     }
 
+    /**
+     * Gets a message by its ID.
+     *
+     * @param messageId The ID of the message.
+     * @param principal The currently logged in user.
+     * @return The message with the given ID.
+     */
     @GetMapping("/messages/{messageId}")
     public Message get(@PathVariable int messageId, Principal principal) {
         return messageDao.getMessageByIdAndUsername(messageId, principal.getName());
     }
 
+    /**
+     * Gets all messages
+     * @return A list of all messages.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/messages/all")
     public List<Message> getAll() {
         return messageDao.getAll();
     }
 
+    /**
+     * Gets a message by its ID.
+     *
+     * @param messageId The ID of the message.
+     * @return The message with the given ID.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/messages/all/{messageId}")
     public Message getFromAll(@PathVariable int messageId) {
         return messageDao.getMessageById(messageId);
     }
 
+    /**
+     * Gets all messages about a patient.
+     * @param patientId
+     * @return
+     */
     @GetMapping("/patients/{patientId}/messages")
     public List<Message> getMessagesByPatientId(@PathVariable int patientId) {
         return messageDao.getMessagesByPatientId(patientId);
     }
 
+    /**
+     * Gets all messages about a test.
+     * @param patientId
+     * @param testId
+     * @return
+     */
     @GetMapping("patients/{patientId}/tests/{testId}/messages")
     public List<Message> getMessagesByTestId(@PathVariable int patientId, @PathVariable int testId) {
         return messageDao.getMessagesByTestId(testId);
     }
 
+    /**
+     * Creates a new message attributed to a specific patient.
+     *
+     * @param message The message to create.
+     * @param principal The currently logged in user.
+     * @return The created message.
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/patients/{patientId}/messages")
     public Message createForPatient(@Valid @RequestBody Message message, @PathVariable int patientId, Principal principal) {
@@ -86,6 +127,15 @@ public class MessageController {
         return messageDao.create(message);
     }
 
+    /**
+     * Creates a new message attributed to a specific test.
+     *
+     * @param message The message to create.
+     * @param patientId The ID of the patient.
+     * @param testId The ID of the test.
+     * @param principal The currently logged in user.
+     * @return The created message.
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/patients/{patientId}/tests/{testId}/messages")
     public Message createForTest(@Valid @RequestBody Message message, @PathVariable int patientId, @PathVariable int testId, Principal principal) {
@@ -103,6 +153,12 @@ public class MessageController {
         return messageDao.create(message);
     }
 
+    /**
+     * Updates a message.
+     * @param messageId
+     * @param message
+     * @return
+     */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @PutMapping("/messages/all/{messageId}")
     public Message update(@PathVariable int messageId, @Valid @RequestBody Message message) {
@@ -113,6 +169,10 @@ public class MessageController {
         return messageDao.update(message);
     }
 
+    /**
+     * Deletes a message.
+     * @param messageId
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/messages/all/{messageId}")

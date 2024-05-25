@@ -33,7 +33,13 @@ public class PrescriptionController {
         this.accessControl = new AccessControl(patientDao, userDao);
     }
 
-    //TODO: Auth starting here
+    /**
+     * Gets all prescriptions for a patient. Verifies permission by calling the access control service. If a user owns the patient, or if they are an admin or doctor, they can access the prescriptions.
+     *
+     * @param patientId The ID of the patient.
+     * @param principal The currently logged in user.
+     * @return A list of all prescriptions for the patient.
+     */
     @GetMapping("/patients/{patientId}/prescriptions")
     public List<PrescriptionWithMedication> getAll(@PathVariable int patientId, Principal principal) {
         if (!accessControl.canAccessPatient(patientId, principal.getName())) {
@@ -41,6 +47,15 @@ public class PrescriptionController {
         }
         return prescriptionDao.getPrescriptionsByPatientId(patientId);
     }
+
+    /**
+     * Gets a prescription by its ID. Verifies permission by calling the access control service. If a user owns the patient, or if they are an admin or doctor, they can access the prescription.
+     *
+     * @param patientId The ID of the patient.
+     * @param prescriptionId The ID of the prescription.
+     * @param principal The currently logged in user.
+     * @return The prescription with the given ID.
+     */
     @GetMapping("/patients/{patientId}/prescriptions/{prescriptionId}")
     public PrescriptionWithMedication get(@PathVariable int patientId, @PathVariable int prescriptionId, Principal principal) {
         if (!accessControl.canAccessPatient(patientId, principal.getName())) {
@@ -49,6 +64,13 @@ public class PrescriptionController {
         return prescriptionDao.getPrescriptionById(prescriptionId);
     }
 
+    /**
+     * Creates a new prescription for a patient.
+     *
+     * @param patientId The ID of the patient.
+     * @param prescription The prescription to create.
+     * @return The created prescription.
+     */
     @PreAuthorize("hasAnyAuthority('DOCTOR', 'ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/patients/{patientId}/prescriptions")
@@ -57,6 +79,14 @@ public class PrescriptionController {
         return prescriptionDao.create(prescription);
     }
 
+    /**
+     * Updates a prescription for a patient.
+     *
+     * @param patientId The ID of the patient.
+     * @param prescriptionId The ID of the prescription.
+     * @param prescription The prescription to update.
+     * @return The updated prescription.
+     */
     @PreAuthorize("hasAnyAuthority('DOCTOR', 'ADMIN')")
     @PutMapping("/patients/{patientId}/prescriptions/{prescriptionId}")
     public PrescriptionWithMedication update(@PathVariable int patientId, @PathVariable int prescriptionId, @Valid @RequestBody PrescriptionWithMedication prescription) {
@@ -64,6 +94,12 @@ public class PrescriptionController {
         return prescriptionDao.update(prescription);
     }
 
+    /**
+     * Deletes a prescription for a patient.
+     *
+     * @param patientId The ID of the patient.
+     * @param prescriptionId The ID of the prescription.
+     */
     @PreAuthorize("hasAnyAuthority('DOCTOR', 'ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/patients/{patientId}/prescriptions/{prescriptionId}")

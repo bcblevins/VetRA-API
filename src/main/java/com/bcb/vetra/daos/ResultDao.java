@@ -26,6 +26,12 @@ public class ResultDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    /**
+     * Gets a result by ID.
+     *
+     * @param id
+     * @return Result
+     */
     public Result getResultById(int id) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM result WHERE result_id = ?", this::mapToResult, id);
@@ -34,10 +40,22 @@ public class ResultDao {
         }
     }
 
+    /**
+     * Gets all results for a test by ID.
+     *
+     * @param testId
+     * @return List of Result
+     */
     public List<Result> getResultsForTest(int testId) {
         return jdbcTemplate.query("SELECT * FROM result WHERE test_id = ? ORDER BY result_id", this::mapToResult, testId);
     }
 
+    /**
+     * Creates a new result.
+     *
+     * @param result
+     * @return Result
+     */
     public Result create(Result result) {
         try {
             Integer id = jdbcTemplate.queryForObject(
@@ -58,6 +76,12 @@ public class ResultDao {
         }
     }
 
+    /**
+     * Updates a result.
+     *
+     * @param result
+     * @return Result
+     */
     public Result update(Result result) {
         int rowsAffected = jdbcTemplate.update(
                 "UPDATE result SET test_id = ?, result_value = ?, parameter_name = ?, range_low = ?, range_high = ?, unit = ?" +
@@ -77,10 +101,23 @@ public class ResultDao {
         }
     }
 
+    /**
+     * Deletes a result by ID.
+     *
+     * @param id
+     */
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM result WHERE result_id = ?", id) > 0;
     }
 
+    /**
+     * Maps a ResultSet to a Result object.
+     *
+     * @param resultSet
+     * @param rowNumber
+     * @return Result
+     * @throws SQLException
+     */
     private Result mapToResult(ResultSet resultSet, int rowNumber) throws SQLException {
         return new Result(
                 resultSet.getInt("result_id"),

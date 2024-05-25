@@ -39,12 +39,24 @@ public class RequestController {
         this.accessControl = new AccessControl(patientDao, userDao);
     }
 
+    /**
+     * Gets all requests.
+     *
+     * @return A list of all requests.
+     */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @GetMapping("/requests")
     public List<RequestWithPrescription> getAll() {
         return requestDao.getAllRequestsWithPrescription();
     }
 
+    /**
+     * Gets all requests for a patient. Verifies permission by calling the access control service.
+     *
+     * @param patientId The ID of the patient.
+     * @param principal The currently logged in user.
+     * @return A list of all requests for the patient.
+     */
     @GetMapping("patients/{patientId}/prescriptions/{prescriptionId}/requests")
     public List<Request> getAllForPrescription(@PathVariable int patientId, @PathVariable int prescriptionId, Principal principal ) {
         if (!accessControl.canAccessPatient(patientId, principal.getName())) {
@@ -54,17 +66,37 @@ public class RequestController {
         return requestDao.getRequestsByPrescriptionIdAndPatientId(prescriptionId, patientId);
     }
 
+    /**
+     * Gets a request by its ID.
+     *
+     * @param requestId The ID of the request.
+     * @return The request with the given ID.
+     */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @GetMapping("/requests/{requestId}")
     public RequestWithPrescription get(@PathVariable int requestId) {
         return requestDao.getRequestWithPrescriptionById(requestId);
     }
 
+    /**
+     * Gets a request by its ID.
+     *
+     * @param patientId The ID of the patient.
+     * @param prescriptionId The ID of the prescription.
+     * @param requestId The ID of the request.
+     * @return The request with the given ID.
+     */
     @GetMapping("patients/{patientId}/prescriptions/{prescriptionId}/requests/{requestId}")
     public Request getForPrescription(@PathVariable int patientId, @PathVariable int prescriptionId, @PathVariable int requestId) {
         return requestDao.getRequestByIdAndPatientId(requestId, patientId);
     }
 
+    /**
+     * Creates a new request.
+     *
+     * @param request The request to create.
+     * @return The created request.
+     */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/requests")
@@ -72,6 +104,14 @@ public class RequestController {
         return requestDao.create(request);
     }
 
+    /**
+     * Creates a new request for a prescription.
+     *
+     * @param request The request to create.
+     * @param patientId The ID of the patient.
+     * @param prescriptionId The ID of the prescription.
+     * @return The created request.
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("patients/{patientId}/prescriptions/{prescriptionId}/requests")
     public Request createForPrescription(@RequestBody Request request, @PathVariable int patientId, @PathVariable int prescriptionId) {
@@ -83,6 +123,13 @@ public class RequestController {
         return requestDao.create(request);
     }
 
+    /**
+     * Updates a request.
+     *
+     * @param requestId The ID of the request.
+     * @param request The updated request.
+     * @return The updated request.
+     */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @PutMapping("/requests/{requestId}")
     public Request update(@PathVariable int requestId, @Valid @RequestBody Request request) {
@@ -90,6 +137,11 @@ public class RequestController {
         return requestDao.update(request);
     }
 
+    /**
+     * Deletes a request.
+     *
+     * @param requestId The ID of the request.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/requests/{requestId}")

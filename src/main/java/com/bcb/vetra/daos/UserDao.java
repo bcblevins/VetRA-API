@@ -29,10 +29,21 @@ public class UserDao {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Gets all users.
+     *
+     * @return List of User
+     */
     public List<User> getUsers() {
         return jdbcTemplate.query("SELECT * FROM \"user\" ORDER BY username;", this::mapToUser);
     }
 
+    /**
+     * Gets a user by username.
+     *
+     * @param username
+     * @return User
+     */
     public User getUserByUsername(String username) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM \"user\" WHERE username = ?", this::mapToUser, username);
@@ -41,6 +52,12 @@ public class UserDao {
         }
     }
 
+    /**
+     * Creates a new user.
+     *
+     * @param user
+     * @return User
+     */
     public User createUser(User user) {
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         String sql = "INSERT INTO \"user\" (username, password, first_name, last_name, email) VALUES (?,?,?,?,?) RETURNING username;";
@@ -52,6 +69,12 @@ public class UserDao {
         }
     }
 
+    /**
+     * Updates a user.
+     *
+     * @param user
+     * @return User
+     */
     public User updateUser(User user) {
         String sql = "UPDATE \"user\" SET first_name = ?, last_name = ?, email = ? " +
                 "WHERE username = ?";
@@ -63,6 +86,12 @@ public class UserDao {
         }
     }
 
+    /**
+     * Updates a user's password.
+     *
+     * @param user
+     * @return User
+     */
     public User updatePassword(User user) {
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         String sql = "UPDATE \"user\" SET password = ? WHERE username = ?";
@@ -74,6 +103,12 @@ public class UserDao {
         }
     }
 
+    /**
+     * Deletes a user.
+     *
+     * @param username
+     * @return boolean
+     */
     public boolean deleteUser(String username) {
         String sql = "DELETE FROM \"user\" WHERE username = ? ";
         return jdbcTemplate.update(sql, username) > 0;
@@ -82,16 +117,36 @@ public class UserDao {
     //------------------
     // Role methods
     //------------------
+
+    /**
+     * Gets all roles for a user.
+     *
+     * @param username
+     * @return List of String
+     */
     public List<String> getRoles(String username) {
         return jdbcTemplate.query("SELECT role FROM \"role\" WHERE username = ?;", this::mapToRoles, username);
     }
 
+    /**
+     * Adds a role to a user.
+     *
+     * @param username
+     * @param role
+     * @return List of String
+     */
     public List<String> addRole(String username, String role) {
         String sql = "INSERT INTO \"role\" (username, role) VALUES (?,?)";
         jdbcTemplate.update(sql, username, role);
         return getRoles(username);
     }
 
+    /**
+     * Deletes a role from a user.
+     *
+     * @param username
+     * @param role
+     */
     public void deleteRole(String username, String role) {
         String sql = "DELETE FROM \"role\" WHERE username = ? AND role = ?";
         jdbcTemplate.update(sql, username, role);
@@ -100,6 +155,15 @@ public class UserDao {
     //------------------
     // Helper methods
     //------------------
+
+    /**
+     * Maps a row in the ResultSet to a User object.
+     *
+     * @param resultSet
+     * @param rowNumber
+     * @return User
+     * @throws SQLException
+     */
     private User mapToUser(ResultSet resultSet, int rowNumber) throws SQLException {
         String username = resultSet.getString("username");
         return new User(
@@ -111,6 +175,14 @@ public class UserDao {
         );
     }
 
+    /**
+     * Maps a row in the ResultSet to a String.
+     *
+     * @param resultSet
+     * @param rowNumber
+     * @return String
+     * @throws SQLException
+     */
     private String mapToRoles(ResultSet resultSet, int rowNumber) throws SQLException {
         return resultSet.getString("role");
     }

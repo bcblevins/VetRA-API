@@ -7,6 +7,11 @@ import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Result;
 import com.bcb.vetra.models.Test;
 
+/**
+ * <strong>Access Control Service</strong>
+ * <br><br>
+ * This class is responsible for providing more specific access control to resources based on user roles.
+ */
 public class AccessControl {
     private UserDao userDao;
     private PatientDao patientDao;
@@ -35,6 +40,13 @@ public class AccessControl {
         return userDao.getUserByUsername(username) != null;
     }
 
+    /**
+     * Checks if a user can access a patient.
+     *
+     * @param patientId
+     * @param username
+     * @return boolean
+     */
     public boolean canAccessPatient(int patientId, String username) {
         boolean isOwnedBy = patientDao.getPatientByIdAndOwner(patientId, username) != null;
         boolean isDoctor = userDao.getRoles(username).contains("DOCTOR");
@@ -42,6 +54,13 @@ public class AccessControl {
         return isOwnedBy || isDoctor || isAdmin;
     }
 
+    /**
+     * Checks if a user can access a test.
+     *
+     * @param test
+     * @param username
+     * @return boolean
+     */
     public boolean canAccessTest(Test test, String username) {
         int patientId = test.getPatientID();
         boolean isOwnedBy = patientDao.getPatientByIdAndOwner(patientId, username) != null;
@@ -49,6 +68,15 @@ public class AccessControl {
         boolean isAdmin = userDao.getRoles(username).contains("ADMIN");
         return isOwnedBy || isDoctor || isAdmin;
     }
+
+    /**
+     * Checks if a user can access a result.
+     *
+     * @param result
+     * @param testId
+     * @param username
+     * @return boolean
+     */
     public boolean canAccessResult(Result result, int testId, String username) {
         int patientId = testDao.getTestById(result.getTestID()).getPatientID();
         boolean isPatientOwnedBy = patientDao.getPatientByIdAndOwner(patientId, username) != null;
@@ -57,8 +85,13 @@ public class AccessControl {
         return isPatientOwnedBy || isDoctor || isAdmin;
     }
 
-
-
+    /**
+     * Checks if a user can access a message.
+     *
+     * @param messageId
+     * @param username
+     * @return boolean
+     */
     public boolean canAccessMessage(int messageId, String username) {
         boolean isOwnedBy = messageDao.getMessageByIdAndUsername(messageId, username) != null;
         boolean isAdmin = userDao.getRoles(username).contains("ADMIN");

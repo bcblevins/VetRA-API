@@ -26,6 +26,12 @@ public class RequestDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Gets a request by ID.
+     *
+     * @param id
+     * @return Request
+     */
     public Request getRequestById(int id) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM request WHERE request_id = ?", this::mapToRequest, id);
@@ -56,6 +62,11 @@ public class RequestDao {
         }
     }
 
+    /**
+     * Gets all requests.
+     *
+     * @return List of Request
+     */
     public List<Request> getAllRequests() {
         return jdbcTemplate.query("SELECT * FROM request ORDER BY request_date", this::mapToRequest);
     }
@@ -92,10 +103,22 @@ public class RequestDao {
         }
     }
 
+    /**
+     * Gets all requests for a patient by ID.
+     *
+     * @param patientId
+     * @return List of Request
+     */
     public List<Request> getRequestsByPatientId(int patientId) {
         return jdbcTemplate.query("SELECT * FROM request WHERE prescription_id = ? ORDER BY request_date", this::mapToRequest, patientId);
     }
 
+    /**
+     * Gets all requests for a prescription by ID.
+     *
+     * @param prescriptionId
+     * @return List of Request
+     */
     public List<Request> getRequestsByPrescriptionId(int prescriptionId) {
         return jdbcTemplate.query("SELECT * FROM request WHERE prescription_id = ? ORDER BY request_date", this::mapToRequest, prescriptionId);
     }
@@ -124,6 +147,12 @@ public class RequestDao {
         return jdbcTemplate.query("SELECT * FROM request WHERE status = ? ORDER BY request_date", this::mapToRequest, status);
     }
 
+    /**
+     * Creates a new request.
+     *
+     * @param request
+     * @return Request
+     */
     public Request create(Request request) {
         request.setStatus(request.getStatus().toUpperCase());
         try {
@@ -141,6 +170,12 @@ public class RequestDao {
         }
     }
 
+    /**
+     * Updates a request.
+     *
+     * @param request
+     * @return Request
+     */
     public Request update(Request request) {
         request.setStatus(request.getStatus().toUpperCase());
         int rowsAffected = jdbcTemplate.update(
@@ -153,10 +188,23 @@ public class RequestDao {
         return getRequestById(request.getRequestId());
     }
 
+    /**
+     * Deletes a request by ID.
+     *
+     * @param id
+     */
     public void delete(int id) {
         jdbcTemplate.update("DELETE FROM request WHERE request_id = ?", id);
     }
 
+    /**
+     * Maps a ResultSet to a Request object.
+     *
+     * @param rs
+     * @param rowNum
+     * @return Request
+     * @throws SQLException
+     */
     private Request mapToRequest(ResultSet rs, int rowNum) throws SQLException {
         return new Request(
                 rs.getInt("request_id"),
@@ -167,6 +215,14 @@ public class RequestDao {
 
     }
 
+    /**
+     * Maps a ResultSet to a RequestWithPrescription object.
+     *
+     * @param rs
+     * @param rowNum
+     * @return RequestWithPrescription
+     * @throws SQLException
+     */
     private RequestWithPrescription mapToRequestWithPrescription(ResultSet rs, int rowNum) throws SQLException {
         return new RequestWithPrescription(
                 rs.getInt("request_id"),

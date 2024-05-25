@@ -30,17 +30,36 @@ public class PatientController {
         this.patientDao = patientDao;
         this.accessControl = new AccessControl(patientDao, userDao);
     }
+
+    /**
+     * Gets all patients for the currently logged in user.
+     *
+     * @param principal The currently logged in user.
+     * @return A list of all patients for the currently logged in user.
+     */
     @GetMapping
     public List<Patient> getAllByUsername(Principal principal) {
         return patientDao.getPatientsByUsername(principal.getName());
     }
+
+    /**
+     * Gets all patients.
+     *
+     * @return A list of all patients.
+     */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @GetMapping("/all")
     public List<Patient> getAll() {
         return patientDao.getAllPatients();
     }
 
-
+    /**
+     * Gets a patient by its ID. Verifies permission by calling the access control service. If a user owns the patient, or if they are an admin or doctor, they can access the patient.
+     *
+     * @param patientId The ID of the patient.
+     * @param principal The currently logged in user.
+     * @return The patient with the given ID.
+     */
     @GetMapping("/{patientId}")
     public Patient get(@PathVariable int patientId, Principal principal) {
         if (!accessControl.canAccessPatient(patientId, principal.getName())) {
@@ -50,6 +69,12 @@ public class PatientController {
         return patientDao.getPatientById(patientId);
     }
 
+    /**
+     * Creates a new patient.
+     *
+     * @param patient The patient to create.
+     * @return The created patient.
+     */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -57,6 +82,13 @@ public class PatientController {
         return patientDao.create(patient);
     }
 
+    /**
+     * Updates a patient.
+     *
+     * @param patientId The ID of the patient to update.
+     * @param patient The updated patient.
+     * @return The updated patient.
+     */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @PutMapping("/{patientId}")
     public Patient update(@PathVariable int patientId, @Valid @RequestBody Patient patient) {
@@ -64,6 +96,11 @@ public class PatientController {
         return patientDao.updatePatient(patient);
     }
 
+    /**
+     * Deletes a patient.
+     *
+     * @param patientId The ID of the patient to delete.
+     */
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{patientId}")

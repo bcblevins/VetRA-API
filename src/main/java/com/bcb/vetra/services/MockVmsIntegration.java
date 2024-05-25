@@ -26,6 +26,11 @@ public class MockVmsIntegration implements VmsIntegration {
         this.resultDao = resultDao;
     }
 
+    /**
+     * Updates the database with new tests. Implemented from VmsIntegration.
+     *
+     * @return int
+     */
     @Override
     public int updateDB() {
         if (isDisabled) {
@@ -48,6 +53,9 @@ public class MockVmsIntegration implements VmsIntegration {
         return tests;
     }
 
+    /**
+     * Randomly selects a number of tests to generate.
+     */
     private int pickTests() {
         Random rand = new Random();
         int numTests = rand.nextInt(1, 20);
@@ -60,6 +68,9 @@ public class MockVmsIntegration implements VmsIntegration {
         return 0;
     }
 
+    /**
+     * Generates a random test.
+     */
     private void generateRandomTest(Random rand, int testId) {
         int animalChoice = rand.nextInt(1, 3);
         int testChoice = rand.nextInt(1, 3);
@@ -71,6 +82,9 @@ public class MockVmsIntegration implements VmsIntegration {
         }
     }
 
+    /**
+     * Generates a CBC test.
+     */
     private void generateCBC(Random rand, int animalChoice, int testId) {
         List<Result> results = new ArrayList<>();
 
@@ -91,6 +105,9 @@ public class MockVmsIntegration implements VmsIntegration {
         testMap.put(new Test(0, "CBC", animalChoice, "cakelly4", LocalDateTime.now()), results);
     }
 
+    /**
+     * Generates a fecal test.
+     */
     private void generateFecal(Random rand, int animalChoice, int testId) {
         List<Result> results = new ArrayList<>();
         boolean hooks = rand.nextInt(0, 10) > 7;

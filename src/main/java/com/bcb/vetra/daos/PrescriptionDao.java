@@ -65,6 +65,11 @@ public class PrescriptionDao {
         );
     }
 
+    /**
+     * Gets all prescriptions.
+     *
+     * @return List of PrescriptionWithMedication
+     */
     public List<PrescriptionWithMedication> getAllPrescriptions() {
         return jdbcTemplate.query(
                 "SELECT prescription.*, medication.unit " +
@@ -74,6 +79,12 @@ public class PrescriptionDao {
                 this::mapToPrescriptionWithMedication);
     }
 
+    /**
+     * Creates a new prescription.
+     *
+     * @param prescription
+     * @return PrescriptionWithMedication
+     */
     public PrescriptionWithMedication create(PrescriptionWithMedication prescription) {
         insertMedicationIfDoesNotExist(prescription);
         try {
@@ -96,6 +107,12 @@ public class PrescriptionDao {
         }
     }
 
+    /**
+     * Updates a prescription.
+     *
+     * @param prescription
+     * @return PrescriptionWithMedication
+     */
     public PrescriptionWithMedication update(PrescriptionWithMedication prescription) {
         int rowsAffected = jdbcTemplate.update(
                 "UPDATE prescription SET medication_name = ?, quantity = ?, instructions = ?, is_active = ?, patient_id = ?, doctor_username = ?, refills = ? " +
@@ -116,6 +133,12 @@ public class PrescriptionDao {
         }
     }
 
+    /**
+     * Deletes a prescription by ID.
+     *
+     * @param id
+     * @return boolean indicating success
+     */
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM prescription WHERE prescription_id = ?", id) > 0;
     }
@@ -134,6 +157,15 @@ public class PrescriptionDao {
     //----------------------
     // Helper methods
     //----------------------
+
+    /**
+     * Maps a row in the result set to a PrescriptionWithMedication object.
+     *
+     * @param resultSet
+     * @param rowNumber
+     * @return PrescriptionWithMedication
+     * @throws SQLException
+     */
     private PrescriptionWithMedication mapToPrescriptionWithMedication(ResultSet resultSet, int rowNumber) throws SQLException {
         return new PrescriptionWithMedication(
                 resultSet.getInt("prescription_id"),

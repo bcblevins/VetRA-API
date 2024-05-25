@@ -38,6 +38,13 @@ public class TestController {
         this.vmsIntegration = new MockVmsIntegration(testDao, resultDao);
     }
 
+    /**
+     * Gets all tests for a patient. Verifies permission by calling the access control service.
+     *
+     * @param patientId The ID of the patient.
+     * @param principal The currently logged in user.
+     * @return A list of all tests for the patient.
+     */
     @GetMapping("/patients/{patientId}/tests")
     public List<Test> getAll(@PathVariable int patientId, Principal principal) {
         if (!accessControl.canAccessPatient(patientId, principal.getName())) {
@@ -46,6 +53,15 @@ public class TestController {
         vmsIntegration.updateDB();
         return testDao.getTestsForPatient(patientId);
     }
+
+    /**
+     * Gets a test by its ID. Verifies permission by calling the access control service.
+     *
+     * @param patientId The ID of the patient.
+     * @param testId The ID of the test.
+     * @param principal The currently logged in user.
+     * @return The test with the given ID.
+     */
     @GetMapping("/patients/{patientId}/tests/{testId}")
     public Test get(@PathVariable int patientId, @PathVariable int testId, Principal principal) {
         Test test = testDao.getTestById(testId);
@@ -58,6 +74,12 @@ public class TestController {
 
     // No create or update methods as I plan to supply the test data from another API.
 
+    /**
+     * Deletes a test.
+     *
+     * @param patientId The ID of the patient.
+     * @param testId The ID of the test.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/patients/{patientId}/tests/{testId}")

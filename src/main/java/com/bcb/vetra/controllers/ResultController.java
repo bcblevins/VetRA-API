@@ -38,6 +38,14 @@ public class ResultController {
         this.vmsIntegration = new MockVmsIntegration(testDao, resultDao);
     }
 
+    /**
+     * Gets all results for a test. Verifies permission by calling the access control service.
+     *
+     * @param patientId The ID of the patient.
+     * @param testId The ID of the test.
+     * @param principal The currently logged in user.
+     * @return A list of all results for the test.
+     */
     @GetMapping("/patients/{patientId}/tests/{testId}/results")
     public List<Result> getAll(@PathVariable int patientId, @PathVariable int testId, Principal principal) {
         if (!accessControl.canAccessPatient(patientId, principal.getName())) {
@@ -46,6 +54,16 @@ public class ResultController {
         vmsIntegration.updateDB();
         return resultDao.getResultsForTest(testId);
     }
+
+    /**
+     * Gets a result by its ID. Verifies permission by calling the access control service.
+     *
+     * @param patientId The ID of the patient.
+     * @param testId The ID of the test.
+     * @param resultId The ID of the result.
+     * @param principal The currently logged in user.
+     * @return The result with the given ID.
+     */
     @GetMapping("/patients/{patientId}/tests/{testId}/results/{resultId}")
     public Result get(@PathVariable int patientId, @PathVariable int testId, @PathVariable int resultId, Principal principal) {
         Result result = resultDao.getResultById(resultId);
@@ -61,10 +79,17 @@ public class ResultController {
 
     // No create or update methods as I plan to supply the test data from another API.
 
+    /**
+     * Deletes a result.
+     *
+     * @param patientId The ID of the patient.
+     * @param testId The ID of the test.
+     * @param resultId The ID of the result.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/patients/{patientId}/tests/{testId}/results/{resultId}")
-    public void delete(@PathVariable int patientId, @PathVariable int testId) {
+    public void delete(@PathVariable int patientId, @PathVariable int testId, @PathVariable int resultId) {
         testDao.deleteTestOfPatient(testId, patientId);
     }
 
