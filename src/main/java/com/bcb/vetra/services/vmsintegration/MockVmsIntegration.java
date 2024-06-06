@@ -1,9 +1,10 @@
-package com.bcb.vetra.services;
+package com.bcb.vetra.services.vmsintegration;
 
 import com.bcb.vetra.models.Result;
 import com.bcb.vetra.models.Test;
 import com.bcb.vetra.daos.ResultDao;
 import com.bcb.vetra.daos.TestDao;
+import com.bcb.vetra.services.vmsintegration.VmsIntegration;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

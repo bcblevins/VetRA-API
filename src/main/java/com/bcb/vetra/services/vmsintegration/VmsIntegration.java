@@ -1,4 +1,4 @@
-package com.bcb.vetra.services;
+package com.bcb.vetra.services.vmsintegration;
 
 import com.bcb.vetra.models.Result;
 import com.bcb.vetra.models.Test;
