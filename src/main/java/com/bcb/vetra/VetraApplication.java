@@ -1,6 +1,8 @@
 package com.bcb.vetra;
 
 import com.bcb.vetra.services.vmsintegration.ezyvet.AuthRequestBody;
+import com.bcb.vetra.services.vmsintegration.ezyvet.EzyVetIntegration;
+import com.bcb.vetra.services.vmsintegration.ezyvet.Token;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,14 +14,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 @SpringBootApplication
 public class VetraApplication {
 
+    static EzyVetIntegration ezyVetIntegration = new EzyVetIntegration();
     public static void main(String[] args) {
         SpringApplication.run(VetraApplication.class, args);
-        testApiCall();
+        ezyVetIntegration.updateDB();
     }
 
     public static void testApiCall() {
         String apiAuthUrl = "https://api.trial.ezyvet.com/v1/oauth/access_token";
-        String authCredentials = System.getenv("CREDENTIALS");
         AuthRequestBody authRequestBody = new AuthRequestBody(
                 System.getenv("PARTNER_ID"),
                 System.getenv("CLIENT_ID"),
@@ -30,15 +32,15 @@ public class VetraApplication {
 
 
 		WebClient.Builder builder = WebClient.builder();
-		String token = builder.build()
+		Token token = builder.build()
 				.post()
 				.uri(apiAuthUrl)
 				.bodyValue(authRequestBody)
 				.retrieve()
-				.bodyToMono(String.class)
+				.bodyToMono(Token.class)
 				.block();
 
-        System.out.println(token);
+        System.out.println(token.toString());
 
     }
 }

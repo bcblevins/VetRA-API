@@ -1,5 +1,6 @@
 package com.bcb.vetra.services.vmsintegration.ezyvet;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Token {
-    private String token_type;
-    private String expires_in;
-    private String access_token;
+    @JsonAlias({"token_type", "tokenType"})
+    private String tokenType;
+    @JsonAlias({"expires_in", "expiresIn"})
+    private String expiresIn;
+    @JsonAlias({"access_token", "accessToken"})
+    private String accessToken;
 }
