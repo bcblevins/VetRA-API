@@ -5,6 +5,7 @@ drop table if exists medication cascade;
 drop table if exists patient cascade;
 drop table if exists "user" cascade;
 drop table if exists "role" cascade;
+drop table if exists "user_vms" cascade;
 drop table if exists "message" cascade;
 drop table if exists "request" cascade;
 
@@ -16,6 +17,19 @@ CREATE TABLE "user" (
   "email" varchar(350)
 );
 
+CREATE TABLE "role" (
+  "username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE,
+  "role" varchar(250) NOT NULL,
+  PRIMARY KEY ("username", "role")
+);
+
+CREATE TABLE "user_vms" (
+  "username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE,
+  "vms_name" varchar(30) NOT NULL,
+  "vms_id" varchar(300) NOT NULL,
+  PRIMARY KEY ("username", "vms_name")
+);
+
 CREATE TABLE "patient" (
   "patient_id" SERIAL PRIMARY KEY,
   "first_name" varchar(20) NOT NULL,
@@ -23,12 +37,6 @@ CREATE TABLE "patient" (
   "species" varchar(20) NOT NULL,
   "sex" varchar(2),
   "owner_username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE
-);
-
-CREATE TABLE "role" (
-  "username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE,
-  "role" varchar(250) NOT NULL,
-  PRIMARY KEY ("username", "role")
 );
 
 CREATE TABLE "test" (

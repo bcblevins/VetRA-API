@@ -1,23 +1,51 @@
 package com.bcb.vetra.services.vmsintegration.ezyvet;
 
+import com.bcb.vetra.daos.*;
 import com.bcb.vetra.models.Patient;
+import com.bcb.vetra.models.User;
 import com.bcb.vetra.services.vmsintegration.VmsIntegration;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class EzyVetIntegration implements VmsIntegration {
     private final String BASE_URL = "https://api.trial.ezyvet.com/v1";
     private final String AUTH_PATH = "/oauth/access_token";
     private final String ANIMAL_PATH = "/animal";
+    private final String CONTACT_PATH = "/contact";
     private final String ADD_LIMIT = "?limit=";
     private WebClient.Builder builder;
+    private ObjectMapper objectMapper;
     private Token token;
     private boolean authenticated = false;
+    private MessageDao messageDao;
+    private PatientDao patientDao;
+    private PrescriptionDao prescriptionDao;
+    private ResultDao resultDao;
+    private TestDao testDao;
+    private UserDao userDao;
 
     public EzyVetIntegration() {
         this.builder = WebClient.builder();
+        this.objectMapper = new ObjectMapper();
+    }
+    public EzyVetIntegration(ObjectMapper objectMapper, WebClient.Builder builder, MessageDao messageDao, PatientDao patientDao, PrescriptionDao prescriptionDao, ResultDao resultDao, TestDao testDao, UserDao userDao) {
+        this.objectMapper = objectMapper;
+        this.builder = builder;
+        this.messageDao = messageDao;
+        this.patientDao = patientDao;
+        this.prescriptionDao = prescriptionDao;
+        this.resultDao = resultDao;
+        this.testDao = testDao;
+        this.userDao = userDao;
     }
 
     @Override
@@ -54,34 +82,66 @@ public class EzyVetIntegration implements VmsIntegration {
         this.authenticated = true;
     }
 
-    /*
-    TODO: implement the following method.
-     - First, the existing request is not filling the list properly. I believe it is because there is a nested
-     JSON array, it goes like this:
-         "meta": {
-             stuff I don't want
-         },
-         "items": {
-             patients
-         }
-     - Need to get email, first, last name from ezyVet, check if email matches a username in VetRA Database
-     - If it does, add patient to the database with the correct ownerUsername(email)
-     - If it doesn't, create a new user with the email as the username, and add the patient to the database
-     */
+
     // one-time setup
     private void setup() {
-        List<Patient> patients = builder.build()
+        // get random owners
+        String responseBody = builder.build()
+                .get()
+                .uri(BASE_URL + CONTACT_PATH + ADD_LIMIT + 20 + "&is_customer=1")
+                .header("authorization", "Bearer " + token.getAccessToken())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        try {
+            JsonNode root = objectMapper.readTree(responseBody);                         // A JsonNode is a particular place in a JSON tree. It can be an object, an array, etc.
+            ArrayNode items = (ArrayNode) root.path("items");                         // An ArrayNode is a JsonNode that is an array.
+            List<User> users = new ArrayList<>();
+            for (JsonNode item : items) {
+                JsonNode patientNode = item.path("contact");                          // .path(key) returns a JsonNode value for the given key.
+                User user = objectMapper.treeToValue(patientNode, User.class);           // treeToValue(JsonNode, Class) converts a JsonNode to a Java object.
+                if (user.getFirstName() != null) {
+                    user.setUsername(user.getFirstName() + user.getLastName());
+                    user.setEmail(user.getUsername() + "@example.com");
+                    user.setPassword("password");
+                    users.add(user);
+                }
+            }
+
+        } catch (JsonProcessingException e) {
+            message("Error parsing patient response body. \n" + e.getMessage());
+        }
+
+
+
+    }
+
+
+
+    private void getPatients() {
+        String responseBody = builder.build()
                 .get()
                 .uri(BASE_URL + ANIMAL_PATH + ADD_LIMIT + 50)
                 .header("authorization", "Bearer " + token.getAccessToken())
                 .retrieve()
-                .bodyToFlux(Patient.class)
-                .collectList()
+                .bodyToMono(String.class)
                 .block();
 
-        for (Patient patient : patients) {
-            System.out.println(patient.getFirstName() + " " + patient.getBirthday() + " " + patient.getSpecies() + " " + patient.getSex() + " " + patient.getOwnerUsername());
+        try {
+            JsonNode root = objectMapper.readTree(responseBody);                         // A JsonNode is a particular place in a JSON tree. It can be an object, an array, etc.
+            ArrayNode items = (ArrayNode) root.path("items");                         // An ArrayNode is a JsonNode that is an array.
+            List<Patient> patients = new ArrayList<>();
+            for (JsonNode item : items) {
+                JsonNode patientNode = item.path("animal");                           // .path(key) returns a JsonNode value for the given key.
+                Patient patient = objectMapper.treeToValue(patientNode, Patient.class);  // treeToValue(JsonNode, Class) converts a JsonNode to a Java object.
+                patients.add(patient);
+            }
+
+        } catch (JsonProcessingException e) {
+            message("Error parsing patient response body. \n" + e.getMessage());
         }
+
 
     }
 
@@ -94,6 +154,7 @@ public class EzyVetIntegration implements VmsIntegration {
     private void message(String message) {
         System.out.println("EzyVetIntegration: ---------------------------------");
         System.out.println("    " + message);
+        System.out.println("----------------------------------------------------");
     }
 
 }

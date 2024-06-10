@@ -4,6 +4,7 @@ import com.bcb.vetra.services.deserializers.EpochToLocalDateDeserializer;
 import com.bcb.vetra.services.deserializers.SexIdToSexDeserializer;
 import com.bcb.vetra.services.deserializers.SpeciesIdToSpeciesDeserializer;
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Patient {
     private int patientId;
     @JsonAlias({"name", "firstName"})
