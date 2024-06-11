@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Model class for users.
@@ -33,6 +35,31 @@ public class User {
     private String lastName;
     @NotBlank(message = "User must have an email.")
     private String email;
-    @JsonAlias({"id", "vmsId"})
-    private String vmsId;
+    private Map<String, String> vmsIds;
+
+    public User(String username, String password, String firstName, String lastName, String email) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", vmsId='" + vmsIds.toString() + '\'' +
+                '}';
+    }
+
+    public void addVmsId(String vmsName, String vmsId) {
+        if (vmsIds == null) {
+            vmsIds = new HashMap<>();
+        }
+        vmsIds.put(vmsName, vmsId);
+    }
 }

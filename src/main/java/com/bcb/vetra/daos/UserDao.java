@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <strong>Data Access Object for users.</strong>
@@ -67,6 +68,23 @@ public class UserDao {
         } catch (EmptyResultDataAccessException e) {
             throw new DaoException("Failed to create user.");
         }
+    }
+
+    /**
+     * Associates a user with a VMS ID.
+     * @param username
+     * @param vmsIds
+     * @return
+     */
+    public boolean attributeVmsIdToUser(String username, Map<String, String> vmsIds) {
+        int count = 0;
+        for (Map.Entry<String, String> entry : vmsIds.entrySet()) {
+            String vmsId = entry.getValue();
+            String vmsName = entry.getKey();
+            String sql = "INSERT INTO \"user_vms\" (username, vms_id, vms_name) VALUES (?, ?, ?)";
+            count += jdbcTemplate.update(sql, username, vmsId, vmsName);
+        }
+        return count > 0;
     }
 
     /**

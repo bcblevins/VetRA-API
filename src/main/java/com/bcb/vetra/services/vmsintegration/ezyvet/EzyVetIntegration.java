@@ -1,7 +1,6 @@
 package com.bcb.vetra.services.vmsintegration.ezyvet;
 
 import com.bcb.vetra.daos.*;
-import com.bcb.vetra.models.Patient;
 import com.bcb.vetra.models.User;
 import com.bcb.vetra.services.vmsintegration.VmsIntegration;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,22 +25,17 @@ public class EzyVetIntegration implements VmsIntegration {
     private WebClient.Builder builder;
     private ObjectMapper objectMapper;
     private Token token;
-    private boolean authenticated = false;
-    private MessageDao messageDao;
+    private boolean isAuthenticated = false;
+    private boolean isSetup = false;
     private PatientDao patientDao;
     private PrescriptionDao prescriptionDao;
     private ResultDao resultDao;
     private TestDao testDao;
     private UserDao userDao;
 
-    public EzyVetIntegration() {
-        this.builder = WebClient.builder();
-        this.objectMapper = new ObjectMapper();
-    }
-    public EzyVetIntegration(ObjectMapper objectMapper, WebClient.Builder builder, MessageDao messageDao, PatientDao patientDao, PrescriptionDao prescriptionDao, ResultDao resultDao, TestDao testDao, UserDao userDao) {
+    public EzyVetIntegration(ObjectMapper objectMapper, WebClient.Builder builder, PatientDao patientDao, PrescriptionDao prescriptionDao, ResultDao resultDao, TestDao testDao, UserDao userDao) {
         this.objectMapper = objectMapper;
         this.builder = builder;
-        this.messageDao = messageDao;
         this.patientDao = patientDao;
         this.prescriptionDao = prescriptionDao;
         this.resultDao = resultDao;
@@ -50,10 +45,16 @@ public class EzyVetIntegration implements VmsIntegration {
 
     @Override
     public int updateDB() {
-        if (!authenticated) {
+        if (!isAuthenticated) {
             getAccessToken();
         }
-        setup();
+        if (!isSetup) {
+            setup();
+        }
+
+        getNewPatients();
+
+        isSetup = true;
         return 0;
     }
 
@@ -79,12 +80,13 @@ public class EzyVetIntegration implements VmsIntegration {
             System.out.println(e.getMessage());
         }
         message("Successfully authenticated.");
-        this.authenticated = true;
+        this.isAuthenticated = true;
     }
 
 
     // one-time setup
     private void setup() {
+        List<User> users = new ArrayList<>();
         // get random owners
         String responseBody = builder.build()
                 .get()
@@ -97,50 +99,36 @@ public class EzyVetIntegration implements VmsIntegration {
         try {
             JsonNode root = objectMapper.readTree(responseBody);                         // A JsonNode is a particular place in a JSON tree. It can be an object, an array, etc.
             ArrayNode items = (ArrayNode) root.path("items");                         // An ArrayNode is a JsonNode that is an array.
-            List<User> users = new ArrayList<>();
+            message("The following owners have been retrieved:");
             for (JsonNode item : items) {
                 JsonNode patientNode = item.path("contact");                          // .path(key) returns a JsonNode value for the given key.
                 User user = objectMapper.treeToValue(patientNode, User.class);           // treeToValue(JsonNode, Class) converts a JsonNode to a Java object.
-                if (user.getFirstName() != null) {
+                JsonNode vmsIdNode = item.path("id");                          // <-- TODO: problem here. Id is not being set.
+                user.addVmsId("ezyVet", vmsIdNode.asText());
+                if (!user.getFirstName().isEmpty()) {                             // TODO: problem here. duplicates are being allowed.
                     user.setUsername(user.getFirstName() + user.getLastName());
                     user.setEmail(user.getUsername() + "@example.com");
                     user.setPassword("password");
+
+
                     users.add(user);
                 }
             }
-
         } catch (JsonProcessingException e) {
             message("Error parsing patient response body. \n" + e.getMessage());
         }
 
+        for (User user : users) {
+            userDao.createUser(user);
+            userDao.attributeVmsIdToUser(user.getUsername(), user.getVmsIds());
+            message("User created: " + user.toString());
+        }
 
 
     }
 
+    private void getNewPatients() {
 
-
-    private void getPatients() {
-        String responseBody = builder.build()
-                .get()
-                .uri(BASE_URL + ANIMAL_PATH + ADD_LIMIT + 50)
-                .header("authorization", "Bearer " + token.getAccessToken())
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-
-        try {
-            JsonNode root = objectMapper.readTree(responseBody);                         // A JsonNode is a particular place in a JSON tree. It can be an object, an array, etc.
-            ArrayNode items = (ArrayNode) root.path("items");                         // An ArrayNode is a JsonNode that is an array.
-            List<Patient> patients = new ArrayList<>();
-            for (JsonNode item : items) {
-                JsonNode patientNode = item.path("animal");                           // .path(key) returns a JsonNode value for the given key.
-                Patient patient = objectMapper.treeToValue(patientNode, Patient.class);  // treeToValue(JsonNode, Class) converts a JsonNode to a Java object.
-                patients.add(patient);
-            }
-
-        } catch (JsonProcessingException e) {
-            message("Error parsing patient response body. \n" + e.getMessage());
-        }
 
 
     }
@@ -152,9 +140,7 @@ public class EzyVetIntegration implements VmsIntegration {
     // update database
 
     private void message(String message) {
-        System.out.println("EzyVetIntegration: ---------------------------------");
-        System.out.println("    " + message);
-        System.out.println("----------------------------------------------------");
+        System.out.println(LocalDateTime.now() + "  [--EzyVetIntegration--]:  " + message);
     }
 
 }

@@ -3,6 +3,7 @@ package com.bcb.vetra;
 import com.bcb.vetra.services.vmsintegration.ezyvet.AuthRequestBody;
 import com.bcb.vetra.services.vmsintegration.ezyvet.EzyVetIntegration;
 import com.bcb.vetra.services.vmsintegration.ezyvet.Token;
+import org.springframework.context.ApplicationContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,11 +14,12 @@ import org.springframework.web.reactive.function.client.WebClient;
  */
 @SpringBootApplication
 public class VetraApplication {
-
-    static EzyVetIntegration ezyVetIntegration = new EzyVetIntegration();
     public static void main(String[] args) {
-        SpringApplication.run(VetraApplication.class, args);
+        ApplicationContext context = SpringApplication.run(VetraApplication.class, args);
+
+        EzyVetIntegration ezyVetIntegration = context.getBean(EzyVetIntegration.class);
         ezyVetIntegration.updateDB();
+
     }
 
     public static void testApiCall() {
