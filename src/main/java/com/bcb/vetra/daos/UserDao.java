@@ -53,6 +53,14 @@ public class UserDao {
         }
     }
 
+    public List<String> getEzyVetIds() {
+        return jdbcTemplate.queryForList("SELECT vms_id FROM \"user_vms\" WHERE vms_name = 'ezyvet';", String.class);
+    }
+
+    public String getUsernameByVmsId(String vmsId, String vmsName) {
+        return jdbcTemplate.queryForObject("SELECT username FROM user_vms WHERE vms_id = ? AND vms_name= ?;", String.class, vmsId, vmsName);
+    }
+
     /**
      * Creates a new user.
      *
@@ -80,7 +88,7 @@ public class UserDao {
         int count = 0;
         for (Map.Entry<String, String> entry : vmsIds.entrySet()) {
             String vmsId = entry.getValue();
-            String vmsName = entry.getKey();
+            String vmsName = entry.getKey().toLowerCase();
             String sql = "INSERT INTO \"user_vms\" (username, vms_id, vms_name) VALUES (?, ?, ?)";
             count += jdbcTemplate.update(sql, username, vmsId, vmsName);
         }

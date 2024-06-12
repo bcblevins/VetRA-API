@@ -1,19 +1,20 @@
 package com.bcb.vetra.services.vmsintegration.ezyvet;
 
 import com.bcb.vetra.daos.*;
+import com.bcb.vetra.models.Patient;
 import com.bcb.vetra.models.User;
 import com.bcb.vetra.services.vmsintegration.VmsIntegration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.nimbusds.jose.shaded.gson.JsonArray;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EzyVetIntegration implements VmsIntegration {
@@ -100,17 +101,17 @@ public class EzyVetIntegration implements VmsIntegration {
             JsonNode root = objectMapper.readTree(responseBody);                         // A JsonNode is a particular place in a JSON tree. It can be an object, an array, etc.
             ArrayNode items = (ArrayNode) root.path("items");                         // An ArrayNode is a JsonNode that is an array.
             message("The following owners have been retrieved:");
+            List<String> ownerNames = new ArrayList<>();                                 // Used to track duplicates.
             for (JsonNode item : items) {
-                JsonNode patientNode = item.path("contact");                          // .path(key) returns a JsonNode value for the given key.
-                User user = objectMapper.treeToValue(patientNode, User.class);           // treeToValue(JsonNode, Class) converts a JsonNode to a Java object.
-                JsonNode vmsIdNode = item.path("id");                          // <-- TODO: problem here. Id is not being set.
+                JsonNode contactNode = item.path("contact");                          // .path(key) returns a JsonNode value for the given key.
+                User user = objectMapper.treeToValue(contactNode, User.class);           // treeToValue(JsonNode, Class) converts a JsonNode to a Java object.
+                JsonNode vmsIdNode = contactNode.path("id");
                 user.addVmsId("ezyVet", vmsIdNode.asText());
-                if (!user.getFirstName().isEmpty()) {                             // TODO: problem here. duplicates are being allowed.
-                    user.setUsername(user.getFirstName() + user.getLastName());
+                if (!ownerNames.contains(user.getFirstName()) && !user.getFirstName().isEmpty()) {
+                    ownerNames.add(user.getFirstName());
+                    user.setUsername(user.getFirstName() + user.getLastName() + vmsIdNode.asText());
                     user.setEmail(user.getUsername() + "@example.com");
                     user.setPassword("password");
-
-
                     users.add(user);
                 }
             }
@@ -128,7 +129,47 @@ public class EzyVetIntegration implements VmsIntegration {
     }
 
     private void getNewPatients() {
+        Map<String, List<Patient>> patients = new HashMap<>();
 
+        // get list of owner ids from vms table
+        List<String> userIds = userDao.getEzyVetIds();
+
+        // get patients from ezyVet for each user
+        for (String userId : userIds) {
+            String responseBody = builder.build()
+                    .get()
+                    .uri(BASE_URL + ANIMAL_PATH + "?contact_id=" + userId)
+                    .header("authorization", "Bearer " + token.getAccessToken())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            try {
+                JsonNode root = objectMapper.readTree(responseBody);
+                ArrayNode items = (ArrayNode) root.path("items");
+                for (JsonNode item : items) {
+                    JsonNode patientNode = item.path("animal");
+                    Patient patient = objectMapper.treeToValue(patientNode, Patient.class);
+                    if (patients.containsKey(userId)) {
+                        patients.get(userId).add(patient);
+                    } else {
+                        patients.put(userId, new ArrayList<>(Arrays.asList(patient)));
+                    }
+                }
+            } catch (JsonProcessingException e) {
+                message("Error parsing patient response body. \n" + e.getMessage());
+            }
+
+        }
+
+        // TODO: Make it so the following code only adds them if patient isn't already in database.
+        // add patients to database
+        for (Map.Entry<String, List<Patient>> patientEntry : patients.entrySet()) {
+            String username = userDao.getUsernameByVmsId(patientEntry.getKey(), "ezyvet");
+            for (Patient patient : patientEntry.getValue()) {
+                patient.setOwnerUsername(username);
+                patientDao.create(patient);
+            }
+        }
 
 
     }
