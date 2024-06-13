@@ -51,7 +51,8 @@ public class MockVmsIntegration implements VmsIntegration {
         } else {
             System.out.println("No new tests to add.");
         }
-        return tests;
+
+        return tests > 0 ? 1 : 0;
     }
 
     /**

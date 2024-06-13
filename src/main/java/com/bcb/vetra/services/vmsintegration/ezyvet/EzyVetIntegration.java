@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 @Service
@@ -23,18 +24,22 @@ public class EzyVetIntegration implements VmsIntegration {
     private final String ANIMAL_PATH = "/animal";
     private final String CONTACT_PATH = "/contact";
     private final String ADD_LIMIT = "?limit=";
+    private final String CREATED_AFTER = "created_at>";
+    private final String EZYVET_PATIENTS_UPDATED = "ezyvet patients updated";
     private WebClient.Builder builder;
     private ObjectMapper objectMapper;
     private Token token;
     private boolean isAuthenticated = false;
     private boolean isSetup = false;
+    private boolean isDisabled = false;
     private PatientDao patientDao;
     private PrescriptionDao prescriptionDao;
     private ResultDao resultDao;
     private TestDao testDao;
     private UserDao userDao;
+    private MetaDao metaDao;
 
-    public EzyVetIntegration(ObjectMapper objectMapper, WebClient.Builder builder, PatientDao patientDao, PrescriptionDao prescriptionDao, ResultDao resultDao, TestDao testDao, UserDao userDao) {
+    public EzyVetIntegration(ObjectMapper objectMapper, WebClient.Builder builder, PatientDao patientDao, PrescriptionDao prescriptionDao, ResultDao resultDao, TestDao testDao, UserDao userDao, MetaDao metaDao) {
         this.objectMapper = objectMapper;
         this.builder = builder;
         this.patientDao = patientDao;
@@ -42,12 +47,17 @@ public class EzyVetIntegration implements VmsIntegration {
         this.resultDao = resultDao;
         this.testDao = testDao;
         this.userDao = userDao;
+        this.metaDao = metaDao;
     }
 
     @Override
     public int updateDB() {
+
         if (!isAuthenticated) {
             getAccessToken();
+            if (isDisabled) {
+                return 0;
+            }
         }
         if (!isSetup) {
             setup();
@@ -55,8 +65,9 @@ public class EzyVetIntegration implements VmsIntegration {
 
         getNewPatients();
 
+
         isSetup = true;
-        return 0;
+        return 1;
     }
 
     // get access token
@@ -78,7 +89,10 @@ public class EzyVetIntegration implements VmsIntegration {
                     .bodyToMono(Token.class)
                     .block();
         } catch (WebClientResponseException e) {
-            System.out.println(e.getMessage());
+            message(e.getMessage());
+            message("Fatal error: Could not authenticate with EzyVet API. Exiting.");
+            isDisabled = true;
+            return;
         }
         message("Successfully authenticated.");
         this.isAuthenticated = true;
@@ -89,13 +103,21 @@ public class EzyVetIntegration implements VmsIntegration {
     private void setup() {
         List<User> users = new ArrayList<>();
         // get random owners
-        String responseBody = builder.build()
-                .get()
-                .uri(BASE_URL + CONTACT_PATH + ADD_LIMIT + 20 + "&is_customer=1")
-                .header("authorization", "Bearer " + token.getAccessToken())
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        String responseBody = "";
+        try {
+            responseBody = builder.build()
+                    .get()
+                    .uri(BASE_URL + CONTACT_PATH + ADD_LIMIT + 20 + "&is_customer=1")
+                    .header("authorization", "Bearer " + token.getAccessToken())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException e) {
+            if (e.getStatusCode().toString().contains("401")) {
+                reAuthenticate(this::setup);
+            }
+            message(e.getMessage());
+        }
 
         try {
             JsonNode root = objectMapper.readTree(responseBody);                         // A JsonNode is a particular place in a JSON tree. It can be an object, an array, etc.
@@ -134,21 +156,33 @@ public class EzyVetIntegration implements VmsIntegration {
         // get list of owner ids from vms table
         List<String> userIds = userDao.getEzyVetIds();
 
+
+        //TODO: Monster URL on line 167 is not returning desired result. API says cannot use expression created_at>0. Learn how to use.
         // get patients from ezyVet for each user
         for (String userId : userIds) {
-            String responseBody = builder.build()
-                    .get()
-                    .uri(BASE_URL + ANIMAL_PATH + "?contact_id=" + userId)
-                    .header("authorization", "Bearer " + token.getAccessToken())
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+            String responseBody = "";
+            try {
+                responseBody = builder.build()
+                        .get()
+                        .uri(BASE_URL + ANIMAL_PATH + "?contact_id=" + userId + "&" + CREATED_AFTER + metaDao.getTimeForAction(EZYVET_PATIENTS_UPDATED).toEpochSecond(ZoneOffset.UTC))  // toEpochSecond(ZoneOffset) converts a time to epoch second, assuming UTC timezone.
+                        .header("authorization", "Bearer " + token.getAccessToken())
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
+            } catch (WebClientResponseException e) {
+                if (e.getStatusCode().toString().contains("401")) {
+                    reAuthenticate(this::getNewPatients);
+                }
+                message(e.getMessage());
+            }
             try {
                 JsonNode root = objectMapper.readTree(responseBody);
                 ArrayNode items = (ArrayNode) root.path("items");
                 for (JsonNode item : items) {
                     JsonNode patientNode = item.path("animal");
                     Patient patient = objectMapper.treeToValue(patientNode, Patient.class);
+                    JsonNode vmsIdNode = patientNode.path("id");
+                    patient.addVmsId("ezyVet", vmsIdNode.asText());
                     if (patients.containsKey(userId)) {
                         patients.get(userId).add(patient);
                     } else {
@@ -161,13 +195,14 @@ public class EzyVetIntegration implements VmsIntegration {
 
         }
 
-        // TODO: Make it so the following code only adds them if patient isn't already in database.
         // add patients to database
         for (Map.Entry<String, List<Patient>> patientEntry : patients.entrySet()) {
             String username = userDao.getUsernameByVmsId(patientEntry.getKey(), "ezyvet");
             for (Patient patient : patientEntry.getValue()) {
                 patient.setOwnerUsername(username);
-                patientDao.create(patient);
+                patient = patientDao.create(patient);
+                patientDao.attributeVmsIdToPatient(patient.getPatientId(), patient.getVmsIds());
+
             }
         }
 
@@ -176,12 +211,27 @@ public class EzyVetIntegration implements VmsIntegration {
 
     // get new tests
 
+    private void getNewTests() {
+
+    }
+
     // get new medications
 
     // update database
 
     private void message(String message) {
         System.out.println(LocalDateTime.now() + "  [--EzyVetIntegration--]:  " + message);
+    }
+
+    /**
+     * Used after HTTP requests if response code is 4xx. Obtains a new access token and reruns the given method.
+     *
+     * @param method
+     */
+    private void reAuthenticate(Runnable method) {
+        isAuthenticated = false;
+        getAccessToken();
+        method.run();
     }
 
 }

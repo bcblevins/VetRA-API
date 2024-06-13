@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * <strong>Data Access Object for patients.</strong>
@@ -42,6 +44,23 @@ public class PatientDao {
     }
 
     /**
+     * Checks if a patient exists by username and patient name.
+     *
+     * @param username
+     * @param patientName
+     * @return boolean
+     */
+    public boolean patientExists(String username, String patientName) {
+        List<Patient> patients = getPatientsByUsername(username);
+        for (Patient patient : patients) {
+            if (patient.getFirstName().toLowerCase().equals(patientName.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Gets a patient by ID if they are associated with a specific username.
      *
      * @param patientId
@@ -66,6 +85,11 @@ public class PatientDao {
         return jdbcTemplate.query("SELECT * FROM patient WHERE owner_username = ? ORDER BY first_name;", this::mapToPatient, username);
     }
 
+    /**
+     * Gets all patients.
+     *
+     * @return List of patients
+     */
     public List<Patient> getAllPatients() {
         return jdbcTemplate.query("SELECT * FROM patient ORDER BY first_name", this::mapToPatient);
     }
@@ -93,6 +117,17 @@ public class PatientDao {
         } catch (EmptyResultDataAccessException e) {
             throw new DaoException("Failed to create patient.");
         }
+    }
+
+    public boolean attributeVmsIdToPatient(int id, Map<String, String> vmsIds) {
+        int count = 0;
+        for (Map.Entry<String, String> entry : vmsIds.entrySet()) {
+            String vmsId = entry.getValue();
+            String vmsName = entry.getKey().toLowerCase();
+            String sql = "INSERT INTO \"patient_vms\" (patient_id, vms_id, vms_name) VALUES (?, ?, ?)";
+            count += jdbcTemplate.update(sql, id, vmsId, vmsName);
+        }
+        return count > 0;
     }
 
     /**

@@ -6,8 +6,10 @@ drop table if exists patient cascade;
 drop table if exists "user" cascade;
 drop table if exists "role" cascade;
 drop table if exists "user_vms" cascade;
+drop table if exists "patient_vms" cascade;
 drop table if exists "message" cascade;
 drop table if exists "request" cascade;
+drop table if exists "meta";
 
 CREATE TABLE "user" (
   "username" varchar(30) PRIMARY KEY,
@@ -37,6 +39,13 @@ CREATE TABLE "patient" (
   "species" varchar(20) NOT NULL,
   "sex" varchar(2),
   "owner_username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE
+);
+
+CREATE TABLE "patient_vms" (
+  "patient_id" int NOT NULL REFERENCES "patient" ("patient_id") ON DELETE CASCADE,
+  "vms_name" varchar(30) NOT NULL,
+  "vms_id" varchar(300) NOT NULL,
+  PRIMARY KEY ("patient_id", "vms_name")
 );
 
 CREATE TABLE "test" (
@@ -91,6 +100,11 @@ CREATE TABLE "request" (
   "request_date" timestamp DEFAULT (current_timestamp)
 );
 
+CREATE TABLE "meta" (
+  "action" varchar(300) PRIMARY KEY,
+  "performed_at" timestamp DEFAULT (current_timestamp)
+);
+
 
 -- INSERTS
 INSERT INTO medication (name, unit) VALUES
@@ -134,3 +148,6 @@ INSERT INTO role VALUES
     ('bblevins96', 'OWNER'),
     ('cakelly4', 'DOCTOR'),
     ('admin', 'ADMIN');
+
+INSERT INTO "meta" (action, performed_at) VALUES
+    ('ezyvet patients updated', '1970-01-01 00:00:00');
