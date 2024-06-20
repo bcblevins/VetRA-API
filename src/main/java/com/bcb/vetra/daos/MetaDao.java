@@ -20,9 +20,9 @@ public class MetaDao {
         return LocalDateTime.parse(timestamp);
     }
 
-    public void setTimeForAction(String action, LocalDateTime time) {
+    public void setTimeForActionToNow(String action) {
         action = action.toLowerCase();
-        jdbcTemplate.update("UPDATE \"meta\" SET performed_at = ? WHERE action = ?;", time.toString(), action);
+        jdbcTemplate.update("UPDATE \"meta\" SET performed_at = NOW() WHERE action = ?;", action);
     }
 
     public void createAction(String action) {

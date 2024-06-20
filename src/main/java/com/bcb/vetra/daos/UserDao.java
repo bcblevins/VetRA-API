@@ -53,7 +53,11 @@ public class UserDao {
         }
     }
 
-    public List<String> getEzyVetIds() {
+    /**
+     * Gets a list of ezyVet user IDs.
+     * @return
+     */
+    public List<String> getEzyVetUserIds() {
         return jdbcTemplate.queryForList("SELECT vms_id FROM \"user_vms\" WHERE vms_name = 'ezyvet';", String.class);
     }
 

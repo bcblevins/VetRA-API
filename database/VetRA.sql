@@ -141,13 +141,15 @@ INSERT INTO prescription (quantity, instructions, refills, is_active, patient_id
     (30, 'Give 1/2 to 1 capsule by mouth twice daily or as needed to reduce anxiety.', 0, true, 2, 'Gabapentin 100mg', 'cakelly4');
 
 
--- INSERT INTO request (prescription_id, status, request_date) VALUES
---     (1, 'PENDING', '2024-05-14 14:23:34.448466');
-
 INSERT INTO role VALUES
     ('bblevins96', 'OWNER'),
     ('cakelly4', 'DOCTOR'),
     ('admin', 'ADMIN');
 
 INSERT INTO "meta" (action, performed_at) VALUES
-    ('ezyvet patients updated', '1970-01-01 00:00:00');
+    ('ezyvet patients updated', '1970-01-01 00:00:00'),
+	('ezyvet tests updated', '1970-01-01 00:00:00');
+
+	
+	
+	

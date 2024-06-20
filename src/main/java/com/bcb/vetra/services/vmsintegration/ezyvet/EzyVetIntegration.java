@@ -8,11 +8,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.nimbusds.jose.shaded.gson.JsonArray;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -23,9 +24,13 @@ public class EzyVetIntegration implements VmsIntegration {
     private final String AUTH_PATH = "/oauth/access_token";
     private final String ANIMAL_PATH = "/animal";
     private final String CONTACT_PATH = "/contact";
+    private final String TEST_PATH = "/diagnosticresult";
     private final String ADD_LIMIT = "?limit=";
-    private final String CREATED_AFTER = "created_at>";
-    private final String EZYVET_PATIENTS_UPDATED = "ezyvet patients updated";
+    private final String CREATED_AT = "created_at=";
+    private final String PATIENTS_UPDATED = "ezyvet patients updated";
+    private final String TESTS_UPDATED = "ezyvet tests updated";
+    private final String ANSI_BLUE = "\u001B[34m";
+    private final String ANSI_RESET = "\u001B[0m";
     private WebClient.Builder builder;
     private ObjectMapper objectMapper;
     private Token token;
@@ -154,17 +159,18 @@ public class EzyVetIntegration implements VmsIntegration {
         Map<String, List<Patient>> patients = new HashMap<>();
 
         // get list of owner ids from vms table
-        List<String> userIds = userDao.getEzyVetIds();
+        List<String> userIds = userDao.getEzyVetUserIds();
 
+        // get time of last update in epoch seconds
+        long lastUpdated = metaDao.getTimeForAction(PATIENTS_UPDATED).toEpochSecond(ZoneOffset.UTC);
 
-        //TODO: Monster URL on line 167 is not returning desired result. API says cannot use expression created_at>0. Learn how to use.
-        // get patients from ezyVet for each user
+        // get patients for each owner
         for (String userId : userIds) {
             String responseBody = "";
             try {
                 responseBody = builder.build()
                         .get()
-                        .uri(BASE_URL + ANIMAL_PATH + "?contact_id=" + userId + "&" + CREATED_AFTER + metaDao.getTimeForAction(EZYVET_PATIENTS_UPDATED).toEpochSecond(ZoneOffset.UTC))  // toEpochSecond(ZoneOffset) converts a time to epoch second, assuming UTC timezone.
+                        .uri(BASE_URL + ANIMAL_PATH + "?contact_id=" + userId + "&" + CREATED_AT + encodeParameterValue(">", lastUpdated))  // toEpochSecond(ZoneOffset) converts a time to epoch second, assuming UTC timezone.
                         .header("authorization", "Bearer " + token.getAccessToken())
                         .retrieve()
                         .bodyToMono(String.class)
@@ -173,6 +179,8 @@ public class EzyVetIntegration implements VmsIntegration {
                 if (e.getStatusCode().toString().contains("401")) {
                     reAuthenticate(this::getNewPatients);
                 }
+                message(e.getMessage());
+            } catch (UnsupportedEncodingException e) {
                 message(e.getMessage());
             }
             try {
@@ -200,27 +208,64 @@ public class EzyVetIntegration implements VmsIntegration {
             String username = userDao.getUsernameByVmsId(patientEntry.getKey(), "ezyvet");
             for (Patient patient : patientEntry.getValue()) {
                 patient.setOwnerUsername(username);
-                patient = patientDao.create(patient);
-                patientDao.attributeVmsIdToPatient(patient.getPatientId(), patient.getVmsIds());
-
+                patientDao.create(patient);
+                message("Patient created: " + patient.toString());
             }
         }
-
-
+        metaDao.setTimeForActionToNow(PATIENTS_UPDATED);
     }
 
     // get new tests
 
     private void getNewTests() {
+        List<String> patientIds = patientDao.getEzyVetPatientIds();
+        long lastUpdated = metaDao.getTimeForAction(TESTS_UPDATED).toEpochSecond(ZoneOffset.UTC);
+        String response = "";
+        for (String patientId : patientIds) {
+            try {
+                String url = BASE_URL + TEST_PATH + "?animal_id=" + patientId + "&" + CREATED_AT + encodeParameterValue(">", lastUpdated);
+                response = sendGetRequest(url);
+            } catch (WebClientResponseException e) {
+                if (e.getStatusCode().toString().contains("401")) {
+                    reAuthenticate(this::getNewTests);
+                }
+                message(e.getMessage());
+            } catch (UnsupportedEncodingException e) {
+                message(e.getMessage());
+            }
+            try {
+                JsonNode root = objectMapper.readTree(response);
+                ArrayNode items = (ArrayNode) root.path("items");
+
+                //TODO: DO things here
+                
+            } catch (JsonProcessingException e) {
+                message("Error parsing test response body. \n" + e.getMessage());
+            }
+        }
+    }
+
+    private void getResults() {
 
     }
 
     // get new medications
 
-    // update database
+    private void getNewMedications() {
 
+    }
+
+    //---------------------
+    // Helper methods
+    //---------------------
+
+    /**
+     * Logs a message to the console.
+     *
+     * @param message
+     */
     private void message(String message) {
-        System.out.println(LocalDateTime.now() + "  [--EzyVetIntegration--]:  " + message);
+        System.out.println(LocalDateTime.now() + ANSI_BLUE + "  [--EzyVetIntegration--]:  " + ANSI_RESET + message);
     }
 
     /**
@@ -232,6 +277,39 @@ public class EzyVetIntegration implements VmsIntegration {
         isAuthenticated = false;
         getAccessToken();
         method.run();
+    }
+
+    /**
+     * Encodes a comparator and value into a URL-encoded string for use in API call parameters.
+     *
+     * @param comparator (>, <, gt, lt)
+     * @param value
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    private String encodeParameterValue(String comparator, long value) throws UnsupportedEncodingException {
+        if (comparator.equals(">")) {
+            comparator = "gt";
+        } else if (comparator.equals("<")) {
+            comparator = "lt";
+        }
+        String JsonString = String.format("{\"%s\":%s}", comparator, value);
+        return URLEncoder.encode(JsonString, "UTF-8");
+    }
+
+    /**
+     * Sends a GET request to the given URL and returns the response body as a string.
+     * @param url
+     * @return
+     */
+    private String sendGetRequest(String url) throws WebClientResponseException {
+        return builder.build()
+                .get()
+                .uri(url)
+                .header("authorization", "Bearer " + token.getAccessToken())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
     }
 
 }

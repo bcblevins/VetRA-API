@@ -59,4 +59,15 @@ public class Patient {
         vmsIds.put(vmsName, vmsId);
     }
 
+    public String toString() {
+        return "Patient{" +
+                "patientId=" + patientId +
+                ", name='" + firstName + '\'' +
+                ", birthday=" + birthday +
+                ", species='" + species + '\'' +
+                ", sex='" + sex + '\'' +
+                ", ownerUsername='" + ownerUsername + '\'' +
+                ", vmsIds='" + vmsIds.toString() + '\'';
+    }
+
 }

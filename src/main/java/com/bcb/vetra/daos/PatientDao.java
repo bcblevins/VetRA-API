@@ -9,9 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <strong>Data Access Object for patients.</strong>
@@ -44,6 +42,15 @@ public class PatientDao {
     }
 
     /**
+     * Gets a list of ezyVet patient IDs.
+     *
+     * @return
+     */
+    public List<String> getEzyVetPatientIds() {
+        return jdbcTemplate.queryForList("SELECT vms_id FROM \"patient_vms\" WHERE vms_name = 'ezyvet';", String.class);
+    }
+
+    /**
      * Checks if a patient exists by username and patient name.
      *
      * @param username
@@ -68,11 +75,28 @@ public class PatientDao {
      * @return Patient
      */
     public Patient getPatientByIdAndOwner(int patientId, String username) {
+        Patient patient = null;
         try {
-            return jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ? AND owner_username = ?;", this::mapToPatient, patientId, username);
+            patient = jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = ? AND owner_username = ?;", this::mapToPatient, patientId, username);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+        patient.setVmsIds(getEzyVetIdsByPatientId(patientId));
+        return patient;
+    }
+
+    public Map<String, String> getEzyVetIdsByPatientId(int patientId) {
+        List<String> Ids;
+        Map<String, String> vmsIds = new HashMap<>();
+        try {
+            Ids = jdbcTemplate.queryForList("SELECT vms_id FROM patient_vms WHERE patient_id = ? AND vms_name = 'ezyvet';", String.class, patientId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+        for (String id : Ids) {
+            vmsIds.put("ezyvet", id);
+        }
+        return vmsIds;
     }
 
     /**
@@ -113,12 +137,21 @@ public class PatientDao {
                     patient.getSex(),
                     patient.getOwnerUsername()
             );
+            patient.setPatientId(id);
+            attributeVmsIdToPatient(patient.getPatientId(), patient.getVmsIds());
             return getPatientById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new DaoException("Failed to create patient.");
         }
     }
 
+    /**
+     * Associates a patient with a VMS ID.
+     *
+     * @param id
+     * @param vmsIds
+     * @return boolean
+     */
     public boolean attributeVmsIdToPatient(int id, Map<String, String> vmsIds) {
         int count = 0;
         for (Map.Entry<String, String> entry : vmsIds.entrySet()) {
@@ -154,6 +187,8 @@ public class PatientDao {
         }
     }
 
+
+
     /**
      * Deletes a patient by ID.
      *
@@ -182,5 +217,7 @@ public class PatientDao {
                 resultSet.getString("owner_username")
         );
     }
+
+
 
 }
