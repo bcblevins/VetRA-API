@@ -238,7 +238,7 @@ public class EzyVetIntegration implements VmsIntegration {
                 ArrayNode items = (ArrayNode) root.path("items");
 
                 //TODO: DO things here
-                
+
             } catch (JsonProcessingException e) {
                 message("Error parsing test response body. \n" + e.getMessage());
             }
