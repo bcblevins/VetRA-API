@@ -88,7 +88,7 @@ CREATE TABLE "message" (
   "body" varchar(1000) NOT NULL,
   "from_username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE,
   "to_username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE,
-  "test_id" int NOT NULL REFERENCES "test" ("test_id") ON DELETE CASCADE,
+  "test_id" int REFERENCES "test" ("test_id") ON DELETE CASCADE,
   "patient_id" int NOT NULL REFERENCES "patient" ("patient_id") ON DELETE CASCADE
 );
 
@@ -118,7 +118,8 @@ INSERT INTO "user" (username, password, first_name, last_name, email) VALUES
 
 INSERT INTO patient (first_name, birthday, species, sex, owner_username) VALUES
     ('Charlie', '2015-03-14', 'Canine', 'SF', 'bblevins96'),
-    ('Sunny', '2016-02-20', 'Feline', 'CM', 'bblevins96');
+    ('Sunny', '2016-02-20', 'Feline', 'CM', 'bblevins96'),
+	('Arlo', '2020-02-20', 'Feline', 'CM', 'bblevins96');
 
 
 
@@ -126,7 +127,11 @@ INSERT INTO test (name, time_stamp, patient_id, doctor_username) VALUES
     ('CBC', '2024-05-24 00:00:00', 1, 'cakelly4');
 
 INSERT INTO "message" (subject, body, from_username, to_username, test_id, patient_id) VALUES
-    ('Looks great!', 'Charlie''s labwork looks great, her white blood cell count is back in the normal range. How is she doing after her visit?', 'cakelly4', 'bblevins96', 1, 1);
+    ('Looks great!', 'Charlie''s labwork looks great, her white blood cell count is back in the normal range. How is she doing after her visit?', 'cakelly4', 'bblevins96', 1, 1),
+	('Charlie learned to drive', 'Please help, Charlie has kidnapped me and is driving me to the treat store. I haven''t told her yet that that doesn''t exist.', 'cakelly4', 'cakelly4', null, 1),
+	('Recheck in 2 weeks', 'Charlie''s liver values are still elevated. We should recheck in 2 weeks to see if they are improving.', 'cakelly4', 'bblevins96', 1, 1),
+	('Lab Results', 'The latest lab results for Charlie are in. Liver values have improved and the rest of her bloodwork looks great.', 'cakelly4', 'bblevins96', null, 1),
+	('Dietary Recommendations', 'Charlie''s weight is up a little bit. I recommend cutting back on her food by 1/4 cup per day. Let me know if you have any questions.', 'cakelly4', 'bblevins96', null, 1);
 
 INSERT INTO "result" (test_id, result_value, parameter_name, range_low, range_high, unit) VALUES
     (1, '9.3', 'WBC', '4', '15.5', '10^3/mcL'),
