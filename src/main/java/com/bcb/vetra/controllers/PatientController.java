@@ -22,6 +22,7 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/patients")
+@CrossOrigin
 public class PatientController {
     private PatientDao patientDao;
     private UserDao userDao;

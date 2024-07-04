@@ -20,6 +20,7 @@ import java.util.List;
  */
 @PreAuthorize("isAuthenticated()")
 @RestController
+@CrossOrigin
 public class PrescriptionController {
     private PrescriptionDao prescriptionDao;
     private UserDao userDao;

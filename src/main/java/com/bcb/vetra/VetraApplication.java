@@ -17,8 +17,8 @@ public class VetraApplication {
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(VetraApplication.class, args);
 
-        EzyVetIntegration ezyVetIntegration = context.getBean(EzyVetIntegration.class);
-        ezyVetIntegration.updateDB();
+        //EzyVetIntegration ezyVetIntegration = context.getBean(EzyVetIntegration.class);
+        //ezyVetIntegration.updateDB();
 
     }
 

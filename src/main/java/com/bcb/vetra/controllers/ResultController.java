@@ -23,6 +23,7 @@ import java.util.List;
  */
 @PreAuthorize("isAuthenticated()")
 @RestController
+@CrossOrigin
 public class ResultController {
 
     private TestDao testDao;

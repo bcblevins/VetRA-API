@@ -81,7 +81,7 @@ public class PatientDao {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
-        patient.setVmsIds(getEzyVetIdsByPatientId(patientId));
+        // patient.setVmsIds(getEzyVetIdsByPatientId(patientId));
         return patient;
     }
 
@@ -138,7 +138,7 @@ public class PatientDao {
                     patient.getOwnerUsername()
             );
             patient.setPatientId(id);
-            attributeVmsIdToPatient(patient.getPatientId(), patient.getVmsIds());
+            // TODO attributeVmsIdToPatient(patient.getPatientId(), patient.getVmsIds());
             return getPatientById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new DaoException("Failed to create patient.");

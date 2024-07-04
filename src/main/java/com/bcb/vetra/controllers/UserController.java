@@ -17,6 +17,7 @@ import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
 @RestController
+@CrossOrigin
 public class UserController {
     private UserDao userDao;
     public UserController(UserDao userDao) {this.userDao = userDao;}

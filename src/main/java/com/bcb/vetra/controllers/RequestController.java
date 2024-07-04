@@ -24,6 +24,7 @@ import java.util.List;
  */
 @PreAuthorize("isAuthenticated()")
 @RestController
+@CrossOrigin
 public class RequestController {
     private RequestDao requestDao;
     private PrescriptionDao prescriptionDao;

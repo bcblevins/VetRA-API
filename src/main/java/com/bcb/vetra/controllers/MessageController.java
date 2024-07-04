@@ -23,6 +23,7 @@ import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
 @RestController
+@CrossOrigin
 public class MessageController {
     private MessageDao messageDao;
     private UserDao userDao;
