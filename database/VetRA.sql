@@ -124,7 +124,12 @@ INSERT INTO patient (first_name, birthday, species, sex, owner_username) VALUES
 
 
 INSERT INTO test (name, time_stamp, patient_id, doctor_username) VALUES
-    ('CBC', '2024-05-24 00:00:00', 1, 'cakelly4');
+    ('CBC', '2024-05-24 00:00:00', 1, 'cakelly4'),
+	('Fecal',	'2024-07-04 11:09:34.905699',	2,	'cakelly4'),
+	('CBC',	'2024-07-04 11:10:30.847789',	1,	'cakelly4'),
+	('Fecal',	'2024-07-04 11:10:30.847789',	1,	'cakelly4'),
+	('Fecal',	'2024-07-04 11:10:30.847789',	1,	'cakelly4'),
+	('Fecal',	'2024-07-04 11:10:30.847789',	2,	'cakelly4');
 
 INSERT INTO "message" (subject, body, from_username, to_username, test_id, patient_id) VALUES
     ('Looks great!', 'Charlie''s labwork looks great, her white blood cell count is back in the normal range. How is she doing after her visit?', 'cakelly4', 'bblevins96', 1, 1),
@@ -139,7 +144,29 @@ INSERT INTO "result" (test_id, result_value, parameter_name, range_low, range_hi
     (1, '20.3', 'HGB', '12.1', '20.3', 'g/dl'),
     (1, '54.0', 'HCT', '36', '60', '%'),
     (1, '67.0', 'MCV', '58', '79', 'fL'),
-    (1, '330', 'PLT', '170', '400', '10^3/mcL');
+    (1, '330', 'PLT', '170', '400', '10^3/mcL'),
+	(2,	'Negative',	'Hookworms',	\N,	\N,	\N),
+	(2,	'Negative',	'Roundworms',	\N,	\N,	\N),
+	(2,	'Positive',	'Whipworms',	\N,	\N,	\N),
+	(2,	'Positive',	'Tapeworms',	\N,	\N,	\N),
+	(3,	'14.8',	'WBC',	'4.0',	'15.5',	'10^3/uL'),
+	(3,	'5.27',	'RBC',	'4.5',	'8.25',	'10^6/uL'),
+	(3,	'18.s4',	'Hemoglobin',	'11.9',	'18.9', 'g/dL'),
+	(3,	'60',	    'Hematocrit',	'36',	'60',	'%'),
+	(3,	'63',	    'MCV',	'58',	'79',	'fL'),
+	(3,	'212',	'Platelets',	'170',	'400',	'10^3/uL'),
+	(4,	'Positive',	'Hookworms',	\N,	\N,	\N),
+	(4,	'Negative',	'Roundworms',	\N,	\N,	\N),
+	(4,	'Negative',	'Whipworms',	\N,	\N,	\N),
+	(4,	'Negative',	'Tapeworms',	\N,	\N,	\N),
+	(5,	'Positive',	'Hookworms',	\N,	\N,	\N),
+	(5,	'Negative',	'Roundworms',	\N,	\N,	\N),
+	(5,	'Negative',	'Whipworms',	\N,	\N,	\N),
+	(5,	'Negative',	'Tapeworms',	\N,	\N,	\N),
+	(6,	'Negative',	'Hookworms',	\N,	\N,	\N),
+	(6,	'Negative',	'Roundworms',	\N,	\N,	\N),
+	(6,	'Positive',	'Whipworms',	\N,	\N,	\N),
+	(6,	'Negative',	'Tapeworms',	\N,	\N,	\N);
 
 INSERT INTO prescription (quantity, instructions, refills, is_active, patient_id, medication_name, doctor_username) VALUES
     (10, 'Give 1/2 tablet by mouth 3 hours prior to thunderstorms to reduce anxiety.', 0, true, 1, 'Trazodone 50mg', 'cakelly4'),

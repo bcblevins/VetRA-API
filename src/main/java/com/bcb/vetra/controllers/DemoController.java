@@ -4,6 +4,8 @@ import com.bcb.vetra.daos.*;
 import com.bcb.vetra.models.*;
 import com.bcb.vetra.services.AccessControl;
 import com.bcb.vetra.services.MessageNotification;
+import com.bcb.vetra.services.vmsintegration.MockVmsIntegration;
+import com.bcb.vetra.services.vmsintegration.VmsIntegration;
 import com.bcb.vetra.viewmodels.PrescriptionWithMedication;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +27,7 @@ public class DemoController {
     private PrescriptionDao prescriptionDao;
     private TestDao testDao;
     private ResultDao resultDao;
+    private VmsIntegration vmsIntegration;
 
     public DemoController(MessageDao messageDao, PatientDao patientDao, UserDao userDao, PrescriptionDao prescriptionDao, TestDao testDao, ResultDao resultDao) {
         this.messageDao = messageDao;
@@ -33,37 +36,45 @@ public class DemoController {
         this.prescriptionDao = prescriptionDao;
         this.testDao = testDao;
         this.resultDao = resultDao;
+        this.vmsIntegration = new MockVmsIntegration(testDao, resultDao);
     }
 
     @GetMapping(path = "/login/{username}")
     public User getUser(@PathVariable String username) {
-        return userDao.getUserByUsername(username);
+        User user = userDao.getUserByUsername(username);
+        return user;
     }
 
 
     @GetMapping("{username}/patients")
     public List<Patient> getAllByUsername(@PathVariable String username) {
-        return patientDao.getPatientsByUsername(username);
+        List<Patient> patients = patientDao.getPatientsByUsername(username);
+        return patients;
     }
 
     @GetMapping("{patientId}/messages")
     public List<Message> getMessagesByPatientId(@PathVariable int patientId) {
-        return messageDao.getMessagesByPatientId(patientId);
+        List<Message> messages = messageDao.getMessagesByPatientId(patientId);
+        return messages;
     }
 
     @GetMapping("{patientId}/prescriptions")
     public List<PrescriptionWithMedication> getAllPrescriptions(@PathVariable int patientId) {
-        return prescriptionDao.getPrescriptionsByPatientId(patientId);
+        List<PrescriptionWithMedication> prescriptions = prescriptionDao.getPrescriptionsByPatientId(patientId);
+        return prescriptions;
     }
 
     @GetMapping("{patientId}/tests")
     public List<Test> getAllTests(@PathVariable int patientId) {
-        return testDao.getTestsForPatient(patientId);
+        vmsIntegration.updateDB();
+        List<Test> tests = testDao.getTestsForPatient(patientId);
+        return tests;
     }
 
     @GetMapping("{testId}/results")
     public List<Result> getAll(@PathVariable int testId) {
-        return resultDao.getResultsForTest(testId);
+        List<Result> results = resultDao.getResultsForTest(testId);
+        return results;
     }
 }
 
