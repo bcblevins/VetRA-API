@@ -102,6 +102,19 @@ public class MessageDao {
     }
 
     /**
+     * Gets all messages associated with a specific prescriptionId.
+     * @param prescriptionId
+     * @return List of messages
+     */
+    public List<Message> getMessagesByPrescriptionId(int prescriptionId) {
+        return jdbcTemplate.query("SELECT * " +
+                "FROM message " +
+                "WHERE prescription_id = ?;",
+                this::mapToMessage,
+                prescriptionId);
+    }
+
+    /**
      * Creates a new message.
      * @param message
      * @return The created message
@@ -110,15 +123,15 @@ public class MessageDao {
         Integer id;
         try {
         id = jdbcTemplate.queryForObject(
-                "INSERT INTO message (subject, body, from_username, to_username, test_id, patient_id) " +
+                "INSERT INTO message (body, from_username, to_username, test_id, prescription_id, patient_id) " +
                         "VALUES (?,?,?,?,?,?) " +
                         "RETURNING message_id;",
                 Integer.class,
-                message.getSubject(),
                 message.getBody(),
                 message.getFromUsername(),
                 message.getToUsername(),
                 message.getTestId(),
+                message.getPrescriptionId(),
                 message.getPatientId()
         );
         } catch (EmptyResultDataAccessException e) {
@@ -134,13 +147,13 @@ public class MessageDao {
      */
     public Message update(Message message) {
         int rowsAffected = jdbcTemplate.update(
-                "UPDATE message SET subject = ?, body = ?, from_username = ?, to_username = ?, test_id = ?, patient_id = ? " +
+                "UPDATE message SET body = ?, from_username = ?, to_username = ?, test_id = ?, prescription_id = ?, patient_id = ? " +
                         "WHERE message_id = ?;",
-                message.getSubject(),
                 message.getBody(),
                 message.getFromUsername(),
                 message.getToUsername(),
                 message.getTestId(),
+                message.getPrescriptionId(),
                 message.getPatientId(),
                 message.getMessageId()
         );
@@ -166,11 +179,12 @@ public class MessageDao {
     private Message mapToMessage(ResultSet rs, int rowNum) throws SQLException {
         return new Message(
                 rs.getInt("message_id"),
-                rs.getString("subject"),
                 rs.getString("body"),
+                rs.getTimestamp("timestamp").toLocalDateTime(),
                 rs.getString("from_username"),
                 rs.getString("to_username"),
                 rs.getInt("test_id"),
+                rs.getInt("prescription_id"),
                 rs.getInt("patient_id")
         );
     }
