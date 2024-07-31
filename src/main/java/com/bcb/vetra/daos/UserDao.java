@@ -54,6 +54,25 @@ public class UserDao {
     }
 
     /**
+     * Gets a user's name by their username. Adds 'Dr.' if the user is a doctor.
+     * @param username
+     * @return
+     */
+
+    public String getNameByUsername(String username) {
+        try {
+            User user = jdbcTemplate.queryForObject("SELECT * FROM \"user\" WHERE username = ?", this::mapToUser, username);
+            if (getRoles(user.getUsername()).contains("DOCTOR")) {
+                return "Dr. " + user.getFirstName() + user.getLastName();
+            } else {
+                return user.getFirstName() + user.getLastName();
+            }
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    /**
      * Gets a list of ezyVet user IDs.
      * @return
      */

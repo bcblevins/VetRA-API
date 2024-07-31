@@ -42,8 +42,8 @@ public class MessageController {
     /**
      * Gets all message sent to or from user.
      *
-     * @param principal The currently logged in user.
-     * @return A list of all messages for the currently logged in user.
+     * @param principal The currently logged-in user.
+     * @return A list of all messages for the currently logged-in user.
      */
     @GetMapping("/messages")
     public List<Message> getAll(Principal principal) {
@@ -54,7 +54,7 @@ public class MessageController {
      * Gets a message by its ID.
      *
      * @param messageId The ID of the message.
-     * @param principal The currently logged in user.
+     * @param principal The currently logged-in user.
      * @return The message with the given ID.
      */
     @GetMapping("/messages/{messageId}")
@@ -109,7 +109,7 @@ public class MessageController {
      * Creates a new message attributed to a specific patient.
      *
      * @param message The message to create.
-     * @param principal The currently logged in user.
+     * @param principal The currently logged-in user.
      * @return The created message.
      */
     @ResponseStatus(HttpStatus.CREATED)
@@ -134,7 +134,7 @@ public class MessageController {
      * @param message The message to create.
      * @param patientId The ID of the patient.
      * @param testId The ID of the test.
-     * @param principal The currently logged in user.
+     * @param principal The currently logged-in user.
      * @return The created message.
      */
     @ResponseStatus(HttpStatus.CREATED)

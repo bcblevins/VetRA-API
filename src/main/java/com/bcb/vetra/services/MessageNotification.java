@@ -37,8 +37,6 @@ public class MessageNotification {
                 "Hello, \n" +
                         "You received the following message in VetRA: \n" +
                         "\n" +
-                        message.getSubject() + "\n" +
-                        "\n" +
                         message.getBody() + "\n" +
                         "\n" +
                         "Please log in to VetRA to reply to this message."

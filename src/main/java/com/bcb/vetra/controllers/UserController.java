@@ -39,10 +39,34 @@ public class UserController {
      * @param username The username of the user.
      * @return The user with the given username.
      */
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR',)")
     @GetMapping(path = "/users/{username}")
     public User get(@PathVariable String username) {
         return userDao.getUserByUsername(username);
+    }
+
+    /**
+     * Gets user info if it is being accessed by that user.
+     * @param username
+     * @param principal
+     * @return
+     */
+    @GetMapping(path = "/users/{username}/self")
+    public User getSelf(@PathVariable String username, Principal principal) {
+        if (principal.getName().equals(username) ) {
+            return userDao.getUserByUsername(username);
+        }
+        return null;
+    }
+
+    /**
+     * Gets the name of a user by their username. Adds 'Dr.' if the user is a doctor.
+     * @param username
+     * @return
+     */
+    @GetMapping(path = "/users/{username}/name")
+    public String getName(@PathVariable String username) {
+        return userDao.getNameByUsername(username);
     }
 
     /**
