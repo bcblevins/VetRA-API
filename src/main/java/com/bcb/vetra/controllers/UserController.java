@@ -144,13 +144,11 @@ public class UserController {
     /**
      * Gets all roles for a user.
      *
-     * @param username The username of the user.
      * @return A list of all roles for the user.
      */
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
-    @GetMapping(path = "users/{username}/roles")
-    public List<String> getRoles(@PathVariable String username) {
-        return userDao.getRoles(username);
+    @GetMapping(path = "/roles")
+    public List<String> getRoles(Principal principal) {
+        return userDao.getRoles(principal.getName());
     }
 
     /**
