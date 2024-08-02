@@ -122,8 +122,8 @@ public class MessageController {
         message.setFromUsername(principal.getName());
 
         //Send email notification
-        String toEmail = userDao.getUserByUsername(message.getToUsername()).getEmail();
-        messageNotification.sendEmail(toEmail, message, false);
+//        String toEmail = userDao.getUserByUsername(message.getToUsername()).getEmail();
+//        messageNotification.sendEmail(toEmail, message, false);
 
         return messageDao.create(message);
     }
@@ -148,8 +148,8 @@ public class MessageController {
         message.setFromUsername(principal.getName());
 
         //Send email notification
-        String toEmail = userDao.getUserByUsername(message.getToUsername()).getEmail();
-        messageNotification.sendEmail(toEmail, message, false);
+//        String toEmail = userDao.getUserByUsername(message.getToUsername()).getEmail();
+//        messageNotification.sendEmail(toEmail, message, false);
 
         return messageDao.create(message);
     }

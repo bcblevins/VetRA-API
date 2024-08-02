@@ -130,8 +130,8 @@ public class MessageDao {
                 message.getBody(),
                 message.getFromUsername(),
                 message.getToUsername(),
-                message.getTestId(),
-                message.getPrescriptionId(),
+                message.getTestId() == 0 ? null : message.getTestId(),
+                message.getPrescriptionId() == 0 ? null : message.getPrescriptionId(),
                 message.getPatientId()
         );
         } catch (EmptyResultDataAccessException e) {
