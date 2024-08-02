@@ -134,7 +134,7 @@ INSERT INTO test (name, time_stamp, patient_id, doctor_username) VALUES
 
 INSERT INTO "message" (body, from_username, to_username, test_id, patient_id) VALUES
     ('Charlie''s labwork looks great, her white blood cell count is back in the normal range. How is she doing after her visit?', 'cakelly4', 'bblevins96', 1, 1),
-	('Please help, Charlie has kidnapped me and is driving me to the treat store. I haven''t told her yet that that doesn''t exist.', 'cakelly4', 'cakelly4', null, 1),
+	('Please help, Charlie has kidnapped me and is driving me to the treat store. I haven''t told her yet that that doesn''t exist.', 'bblevins96', 'cakelly4', null, 1),
 	('The latest lab results for Charlie are in. Liver values have improved and the rest of her bloodwork looks great.', 'cakelly4', 'bblevins96', null, 1),
 	('Charlie''s weight is up a little bit. I recommend cutting back on her food by 1/4 cup per day. Let me know if you have any questions.', 'cakelly4', 'bblevins96', null, 1);
 

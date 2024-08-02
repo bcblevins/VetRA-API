@@ -63,9 +63,9 @@ public class UserDao {
         try {
             User user = jdbcTemplate.queryForObject("SELECT * FROM \"user\" WHERE username = ?", this::mapToUser, username);
             if (getRoles(user.getUsername()).contains("DOCTOR")) {
-                return "Dr. " + user.getFirstName() + user.getLastName();
+                return "Dr. " + user.getFirstName() + " " + user.getLastName();
             } else {
-                return user.getFirstName() + user.getLastName();
+                return user.getFirstName() + " " + user.getLastName();
             }
         } catch (EmptyResultDataAccessException e) {
             return null;

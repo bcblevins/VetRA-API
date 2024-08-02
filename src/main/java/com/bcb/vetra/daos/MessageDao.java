@@ -180,7 +180,7 @@ public class MessageDao {
         return new Message(
                 rs.getInt("message_id"),
                 rs.getString("body"),
-                rs.getTimestamp("timestamp").toLocalDateTime(),
+                rs.getTimestamp("time_stamp").toLocalDateTime(),
                 rs.getString("from_username"),
                 rs.getString("to_username"),
                 rs.getInt("test_id"),
