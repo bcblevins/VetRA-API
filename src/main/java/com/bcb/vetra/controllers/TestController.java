@@ -43,7 +43,7 @@ public class TestController {
      * Gets all tests for a patient. Verifies permission by calling the access control service.
      *
      * @param patientId The ID of the patient.
-     * @param principal The currently logged in user.
+     * @param principal The currently logged-in user.
      * @return A list of all tests for the patient.
      */
     @GetMapping("/patients/{patientId}/tests")

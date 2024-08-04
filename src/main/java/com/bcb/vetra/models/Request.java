@@ -24,6 +24,6 @@ public class Request {
     @Min(value = 1, message = "Prescription ID is required.")
     private int prescriptionId;
     private String status;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS") // ensures that using SQL timestamp format in PUT/POST requests doesn't cause deserialization issues
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS") // ensures that using SQL timestamp format in PUT/POST requests doesn't cause deserialization issues
     private LocalDateTime requestDate;
 }
