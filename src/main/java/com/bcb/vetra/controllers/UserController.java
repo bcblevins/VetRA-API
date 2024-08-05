@@ -5,6 +5,7 @@ import com.bcb.vetra.models.User;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -20,7 +21,11 @@ import java.util.List;
 @CrossOrigin
 public class UserController {
     private UserDao userDao;
-    public UserController(UserDao userDao) {this.userDao = userDao;}
+    private PasswordEncoder passwordEncoder;
+    public UserController(UserDao userDao, PasswordEncoder passwordEncoder) {
+        this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * Gets all users.
@@ -94,6 +99,22 @@ public class UserController {
     public User update(@Valid @RequestBody User user, @PathVariable String username) {
         user.setUsername(username);
         return userDao.updateUser(user);
+    }
+
+    /**
+     * Updates the currently logged-in user.
+     * @param user
+     * @param username
+     * @param principal
+     * @return
+     */
+    @PutMapping(path = "/users/{username}/self")
+    public User updateSelf(@Valid @RequestBody User user, @PathVariable String username, Principal principal) {
+        if (principal.getName().equals(username)) {
+            user.setUsername(username);
+            return userDao.updateUser(user);
+        }
+        return null;
     }
 
     /**

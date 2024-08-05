@@ -28,7 +28,7 @@ public class Patient {
     private int patientId;
     @JsonAlias({"name", "firstName"})
     @NotBlank(message = "First name is required.")
-    private String firstName;
+    private String name;
     @JsonAlias({"date_of_birth", "birthday"})
     @JsonDeserialize(using = EpochToLocalDateDeserializer.class)
     private LocalDate birthday;
@@ -44,9 +44,9 @@ public class Patient {
 
     private Map<String, String> vmsIds;
 
-    public Patient(int patientId, String firstName, LocalDate birthday, String species, String sex, String ownerUsername) {
+    public Patient(int patientId, String name, LocalDate birthday, String species, String sex, String ownerUsername) {
         this.patientId = patientId;
-        this.firstName = firstName;
+        this.name = name;
         this.birthday = birthday;
         this.species = species;
         this.sex = sex;
@@ -62,7 +62,7 @@ public class Patient {
     public String toString() {
         return "Patient{" +
                 "patientId=" + patientId +
-                ", name='" + firstName + '\'' +
+                ", name='" + name + '\'' +
                 ", birthday=" + birthday +
                 ", species='" + species + '\'' +
                 ", sex='" + sex + '\'' +

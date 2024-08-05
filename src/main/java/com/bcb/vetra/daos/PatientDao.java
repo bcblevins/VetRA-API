@@ -60,7 +60,7 @@ public class PatientDao {
     public boolean patientExists(String username, String patientName) {
         List<Patient> patients = getPatientsByUsername(username);
         for (Patient patient : patients) {
-            if (patient.getFirstName().toLowerCase().equals(patientName.toLowerCase())) {
+            if (patient.getName().toLowerCase().equals(patientName.toLowerCase())) {
                 return true;
             }
         }
@@ -131,7 +131,7 @@ public class PatientDao {
                             "VALUES (?,?,?,?,?) " +
                             "RETURNING patient_id;",
                     Integer.class,
-                    patient.getFirstName(),
+                    patient.getName(),
                     patient.getBirthday(),
                     patient.getSpecies(),
                     patient.getSex(),
@@ -173,7 +173,7 @@ public class PatientDao {
         int rowsAffected = jdbcTemplate.update(
                 "UPDATE patient SET first_name = ?, birthday = ?, species = ?, sex = ?, owner_username = ? " +
                         "WHERE patient_id = ?;",
-                patient.getFirstName(),
+                patient.getName(),
                 patient.getBirthday(),
                 patient.getSpecies(),
                 patient.getSex(),
