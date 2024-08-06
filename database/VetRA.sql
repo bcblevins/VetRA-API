@@ -106,6 +106,16 @@ CREATE TABLE "meta" (
   "performed_at" timestamp DEFAULT (current_timestamp)
 );
 
+CREATE TABLE "notification" (
+  "id" SERIAL PRIMARY KEY,
+  "patientId" int NOT NULL REFERENCES "patient" ("patient_id") ON DELETE CASCADE,
+  "message_id" int NOT NULL REFERENCES "message" ("message_id") ON DELETE CASCADE,
+  "request_id" int NOT NULL REFERENCES "request" ("request_id") ON DELETE CASCADE,
+  "test_id" int NOT NULL REFERENCES "test" ("test_id") ON DELETE CASCADE,
+  "status" varchar(20) DEFAULT 'unread',
+  "timestamp" timestamp DEFAULT (current_timestamp)
+);
+
 
 -- INSERTS
 INSERT INTO medication (name, unit) VALUES

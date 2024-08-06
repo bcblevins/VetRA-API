@@ -61,7 +61,7 @@ public class MessageDao {
         try {
         return jdbcTemplate.queryForObject("SELECT * " +
                         "FROM message  " +
-                        "WHERE message_id = ? AND (to_username = ? OR from_username = ?;",
+                        "WHERE message_id = ? AND (to_username = ? OR from_username = ?);",
                 this::mapToMessage, id, username, username);
         } catch (EmptyResultDataAccessException e) {
             return null;
