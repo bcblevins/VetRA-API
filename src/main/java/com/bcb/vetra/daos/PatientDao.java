@@ -41,6 +41,15 @@ public class PatientDao {
         return patient;
     }
 
+    public Patient getPatientByPrescriptionId(int prescriptionId) {
+        Patient patient = null;
+        try {
+            patient = jdbcTemplate.queryForObject("SELECT * FROM patient WHERE patient_id = (SELECT patient_id FROM prescription WHERE prescription_id = ?);", this::mapToPatient, prescriptionId);
+        } catch (EmptyResultDataAccessException e) {
+        }
+        return patient;
+    }
+
     /**
      * Gets a list of ezyVet patient IDs.
      *

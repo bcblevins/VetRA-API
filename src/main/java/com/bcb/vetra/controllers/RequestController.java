@@ -1,9 +1,9 @@
 package com.bcb.vetra.controllers;
 
-import com.bcb.vetra.daos.PatientDao;
-import com.bcb.vetra.daos.PrescriptionDao;
-import com.bcb.vetra.daos.UserDao;
+import com.bcb.vetra.daos.*;
+import com.bcb.vetra.models.Notification;
 import com.bcb.vetra.models.Request;
+import com.bcb.vetra.models.User;
 import com.bcb.vetra.services.AccessControl;
 import com.bcb.vetra.viewmodels.RequestWithPrescription;
 import jakarta.validation.Valid;
@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.bcb.vetra.daos.RequestDao;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
@@ -31,13 +30,15 @@ public class RequestController {
     private PatientDao patientDao;
     private UserDao userDao;
     private AccessControl accessControl;
+    private NotificationDao notificationDao;
 
-    public RequestController(RequestDao requestDao, PrescriptionDao prescriptionDao, PatientDao patientDao, UserDao userDao) {
+    public RequestController(RequestDao requestDao, PrescriptionDao prescriptionDao, PatientDao patientDao, UserDao userDao, NotificationDao notificationDao) {
         this.requestDao = requestDao;
         this.prescriptionDao = prescriptionDao;
         this.patientDao = patientDao;
         this.userDao = userDao;
         this.accessControl = new AccessControl(patientDao, userDao);
+        this.notificationDao = notificationDao;
     }
 
     /**
@@ -133,8 +134,15 @@ public class RequestController {
      */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
     @PutMapping("/requests/{requestId}")
-    public Request update(@PathVariable int requestId, @Valid @RequestBody Request request) {
+    public Request update(@PathVariable int requestId, @Valid @RequestBody Request request, Principal principal) {
         request.setRequestId(requestId);
+
+        if (request.getStatus() == "APPROVED") {
+            int patientId = patientDao.getPatientByPrescriptionId(request.getPrescriptionId()).getPatientId();
+            String username = userDao.getUserByPatientId(patientId).getUsername();
+            notificationDao.create(new Notification(username, patientId, 0, requestId, 0, false));
+        }
+
         return requestDao.update(request);
     }
 

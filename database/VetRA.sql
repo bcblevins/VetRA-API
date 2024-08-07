@@ -10,6 +10,7 @@ drop table if exists "patient_vms" cascade;
 drop table if exists "message" cascade;
 drop table if exists "request" cascade;
 drop table if exists "meta";
+drop table if exists "notification" cascade;
 
 CREATE TABLE "user" (
   "username" varchar(30) PRIMARY KEY,
@@ -108,11 +109,12 @@ CREATE TABLE "meta" (
 
 CREATE TABLE "notification" (
   "id" SERIAL PRIMARY KEY,
-  "patient_id" int NOT NULL REFERENCES "patient" ("patient_id") ON DELETE CASCADE,
-  "message_id" int NOT NULL REFERENCES "message" ("message_id") ON DELETE CASCADE,
-  "request_id" int NOT NULL REFERENCES "request" ("request_id") ON DELETE CASCADE,
-  "test_id" int NOT NULL REFERENCES "test" ("test_id") ON DELETE CASCADE,
-  "status" varchar(20) DEFAULT 'unread',
+  "username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE,
+  "patient_id" int REFERENCES "patient" ("patient_id") ON DELETE CASCADE,
+  "message_id" int REFERENCES "message" ("message_id") ON DELETE CASCADE,
+  "request_id" int REFERENCES "request" ("request_id") ON DELETE CASCADE,
+  "test_id" int REFERENCES "test" ("test_id") ON DELETE CASCADE,
+  "is_read" boolean DEFAULT false,
   "timestamp" timestamp DEFAULT (current_timestamp)
 );
 

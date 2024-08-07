@@ -1,9 +1,11 @@
 package com.bcb.vetra.controllers;
 
 import com.bcb.vetra.daos.MessageDao;
+import com.bcb.vetra.daos.NotificationDao;
 import com.bcb.vetra.daos.PatientDao;
 import com.bcb.vetra.daos.UserDao;
 import com.bcb.vetra.models.Message;
+import com.bcb.vetra.models.Notification;
 import com.bcb.vetra.services.MessageNotification;
 import com.bcb.vetra.services.AccessControl;
 import jakarta.validation.Valid;
@@ -30,13 +32,15 @@ public class MessageController {
     private PatientDao patientDao;
     private AccessControl accessControl;
     private MessageNotification messageNotification;
+    private NotificationDao notificationDao;
 
-    public MessageController(MessageDao messageDao, PatientDao patientDao, UserDao userDao) {
+    public MessageController(MessageDao messageDao, PatientDao patientDao, UserDao userDao, NotificationDao notificationDao) {
         this.messageDao = messageDao;
         this.patientDao = patientDao;
         this.userDao = userDao;
         this.accessControl = new AccessControl(patientDao, userDao, messageDao);
         this.messageNotification = new MessageNotification();
+        this.notificationDao = notificationDao;
     }
 
     /**
@@ -124,8 +128,11 @@ public class MessageController {
         //Send email notification
 //        String toEmail = userDao.getUserByUsername(message.getToUsername()).getEmail();
 //        messageNotification.sendEmail(toEmail, message, false);
+        message = messageDao.create(message);
 
-        return messageDao.create(message);
+        notificationDao.create(new Notification(message.getToUsername(), patientId, message.getMessageId(), 0, message.getTestId(), false));
+
+        return message;
     }
 
     /**

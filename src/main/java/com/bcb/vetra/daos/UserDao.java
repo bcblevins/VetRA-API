@@ -53,6 +53,14 @@ public class UserDao {
         }
     }
 
+    public User getUserByPatientId(int patientId) {
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM \"user\" WHERE username = (SELECT owner_username FROM patient WHERE patient_id = ?);", this::mapToUser, patientId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
     /**
      * Gets a user's name by their username. Adds 'Dr.' if the user is a doctor.
      * @param username
@@ -92,7 +100,8 @@ public class UserDao {
      */
     public User createUser(User user) {
         String hashedPassword = passwordEncoder.encode(user.getPassword());
-        String sql = "INSERT INTO \"user\" (username, password, first_name, last_name, email) VALUES (?,?,?,?,?) RETURNING username;";
+        String sql = "INSERT INTO \"user\" (username, password, first_name, last_name, email) " +
+                "VALUES (?,?,?,?,?) RETURNING username;";
         try {
             String username = jdbcTemplate.queryForObject(sql, String.class, user.getUsername(), hashedPassword, user.getFirstName(), user.getLastName(), user.getEmail());
             return getUserByUsername(username);

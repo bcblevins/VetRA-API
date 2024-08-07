@@ -1,7 +1,9 @@
 package com.bcb.vetra.daos;
 
 import com.bcb.vetra.exception.DaoException;
+import com.bcb.vetra.models.Notification;
 import com.bcb.vetra.models.Test;
+import com.bcb.vetra.models.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -22,9 +24,12 @@ import java.util.List;
 @Component
 public class TestDao {
     private final JdbcTemplate jdbcTemplate;
-
-    public TestDao(DataSource dataSource) {
+    private NotificationDao notificationDao;
+private UserDao userDao;
+    public TestDao(DataSource dataSource, NotificationDao notificationDao, UserDao userDao) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.notificationDao = notificationDao;
+        this.userDao = userDao;
     }
 
     /**
@@ -68,6 +73,9 @@ public class TestDao {
                     test.getPatientID(),
                     test.getDoctorUsername()
             );
+            User user = userDao.getUserByPatientId(test.getPatientID());
+            Notification notification = new Notification(user.getUsername(), test.getPatientID(), 0, 0, id, false);
+            notificationDao.create(notification);
             return getTestById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new DaoException("Failed to create test.");

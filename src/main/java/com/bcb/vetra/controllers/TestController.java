@@ -1,9 +1,7 @@
 package com.bcb.vetra.controllers;
 
-import com.bcb.vetra.daos.PatientDao;
-import com.bcb.vetra.daos.ResultDao;
-import com.bcb.vetra.daos.TestDao;
-import com.bcb.vetra.daos.UserDao;
+import com.bcb.vetra.daos.*;
+import com.bcb.vetra.models.Notification;
 import com.bcb.vetra.models.Test;
 import com.bcb.vetra.services.vmsintegration.MockVmsIntegration;
 import com.bcb.vetra.services.AccessControl;
@@ -32,7 +30,7 @@ public class TestController {
     private UserDao userDao;
     private AccessControl accessControl;
     private VmsIntegration vmsIntegration;
-    public TestController(TestDao testDao, UserDao userDao, PatientDao patientDao, ResultDao resultDao) {
+    public TestController(TestDao testDao, UserDao userDao, PatientDao patientDao, ResultDao resultDao, NotificationDao notificationDao) {
         this.testDao = testDao;
         this.resultDao = resultDao;
         this.accessControl = new AccessControl(patientDao, userDao);
