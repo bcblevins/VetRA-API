@@ -21,8 +21,8 @@ public class NotificationController {
     }
 
     @GetMapping
-    public List<Notification> getAll(Principal principal) {
-        return notificationDao.getNotificationsByUsername(principal.getName());
+    public List<Notification> getAllUnread(Principal principal) {
+        return notificationDao.getUnreadNotificationsByUsername(principal.getName());
     }
 
     @PostMapping

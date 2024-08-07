@@ -29,8 +29,8 @@ public class NotificationDao {
         return notification;
     }
 
-    public List<Notification> getNotificationsByUsername(String username) {
-        return jdbcTemplate.query("SELECT * FROM notification WHERE username = ?", this::mapToNotification, username);
+    public List<Notification> getUnreadNotificationsByUsername(String username) {
+        return jdbcTemplate.query("SELECT * FROM notification WHERE username = ? AND is_read = false;", this::mapToNotification, username);
     }
 
     public Notification create(Notification notification) {
