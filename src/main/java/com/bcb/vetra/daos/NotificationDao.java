@@ -22,7 +22,7 @@ public class NotificationDao {
     public Notification getNotificationById(int id) {
         Notification notification = null;
         try {
-            notification = jdbcTemplate.queryForObject("SELECT * FROM notification WHERE id = ?", Notification.class, id);
+            notification = jdbcTemplate.queryForObject("SELECT * FROM notification WHERE notification_id = ?", this::mapToNotification, id);
         } catch (EmptyResultDataAccessException e) {
             System.out.println(e.getMessage());
         }
@@ -38,7 +38,7 @@ public class NotificationDao {
         try {
             Integer id = jdbcTemplate.queryForObject(
                             "INSERT INTO notification (username, patient_id, message_id, request_id, test_id, is_read) " +
-                            "VALUES (?, ?, ?, ?, ?, ?) RETURNING id;",
+                            "VALUES (?, ?, ?, ?, ?, ?) RETURNING notification_id;",
                     Integer.class,
                     notification.getUsername(),
                     notification.getPatientId() == 0 ? null : notification.getPatientId(),
@@ -55,7 +55,7 @@ public class NotificationDao {
 
     public Notification update(Notification notification) {
         try {
-            jdbcTemplate.update("UPDATE notification SET username = ?, patient_id = ?, message_id = ?, request_id = ?, test_id = ?, is_read = ?, timestamp = ? WHERE id = ?",
+            jdbcTemplate.update("UPDATE notification SET username = ?, patient_id = ?, message_id = ?, request_id = ?, test_id = ?, is_read = ?, timestamp = ? WHERE notification_id = ?",
                     notification.getUsername(),
                     notification.getPatientId(),
                     notification.getMessageId(),
@@ -72,18 +72,18 @@ public class NotificationDao {
     }
 
     public boolean markAsRead(int id, String username) {
-        int rowsAffected = jdbcTemplate.update("UPDATE notification SET is_read = true WHERE id = ? AND username = ?", id, username);
+        int rowsAffected = jdbcTemplate.update("UPDATE notification SET is_read = true WHERE notification_id = ? AND username = ?", id, username);
         return rowsAffected > 0;
     }
 
     public boolean delete(int id) {
-        int rowsAffected = jdbcTemplate.update("DELETE FROM notification WHERE id = ?", id);
+        int rowsAffected = jdbcTemplate.update("DELETE FROM notification WHERE notification_id = ?", id);
         return rowsAffected > 0;
     }
 
     private Notification mapToNotification(ResultSet resultSet, int rowNumber) throws SQLException {
         return new Notification(
-                resultSet.getInt("id"),
+                resultSet.getInt("notification_id"),
                 resultSet.getString("username"),
                 resultSet.getInt("patient_id"),
                 resultSet.getInt("message_id"),

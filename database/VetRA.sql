@@ -108,7 +108,7 @@ CREATE TABLE "meta" (
 );
 
 CREATE TABLE "notification" (
-  "id" SERIAL PRIMARY KEY,
+  "notification_id" SERIAL PRIMARY KEY,
   "username" varchar(30) NOT NULL REFERENCES "user" ("username") ON DELETE CASCADE,
   "patient_id" int REFERENCES "patient" ("patient_id") ON DELETE CASCADE,
   "message_id" int REFERENCES "message" ("message_id") ON DELETE CASCADE,
