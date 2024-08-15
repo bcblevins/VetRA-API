@@ -193,6 +193,9 @@ INSERT INTO role VALUES
 INSERT INTO "meta" (action, performed_at) VALUES
     ('ezyvet patients updated', '1970-01-01 00:00:00'),
 	('ezyvet tests updated', '1970-01-01 00:00:00');
+	
+INSERT INTO "notification" (username, patient_id, message_id, request_id, test_id) VALUES 
+	('bblevins96', 1, null, null, 1);
 
 	
 	

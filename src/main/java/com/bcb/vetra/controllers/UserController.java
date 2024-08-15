@@ -16,7 +16,6 @@ import java.util.List;
  * This class is responsible for handling all HTTP requests related to users.
  */
 
-@PreAuthorize("isAuthenticated()")
 @RestController
 @CrossOrigin
 public class UserController {
@@ -56,6 +55,7 @@ public class UserController {
      * @param principal
      * @return
      */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(path = "/users/{username}/self")
     public User getSelf(@PathVariable String username, Principal principal) {
         if (principal.getName().equals(username) ) {
@@ -69,6 +69,7 @@ public class UserController {
      * @param username
      * @return
      */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(path = "/users/{username}/name")
     public String getName(@PathVariable String username) {
         return userDao.getNameByUsername(username);
@@ -80,7 +81,7 @@ public class UserController {
      * @param user The user to create.
      * @return The created user.
      */
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "/users")
     public User create(@Valid @RequestBody User user) {
@@ -108,6 +109,7 @@ public class UserController {
      * @param principal
      * @return
      */
+    @PreAuthorize("isAuthenticated()")
     @PutMapping(path = "/users/{username}/self")
     public User updateSelf(@Valid @RequestBody User user, @PathVariable String username, Principal principal) {
         if (principal.getName().equals(username)) {
@@ -139,6 +141,7 @@ public class UserController {
      * @param principal
      * @return
      */
+    @PreAuthorize("isAuthenticated()")
     @PutMapping(path = "/password")
     public User updatePassword(@RequestBody String password, Principal principal) {
         User user = userDao.getUserByUsername(principal.getName());
@@ -167,6 +170,7 @@ public class UserController {
      *
      * @return A list of all roles for the user.
      */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(path = "/roles")
     public List<String> getRoles(Principal principal) {
         return userDao.getRoles(principal.getName());

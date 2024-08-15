@@ -19,7 +19,7 @@ public class MockVmsIntegration implements VmsIntegration {
     private Map<Test, List<Result>> testMap;
     private TestDao testDao;
     private ResultDao resultDao;
-    private boolean isDisabled = false;
+    private boolean isDisabled = true;
 
     public MockVmsIntegration(TestDao testDao, ResultDao resultDao) {
         testMap = new HashMap<>();
