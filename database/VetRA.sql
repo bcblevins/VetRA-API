@@ -145,7 +145,9 @@ INSERT INTO test (name, time_stamp, patient_id, doctor_username) VALUES
 	('Fecal',	'2024-07-04 11:10:30.847789',	2,	'cakelly4');
 
 INSERT INTO "message" (body, from_username, to_username, test_id, patient_id) VALUES
-    ('Charlie''s white blood cells are back in the normal range. Let''s recheck a CBC in 6 months.', 'cakelly4', 'bblevins96', 1, 1),
+
+    ('I’m pleased to inform you that Charlie’s white blood cell count has returned to the normal range.  This is a positive development and suggests that the treatment we’ve been following is having the desired effect. However, it''s important to note that we still aren’t entirely sure why Charlie’s white blood cells were elevated initially. To ensure we continue to monitor Charlie’s health and maintain this stability, I recommend scheduling a follow-up appointment for a complete blood count (CBC) test in six months. Please let us know if you have any questions or need assistance with arranging the follow-up.', 'cakelly4', 'bblevins96', 1, 1),
+		('That sounds good! Thanks for all your help.', 'bblevins96', 'cakelly4', null, 1),
 	('Please help, Charlie has kidnapped me and is driving me to the treat store. I haven''t told her yet that that doesn''t exist.', 'bblevins96', 'cakelly4', null, 1),
 	('Do you have a medically relevant question?', 'cakelly4', 'bblevins96', null, 1),
 	('Charlie''s weight is up a little bit. I recommend cutting back on her food by 1/4 cup per day. Let me know if you have any questions.', 'cakelly4', 'bblevins96', null, 1);
